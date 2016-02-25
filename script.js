@@ -4,7 +4,8 @@ jQuery(document).ready(function() {
 	var id = jQuery(tag).attr('id');
 	// avoid doing it twice
 	jQuery(tag).removeAttr('id');
-        // bundle exposes the viewer / modeler via the BpmnJS variable
+
+	// bundle exposes the viewer / modeler via the BpmnJS variable
   	var BpmnViewer = window.BpmnJS;
   	var containerdiv = document.createElement('div');
   	containerdiv.className = "canvas";
@@ -16,9 +17,11 @@ jQuery(document).ready(function() {
       	        console.log('error rendering', err);
     	    } else {
                 var canvas = viewer.get('canvas');
+                var bboxViewport = canvas.getDefaultLayer().getBBox(true);
+                var bboxSvg = canvas.getSize();
+                canvas.viewbox({ x: bboxViewport.x, y: bboxViewport.y, width: bboxSvg.width, height: bboxSvg.height });
+                var height = bboxViewport.height + 4;
                 // hack: adjust the div height because it doesn't automatically..
-                var bBox = canvas._viewport.node.getBBox();
-                var height = bBox.height + 5;
                 containerdiv.style.height = "" + height + 'px';
             }
 	});
