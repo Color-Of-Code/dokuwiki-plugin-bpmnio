@@ -35,6 +35,7 @@ class syntax_plugin_bpmnio extends DokuWiki_Syntax_Plugin {
     }
     
     public function handle($match, $state, $pos, Doku_Handler $handler) {
+        $match = base64_encode($match);
         return array($match, $state, $pos);
     }
      
