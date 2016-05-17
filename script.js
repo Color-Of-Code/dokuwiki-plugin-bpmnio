@@ -1,8 +1,8 @@
 jQuery(document).ready(function() {
     jQuery("textarea[id^=__bpmnio_]").each(function(i, tag) { try {
         var xml = jQuery(tag).text();
-        xml = atob(xml);
- 	var id = jQuery(tag).attr('id');
+        xml = decodeURIComponent(escape(window.atob(xml)));
+  	var id = jQuery(tag).attr('id');
 	// avoid doing it twice
 	jQuery(tag).removeAttr('id');
 
