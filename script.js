@@ -22,8 +22,10 @@ jQuery(document).ready(function() {
                 var bboxSvg = canvas.getSize();
                 canvas.viewbox({ x: bboxViewport.x, y: bboxViewport.y, width: bboxSvg.width, height: bboxSvg.height });
                 var height = bboxViewport.height + 4;
-                // hack: adjust the div height because it doesn't automatically..
+                // hack: adjust the div height because it doesn't automatically.
                 containerdiv.style.height = "" + height + 'px';
+                // Fix #3 by introducing a small space to allow clicks.
+                containerdiv.style.marginRight = "32px";
             }
 	});
 	jQuery(tag).remove();
