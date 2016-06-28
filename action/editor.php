@@ -1,9 +1,9 @@
 <?php
 /*
- * DokuWiki Plugin bpmnio (Action Component: Viewer)
+ * DokuWiki Plugin bpmnio (Action Component: Editor)
  *
  * @license MIT, see LICENSE
- * @author  Jaap de Haan <jaap.dehaan@color-of-code.de>
+ * @author  Andreas Boehler <dev (AT) aboehler.at>
  */
 
 // must be run within Dokuwiki
