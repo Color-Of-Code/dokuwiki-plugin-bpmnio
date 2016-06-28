@@ -1,0 +1,7 @@
+@import "assets/diagram-js.less";
+@import "assets/bpmn-font/css/bpmn-embedded.less";
+
+.dokuwiki .editbutton_plugin_bpmnio
+{
+    margin-top: 0;
+}
