@@ -52,7 +52,7 @@ class action_plugin_bpmnio_editor extends DokuWiki_Action_Plugin {
         $xml = $TEXT;
         if(trim($xml) === '')
         {
-            $xml = $this->emptyDigramXML;
+            $xml = $this->emptyDiagramXML;
         }
         $form->addElement('<div class="plugin_bpmnio_editor_outer"><div id="plugin_bpmnio_editor" style="display:none">'.base64_encode($xml).'</div></div>');
         $form->addHidden('plugin_bpmnio_data', base64_encode($xml));
