@@ -1,5 +1,3 @@
-/* DOKUWIKI:include_once bpmn-viewer.js */
-/* DOKUWIKI:include_once bpmn-modeler.js */
 
 jQuery(document).ready(function() {
     jQuery("textarea[id^=__bpmnio_], #plugin_bpmnio_editor").each(function(i, tag) { try {
