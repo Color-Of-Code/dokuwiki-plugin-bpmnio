@@ -49,7 +49,7 @@ class syntax_plugin_bpmnio extends DokuWiki_Syntax_Plugin {
  
                 case DOKU_LEXER_UNMATCHED :  
 	            $bpmnid = uniqid('__bpmnio_');
-	            $renderer->doc .= '<div>';
+                $renderer->doc .= '<div style="overflow:auto;">';
 	            $renderer->doc .= '<textarea class="bpmnio_data" id="'.$bpmnid.'" style="visibility:hidden;">';
         	    $renderer->doc .= trim($match);
 	            $renderer->doc .= '</textarea>';
