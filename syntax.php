@@ -35,26 +35,31 @@ class syntax_plugin_bpmnio extends DokuWiki_Syntax_Plugin {
     }
     
     public function handle($match, $state, $pos, Doku_Handler $handler) {
+        $end = $pos + strlen($match);
         $match = base64_encode($match);
-        return array($match, $state, $pos);
+        return array($match, $state, $pos, $end);
     }
-     
+
     public function render($mode, Doku_Renderer $renderer, $data) {
         // $data is returned by handle()
         if ($mode == 'xhtml'  || $mode == 'odt') {
-            list($match, $state, $pos) = $data;
+            list($match, $state, $pos, $end) = $data;
             switch ($state) {
                 case DOKU_LEXER_ENTER :      
                     break;
  
                 case DOKU_LEXER_UNMATCHED :  
-	            $bpmnid = uniqid('__bpmnio_');
-                $renderer->doc .= '<div style="overflow:auto;">';
-	            $renderer->doc .= '<textarea class="bpmnio_data" id="'.$bpmnid.'" style="visibility:hidden;">';
-        	    $renderer->doc .= trim($match);
-	            $renderer->doc .= '</textarea>';
-        	    //$renderer->doc .= '<div class="bpmnio_canvas" id="'.$bpmnid.'"></div>';
-	            $renderer->doc .= '</div>';
+                    $bpmnid = uniqid('__bpmnio_');
+                    $class = $renderer->startSectionEdit($data[$pos], 'plugin_bpmnio');
+                    $renderer->doc .= '<div class="' . $class . '">';
+                    $renderer->doc .= '<div style="overflow:auto;">';
+                    $renderer->doc .= '<textarea class="bpmnio_data" id="'.$bpmnid.'" style="visibility:hidden;">';
+                    $renderer->doc .= trim($match);
+                    $renderer->doc .= '</textarea>';
+                    //$renderer->doc .= '<div class="bpmnio_canvas" id="'.$bpmnid.'"></div>';
+                    $renderer->doc .= '</div>';
+                    $renderer->doc .= '</div>';
+                    $renderer->finishSectionEdit($data[$end]);
                     break;
                 case DOKU_LEXER_EXIT :       
                     break;
