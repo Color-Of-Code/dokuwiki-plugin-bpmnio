@@ -3,95 +3,110 @@
 /**
  * @license    See LICENSE file
  * @author     Jaap de Haan <jaap.dehaan@color-of-code.de>
-*/
+ */
 
 // must be run within DokuWiki
-if(!defined('DOKU_INC')) die();
+if (!defined('DOKU_INC')) {
+    die();
+}
 
-if(!defined('DOKU_PLUGIN')) define('DOKU_PLUGIN',DOKU_INC.'lib/plugins/');
-require_once(DOKU_PLUGIN.'action.php');
+if (!defined('DOKU_PLUGIN')) {
+    define('DOKU_PLUGIN', DOKU_INC . 'lib/plugins/');
+}
+
+require_once DOKU_PLUGIN . 'action.php';
 
 // See help: https://www.dokuwiki.org/devel:toolbar
 // See help: https://www.dokuwiki.org/devel:section_editor
 
-class action_plugin_bpmnio extends DokuWiki_Action_Plugin {
+class action_plugin_bpmnio extends DokuWiki_Action_Plugin
+{
 
-    function register(Doku_Event_Handler $controller){
+    public function register(Doku_Event_Handler $controller)
+    {
         $controller->register_hook('TPL_METAHEADER_OUTPUT', 'BEFORE', $this, 'handle_tpl_metaheader_output');
-        $controller->register_hook('TOOLBAR_DEFINE', 'AFTER', $this, 'handle_toolbar', array ());
+        $controller->register_hook('TOOLBAR_DEFINE', 'AFTER', $this, 'handle_toolbar', array());
         $controller->register_hook('HTML_SECEDIT_BUTTON', 'BEFORE', $this, 'handle_section_edit_button');
     }
 
     /**
      * Add <script> blocks to the meta headers
      */
-    public function handle_tpl_metaheader_output(Doku_Event &$event, $param) {
+    public function handle_tpl_metaheader_output(Doku_Event &$event, $param)
+    {
 
-    $event->data['link'][] = $this->create_css("assets/diagram-js.css");
+        $event->data['link'][] = $this->create_css("assets/diagram-js.css");
         $event->data['link'][] = $this->create_css("assets/bpmn-font/css/bpmn-embedded.css");
 
         // Load bpmn.io
-        $event->data['script'][] = $this->create_js("bpmn-viewer.min.js");
-        
+        $event->data['script'][] = $this->create_js("bpmn-viewer.production.min.js");
+
         // If activated we can edit but we cannot save
-        // $event->data['script'][] = $this->create_js("bpmn-modeler.min.js");
+        // $event->data['script'][] = $this->create_js("bpmn-modeler.production.min.js");
         $event->data['script'][] = $this->create_js("script.js");
     }
-    
-    private function create_css($rel) {
+
+    private function create_css($rel)
+    {
         return array(
-            'type'    => 'text/css',
-            'rel'     => 'stylesheet',
-            'href'    => $this->to_abs_url($rel),
+            'type' => 'text/css',
+            'rel' => 'stylesheet',
+            'href' => $this->to_abs_url($rel),
         );
     }
 
-    private function create_js($rel) {
+    private function create_js($rel)
+    {
         return array(
-            'type'    => 'text/javascript',
+            'type' => 'text/javascript',
             'charset' => 'utf-8',
-            'src'     => $this->to_abs_url($rel),
-            '_data'   => '',
+            'src' => $this->to_abs_url($rel),
+            '_data' => '',
         );
     }
 
-    private function to_abs_url($rel) {
-        return DOKU_BASE."lib/plugins/bpmnio/".$rel;
+    private function to_abs_url($rel)
+    {
+        return DOKU_BASE . "lib/plugins/bpmnio/" . $rel;
     }
 
-    function handle_toolbar(Doku_Event $event, $param) {
-        $event->data[] = array (
+    public function handle_toolbar(Doku_Event $event, $param)
+    {
+        $event->data[] = array(
             'type' => 'picker',
             'title' => $this->getLang('picker'),
             'icon' => '../../plugins/bpmnio/images/toolbar/picker.png',
             'list' => array(
                 array(
-                    'type'   => 'format',
-                    'title'  => $this->getLang('add'),
-                    'icon'   => '../../plugins/bpmnio/images/toolbar/bpmn_add.png',
-                    'open'   => '<bpmnio zoom=1.0>\n' . $this->_get_open_text(),
-                    'close'  => $this->_get_close_text() . '\n</bpmnio>\n',
+                    'type' => 'format',
+                    'title' => $this->getLang('add'),
+                    'icon' => '../../plugins/bpmnio/images/toolbar/bpmn_add.png',
+                    'open' => '<bpmnio zoom=1.0>\n' . $this->_get_open_text(),
+                    'close' => $this->_get_close_text() . '\n</bpmnio>\n',
                 ),
-            )
+            ),
         );
     }
 
-    public function handle_section_edit_button(Doku_Event $event, $param) {
-        if($event->data['target'] !== 'plugin_bpmnio') {
+    public function handle_section_edit_button(Doku_Event $event, $param)
+    {
+        if ($event->data['target'] !== 'plugin_bpmnio') {
             return;
         }
         $event->data['name'] = $this->getLang('section_name');
     }
 
-    private function _get_open_text() {
+    private function _get_open_text()
+    {
         return '<?xml version="1.0" encoding="UTF-8"?>
 <definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="sid-38422fae-e03e-43a3-bef4-bd33b32041b2" targetNamespace="http://bpmn.io/bpmn" exporter="http://bpmn.io" exporterVersion="0.10.1">
   <collaboration id="Collaboration_1oh70al">
     <participant id="Participant_1r8g02m" name="';
     }
-    
-    private function _get_close_text() {
-    
+
+    private function _get_close_text()
+    {
+
         return '" processRef="Process_1" />
   </collaboration>
   <process id="Process_1" isExecutable="false">
@@ -195,4 +210,3 @@ class action_plugin_bpmnio extends DokuWiki_Action_Plugin {
 </definitions>';
     }
 }
-
