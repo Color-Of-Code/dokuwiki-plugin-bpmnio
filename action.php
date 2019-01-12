@@ -36,6 +36,8 @@ class action_plugin_bpmnio extends DokuWiki_Action_Plugin
     {
 
         $event->data['link'][] = $this->create_css("assets/diagram-js.css");
+        $event->data['link'][] = $this->create_css("assets/bpmn-font/css/bpmn.css");
+        $event->data['link'][] = $this->create_css("assets/bpmn-font/css/bpmn-codes.css");
         $event->data['link'][] = $this->create_css("assets/bpmn-font/css/bpmn-embedded.css");
 
         // Load bpmn.io
