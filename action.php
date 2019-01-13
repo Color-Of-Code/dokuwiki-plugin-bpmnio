@@ -35,16 +35,16 @@ class action_plugin_bpmnio extends DokuWiki_Action_Plugin
     public function handle_tpl_metaheader_output(Doku_Event &$event, $param)
     {
 
-        $event->data['link'][] = $this->create_css("assets/diagram-js.css");
-        $event->data['link'][] = $this->create_css("assets/bpmn-font/css/bpmn.css");
-        $event->data['link'][] = $this->create_css("assets/bpmn-font/css/bpmn-codes.css");
-        $event->data['link'][] = $this->create_css("assets/bpmn-font/css/bpmn-embedded.css");
+        $event->data['link'][] = $this->create_css("vendor/bpmn-js/dist/assets/diagram-js.css");
+        $event->data['link'][] = $this->create_css("vendor/bpmn-js/dist/assets/bpmn-font/css/bpmn.css");
+        $event->data['link'][] = $this->create_css("vendor/bpmn-js/dist/assets/bpmn-font/css/bpmn-codes.css");
+        $event->data['link'][] = $this->create_css("vendor/bpmn-js/dist/assets/bpmn-font/css/bpmn-embedded.css");
 
         // Load bpmn.io
-        $event->data['script'][] = $this->create_js("bpmn-viewer.production.min.js");
+        $event->data['script'][] = $this->create_js("vendor/bpmn-js/dist/bpmn-viewer.production.min.js");
 
         // If activated we can edit but we cannot save
-        // $event->data['script'][] = $this->create_js("bpmn-modeler.production.min.js");
+        // $event->data['script'][] = $this->create_js("vendor/bpmn-js/dist/bpmn-modeler.production.min.js");
         $event->data['script'][] = $this->create_js("script.js");
     }
 
