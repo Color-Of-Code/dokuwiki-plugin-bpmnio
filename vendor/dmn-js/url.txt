@@ -1,0 +1,1 @@
+https://unpkg.com/dmn-js@6.0.0/

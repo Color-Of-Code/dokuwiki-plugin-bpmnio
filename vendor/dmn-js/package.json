@@ -1,0 +1,66 @@
+{
+  "name": "dmn-js",
+  "description": "A dmn toolkit and web modeler",
+  "version": "6.0.0",
+  "scripts": {
+    "test": "karma start",
+    "dev": "npm run test -- --no-single-run --auto-watch",
+    "test:distro": "node tasks/test-distro.js",
+    "distro": "node tasks/build-distro.js",
+    "prepublishOnly": "run-s build distro test:distro",
+    "build": "del-cli lib && babel -s -q -d lib src"
+  },
+  "main": "./lib/index.js",
+  "author": {
+    "name": "Sebastian Stamm",
+    "url": "https://github.com/SebastianStamm"
+  },
+  "contributors": [
+    {
+      "name": "bpmn.io contributors",
+      "url": "https://github.com/bpmn-io"
+    }
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bpmn-io/dmn-js"
+  },
+  "license": "SEE LICENSE IN LICENSE",
+  "keywords": [
+    "dmn",
+    "dmn-js",
+    "toolkit",
+    "web modeler",
+    "modeler",
+    "modeling",
+    "decision modeling"
+  ],
+  "devDependencies": {
+    "cpx": "^1.5.0",
+    "del": "^3.0.0",
+    "diagram-js": "^3.0.1",
+    "dmn-font": "^0.4.1",
+    "execa": "^1.0.0",
+    "min-dom": "^3.1.1",
+    "mkdirp": "^0.5.1",
+    "rollup": "^0.66.6",
+    "rollup-plugin-babel": "^3.0.3",
+    "rollup-plugin-commonjs": "^9.2.0",
+    "rollup-plugin-json": "^3.1.0",
+    "rollup-plugin-license": "^0.7.0",
+    "rollup-plugin-node-resolve": "^3.4.0",
+    "rollup-plugin-replace": "^2.1.0",
+    "rollup-plugin-uglify": "^6.0.0"
+  },
+  "dependencies": {
+    "dmn-js-decision-table": "^6.0.0",
+    "dmn-js-drd": "^6.0.0",
+    "dmn-js-literal-expression": "^6.0.0",
+    "dmn-js-shared": "^6.0.0"
+  },
+  "babel": {
+    "presets": [
+      "env"
+    ]
+  }
+}
