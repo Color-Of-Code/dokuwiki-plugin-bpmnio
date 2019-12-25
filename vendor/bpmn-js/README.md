@@ -1,6 +1,6 @@
 # bpmn-js - BPMN 2.0 for the web
 
-[![Build Status](https://travis-ci.org/bpmn-io/bpmn-js.svg?branch=master)](https://travis-ci.org/bpmn-io/bpmn-js)
+[![Build Status](https://travis-ci.org/bpmn-io/bpmn-js.svg?branch=develop)](https://travis-ci.org/bpmn-io/bpmn-js)
 
 View and edit BPMN 2.0 diagrams in the browser.
 
@@ -81,7 +81,7 @@ file an issue or pull request.
 
 ## Related
 
-bpmn-js builds on top of a few additional powerful tools:
+bpmn-js builds on top of a few powerful tools:
 
 * [bpmn-moddle](https://github.com/bpmn-io/bpmn-moddle): Read / write support for BPMN 2.0 XML in the browsers
 * [diagram-js](https://github.com/bpmn-io/diagram-js): Diagram rendering and editing toolkit

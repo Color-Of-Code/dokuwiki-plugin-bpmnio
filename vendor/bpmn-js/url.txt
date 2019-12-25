@@ -1,1 +1,2 @@
-https://unpkg.com/bpmn-js@3.0.4/
+https://github.com/bpmn-io/bpmn-js/archive/v6.1.1.tar.gz
+https://unpkg.com/bpmn-js@6.1.1/

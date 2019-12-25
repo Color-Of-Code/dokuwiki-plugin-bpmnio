@@ -6,6 +6,245 @@ All notable changes to [bpmn-js](https://github.com/bpmn-io/bpmn-js) are documen
 
 ___Note:__ Yet to be released changes appear here._
 
+## 6.1.0
+
+* `FEAT`: copy signals, escalations and errors ([#1245](https://github.com/bpmn-io/bpmn-js/pull/1245))
+* `FEAT`: provide base viewer / modeler distributions ([`bb94b206`](https://github.com/bpmn-io/bpmn-js/commit/bb94b206a7c9ab3b80e283d6513600a9591c437d))
+* `FEAT`: add horizontal and vertical resize handles
+* `FEAT`: improve connection cropping (bump to `path-intersection@2`)
+* `FIX`: correctly mark elements as changed on `{shape|connection}.create` undo
+* `FIX`: do not open replace menu after multi create ([#1255](https://github.com/bpmn-io/bpmn-js/pull/1255))
+* `CHORE`: update to `diagram-js@6.2.0`
+
+## 6.0.7
+
+* `FIX`: disable waypoints-cropping after pasting connections ([`9f8a724e`](https://github.com/bpmn-io/bpmn-js/commit/9f8a724e9a3ff66bfce14e06ab38066189111a95))
+
+## 6.0.6
+
+* `FIX`: create nested lanes in the correct parent again ([#1256](https://github.com/bpmn-io/bpmn-js/issues/1256), [#1253](https://github.com/bpmn-io/bpmn-js/issues/1253), [#1254](https://github.com/bpmn-io/bpmn-js/issues/1254))
+
+## 6.0.5
+
+* `FIX`: only update `Lane#flownNodeRefs` once during paste ([`4455c3fc`](https://github.com/bpmn-io/bpmn-js/commit/4455c3fc35290e51220566fb6539a1efc4d3612f))
+* `FIX`: do not adjust labels on paste ([`b2b607f5`](https://github.com/bpmn-io/bpmn-js/commit/b2b607f5582d3409c789d831a0896aaa55949899))
+* `FIX`: do not snap connection waypoints on paste ([`d769e6dd`](https://github.com/bpmn-io/bpmn-js/commit/d769e6ddb0cb2dc8befb2e7b31682925089ba8f1))
+
+## 6.0.4
+
+* `FIX`: correctly fix hover on cleanup ([#1247](https://github.com/bpmn-io/bpmn-js/pull/1247))
+
+## 6.0.3
+
+* `FIX`: render colored BPMN groups ([#1246](https://github.com/bpmn-io/bpmn-js/pull/1246))
+* `CHORE`: bump to `diagram-js@6.0.2`
+
+## 6.0.2
+
+* `CHORE`: bump `diagram-js-direct-editing` dependency
+
+## 6.0.1
+
+* `CHORE`: bump to `diagram-js@6.0.1`
+
+## 6.0.0
+
+* `FEAT`: rework (re-)connecting of shapes ([#427](https://github.com/bpmn-io/bpmn-js/pull/1230))
+
+### Breaking Changes
+
+Connecting and re-connecting shapes got reworked via [#427](https://github.com/bpmn-io/bpmn-js/pull/1230):
+
+* The rules `connection.reconnectStart` and `connection.reconnectEnd` got replaced with `connection.reconnect` rule
+* `BpmnLayouter#layoutConnection` waypoints can be specified via hint
+
+## 5.1.2
+
+* `FIX`: account for label pasting in label behavior ([#1227](https://github.com/bpmn-io/bpmn-js/issues/1227))
+
+## 5.1.1
+
+* `FIX`: re-select only existing elements when dragging is finished ([#1225](https://github.com/bpmn-io/bpmn-js/issues/1225))
+* `FIX`: correctly hide nested children of a collapsed shape
+* `CHORE`: bump to [`diagram-js@5.1.1`](https://github.com/bpmn-io/diagram-js/blob/develop/CHANGELOG.md#511)
+
+## 5.1.0
+
+* `FEAT`: adjust label position post creation ([`41c6af18`](https://github.com/bpmn-io/bpmn-js/commit/41c6af183014626a0f84e0bda0f8e39018f9151e))
+* `FEAT`: copy and paste boundary events ([`2e27d743`](https://github.com/bpmn-io/bpmn-js/commit/2e27d7430642439e30806941d0df43018ca729eb))
+* `FIX`: ordering after moving boundary events between hosts ([#1207](https://github.com/bpmn-io/bpmn-js/issues/1207))
+* `FIX`: do not remove sequence flow condition on type change ([`b2900786`](https://github.com/bpmn-io/bpmn-js/commit/b290078600ae4e45e7c72bd37919732e3f8fcbea))
+* `FIX`: do not remove default sequence flow on type change ([`37bcd070`](https://github.com/bpmn-io/bpmn-js/commit/37bcd070e8406a43a7316893c6b68debeaae5e26))
+* `FIX`: do not duplicate flow node references ([`168a1493`](https://github.com/bpmn-io/bpmn-js/commit/168a1493b26c3059d2440a70f7aa5991745b51e5))
+* `FIX`: ignore labels that are being created in adaptive label positioning ([`44cceb5d`](https://github.com/bpmn-io/bpmn-js/commit/44cceb5da287a0ad01d9389f475284c88eda7f7b))
+
+## 5.0.5
+
+* `FIX`: snap connections to task mid ([`86c61b0`](https://github.com/bpmn-io/bpmn-js/commit/86c61b0c0d6dcf776adda94b6d72b621644c2abe))
+* `FIX`: snap connections to sub process mid ([`83e9f05`](https://github.com/bpmn-io/bpmn-js/commit/83e9f05efab6fbe57100e11d0443291a561bdfe4))
+* `FIX`: complete direct editing when auto place starts ([`dcf440b`](https://github.com/bpmn-io/bpmn-js/commit/dcf440b07684339bdb52ba97cd1c83f9eb234044))
+* `FIX`: do not clear diagram if no diagram to clear ([#1181](https://github.com/bpmn-io/bpmn-js/issues/1181))
+* `FIX`: copy boundary events attachments ([#1190](https://github.com/bpmn-io/bpmn-js/issues/1190))
+* `FIX`: do not copy generic properties ([`a74d83`](https://github.com/bpmn-io/bpmn-js/commit/a74d838dc78aceddf88e07231cf85a4cf9e0dd95))
+
+## 5.0.4
+
+* `FIX`: correct sequence flow layout after drop on flow ([#1178](https://github.com/bpmn-io/bpmn-js/issues/1178))
+
+## 5.0.3
+
+_Republish of `v5.0.2`._
+
+## 5.0.2
+
+* `FIX`: allow reconnecting to loops ([#1121](https://github.com/bpmn-io/bpmn-js/issues/1121))
+* `CHORE`: bump to `diagram-js@5.0.1`
+
+## 5.0.1
+
+* `FIX`: import boundary event associations ([#1170](https://github.com/bpmn-io/bpmn-js/issues/1170))
+
+## 5.0.0
+
+* `FEAT`: add two-step copy and paste ([#1137](https://github.com/bpmn-io/bpmn-js/pull/1137))
+* `FEAT` add `elements.create` rule for creating multiple elements ([#1137](https://github.com/bpmn-io/bpmn-js/pull/1137))
+* `FEAT`: make containers draggable via their borders / labels only ([#1097](https://github.com/bpmn-io/bpmn-js/pull/1097), [#957](https://github.com/bpmn-io/bpmn-js/issues/957))
+* `FEAT`: allow copied elements to be filtered ([#888](https://github.com/bpmn-io/bpmn-js/issues/888))
+* `FIX`: prevent accidental dragging of participants and sub-processes ([#1097](https://github.com/bpmn-io/bpmn-js/pull/1097), [#957](https://github.com/bpmn-io/bpmn-js/issues/957))
+* `FIX`: keep labels during pool extraction ([#921](https://github.com/bpmn-io/bpmn-js/issues/921))
+* `FIX`: duplicate `bpmn:CategoryValue` when copying groups ([#1055](https://github.com/bpmn-io/bpmn-js/issues/1055))
+* `FIX`: translate group creation entry in palette ([#1146](https://github.com/bpmn-io/bpmn-js/issues/1146))
+* `CHORE`: use `element.copyProperty` event to copy category value when copying group ([`12bedca5`](https://github.com/bpmn-io/bpmn-js/pull/1137/commits/12bedca5ba2a05791591e53f554dc2310f6c1a6f))
+* `CHORE`: bump to `diagram-js@5`
+
+### Breaking Changes
+
+Copy and paste as well as create is completely reworked:
+
+* `CopyPaste`: remove `ModelCloneHelper` in favor of `ModdleCopy` service, remove `property.clone` event, add `moddleCopy.canCopyProperties`, `moddleCopy.canCopyProperty` and `moddleCopy.canSetCopiedProperty` event
+* `BpmnRules`: removed `elements.paste` rule in favor of `elements.create` rule
+* `BpmnRules`: removed `element.paste` rule
+* `ElementFactory`: use `attrs.di` property instead of `attrs.colors` for fill and stroke when creating element through `ElementFactory#createBpmnElement`
+* To prevent additional behavior on create after paste you should check for the `createElementsBehavior` hint, cf. [`bf180321`](https://github.com/bpmn-io/bpmn-js/commit/bf180321a3a40428c3f87b639b87cc3fc578066e#diff-2f0de25761fb7459e88071f83fd845c5R22)
+
+## 4.0.4
+
+* `FIX`: creating `bpmn:Participant` on single `bpmn:Group` throwing error ([#1133](https://github.com/bpmn-io/bpmn-js/issues/1133))
+* `CHORE`: bump to `diagram-js@4.0.3`
+
+## 4.0.3
+
+* `FIX`: prevent dropping on labels and `bpmn:Group` elements ([#1131](https://github.com/bpmn-io/bpmn-js/pull/1131))
+
+## 4.0.2
+
+* `FIX`: correct element positioning update ([#1129](https://github.com/bpmn-io/bpmn-js/issues/1129))
+* `CHORE`: bump to `diagram-js@4.0.2`
+
+## 4.0.1
+
+* `FIX`: prevent adding lane from crashing IE ([#746](https://github.com/bpmn-io/bpmn-js/issues/746))
+* `FIX`: correct inverse space tool visuals ([#1105](https://github.com/bpmn-io/bpmn-js/issues/1105))
+* `CHORE`: update `diagram-js-direct-editing` to prevent install warning
+* `CHORE`: update to `diagram-js@4.0.1`
+
+## 4.0.0
+
+* `FEAT`: add top, right, bottom, left snapping with container elements ([#1108](https://github.com/bpmn-io/bpmn-js/pull/1108))
+* `FEAT`: add grid snapping ([#987](https://github.com/bpmn-io/bpmn-js/pull/987))
+* `FEAT`: allow modeling of groups ([#343](https://github.com/bpmn-io/bpmn-js/issues/343))
+* `FEAT`: improve modeling rules behind event-based gateways ([#1006](https://github.com/bpmn-io/bpmn-js/pull/1006))
+* `FEAT`: adjust default collapsed pool to standard height ([`5affe2570`](https://github.com/bpmn-io/bpmn-js/commit/5affe25705082937beace6b4a568f176a0527baf))
+* `FEAT`: add connection previews ([#743](https://github.com/bpmn-io/bpmn-js/issues/743))
+* `FEAT`: create expanded sub-process with start event included ([#1039](https://github.com/bpmn-io/bpmn-js/pull/1039))
+* `FEAT`: improve automatic label adjustment for boundary events ([#1064](https://github.com/bpmn-io/bpmn-js/pull/1064))
+* `FEAT`: improve creation of initial participant ([#1046](https://github.com/bpmn-io/bpmn-js/pull/1046))
+* `FEAT`: improve boundary to host loop layout ([#1070](https://github.com/bpmn-io/bpmn-js/pull/1070))
+* `FEAT`: make connection segment move the primary connection drag behavior
+* `FEAT`: allow label and group movement everywhere ([#1080](https://github.com/bpmn-io/bpmn-js/pull/1080))
+* `FEAT`: improve message flow to participant connection in the presence of lanes ([#950](https://github.com/bpmn-io/bpmn-js/issues/950))
+* `FEAT`: allow detaching of boundary and attaching of intermediate events ([#1045](https://github.com/bpmn-io/bpmn-js/issues/1045))
+* `FEAT`: simplify requested palette and context pad translations ([#1027](https://github.com/bpmn-io/bpmn-js/pull/1027))
+* `FEAT`: simplify participant dragging in the presence of nested lanes ([`fdb299dc`](https://github.com/bpmn-io/bpmn-js/commit/fdb299dc888a7dcdb3f7674b6ed2a857864df457))
+* `FEAT`: correctly render all kinds of multiple events ([#1091](https://github.com/bpmn-io/bpmn-js/pull/1091))
+* `CHORE`: validate BPMN 2.0 XML ids as QNames ([`92c03679a`](https://github.com/bpmn-io/bpmn-js/commit/92c03679a4fd3c92a1c5ce3c97f7d366e2a5753a))
+* `FIX`: correctly handle flow reconnection + type replacement ([#896](https://github.com/bpmn-io/bpmn-js/issues/896), [#1008](https://github.com/bpmn-io/bpmn-js/issues/1008))
+
+### Breaking Changes
+
+* `CHORE`: bump to [`diagram-js@4.0.0`](https://github.com/bpmn-io/diagram-js/blob/master/CHANGELOG.md#400)
+
+## 3.5.0
+
+* `FEAT`: restore `Viewer#importDefinitions` and make it public API ([#1112](https://github.com/bpmn-io/bpmn-js/pull/1112))
+
+## 3.4.3
+
+* `FIX`: prevent HTML injection in search ([diagram-js#362](https://github.com/bpmn-io/diagram-js/pull/362))
+
+## 2.5.4
+
+* `FIX`: prevent HTML injection in search ([diagram-js#362](https://github.com/bpmn-io/diagram-js/pull/362))
+* `CHORE`: bump to `diagram-js@2.6.2`
+
+## 3.4.2
+
+* `FIX`: do not evaluate pasted text as HTML ([#1073](https://github.com/bpmn-io/bpmn-js/issues/1073))
+
+## 2.5.3
+
+* `FIX`: do not evaluate pasted text as HTML ([#1073](https://github.com/bpmn-io/bpmn-js/issues/1073))
+
+## 3.4.1
+
+_Republish of `v3.4.0` without `.git` folder._
+
+## 3.4.0
+
+* `FIX`: properly render colored connection markers ([#981](https://github.com/bpmn-io/bpmn-js/issues/981))
+* `FEAT`: add ability to open different DI diagrams ([#87](https://github.com/bpmn-io/bpmn-js/issues/87))
+* `FIX`: correctly layout straight boundary to target connections ([#891](https://github.com/bpmn-io/bpmn-js/issues/891))
+* `FEAT`: resize participant to standard size on collapse ([#975](https://github.com/bpmn-io/bpmn-js/pull/975))
+* `FEAT`: consistently layout connection on reconnect start and end ([#971](https://github.com/bpmn-io/bpmn-js/pull/971))
+* `FEAT`: layout connection on element removal ([#989](https://github.com/bpmn-io/bpmn-js/issues/989))
+* `FIX`: properly crop sequence flow ends on undo/redo ([#940](https://github.com/bpmn-io/bpmn-js/issues/940))
+* `CHORE`: bump to [`diagram-js@3.3.0`](https://github.com/bpmn-io/diagram-js/blob/master/CHANGELOG.md#330)
+
+## 3.3.1
+
+* `FIX`: ignore unchanged direct editing completion
+* `CHORE`: update to `diagram-js-direct-editing@1.4.2`
+
+## 3.3.0
+
+* `FEAT`: display `DataInput` / `DataOutput` labels ([`89719de3b`](https://github.com/bpmn-io/bpmn-js/commit/89719de3be50d9270227fd04216f7f19f0d018a2))
+* `FEAT`: support basic `DataInput` / `DataOutput` move ([#962](https://github.com/bpmn-io/bpmn-js/pull/962))
+* `FIX`: properly handle `DataInput` / `DataOutput` move ([#961](https://github.com/bpmn-io/bpmn-js/issues/961))
+
+## 3.2.3
+
+* `FIX`: update to `diagram-js-direct-editing@1.4.1` to trim trailing/leading whitespace in task names ([#763](https://github.com/bpmn-io/bpmn-js/issues/763))
+
+## 3.2.2
+
+* `FIX`: gracefully handle missing waypoints ([`45486f2`](https://github.com/bpmn-io/bpmn-js/commit/45486f2afe7f42fcac31be9ca477a7c94babe7d8))
+
+## 3.2.1
+
+* `FIX`: bump to `diagram-js@3.1.3` / `tiny-svg@2.2.1` to work around MS Edge bug ([`ed798a15`](https://github.com/bpmn-io/bpmn-js/commit/ed798a152539a613dbc9de9d61231ebbfb50987a))
+
+## 3.2.0
+
+* `FEAT`: set isHorizontal=true for new and updated participant/lane DIs ([#934](https://github.com/bpmn-io/bpmn-js/issues/934))
+
+## 3.1.1
+
+* `CHORE`: update to `diagram-js@3.1.1`
+
+## 3.1.0
+
+* `CHORE`: update to `diagram-js@3.1`
+
 ## 3.0.4
 
 * `FIX`: render labels always on top ([#920](https://github.com/bpmn-io/bpmn-js/pull/920))
