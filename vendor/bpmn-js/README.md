@@ -1,6 +1,6 @@
 # bpmn-js - BPMN 2.0 for the web
 
-[![Build Status](https://travis-ci.org/bpmn-io/bpmn-js.svg?branch=develop)](https://travis-ci.org/bpmn-io/bpmn-js)
+[![Build Status](https://github.com/bpmn-io/bpmn-js/workflows/CI/badge.svg)](https://github.com/bpmn-io/bpmn-js/actions?query=workflow%3ACI)
 
 View and edit BPMN 2.0 diagrams in the browser.
 
@@ -19,19 +19,18 @@ To get started, create a [bpmn-js](https://github.com/bpmn-io/bpmn-js) instance
 and render [BPMN 2.0 diagrams](https://www.omg.org/spec/BPMN/2.0.2/) in the browser:
 
 ```javascript
-var xml; // my BPMN 2.0 xml
-var viewer = new BpmnJS({
+const xml = '...'; // my BPMN 2.0 xml
+const viewer = new BpmnJS({
   container: 'body'
 });
 
-viewer.importXML(xml, function(err) {
+try {
+  const { warnings } = await viewer.importXML(xml);
 
-  if (err) {
-    console.log('error rendering', err);
-  } else {
-    console.log('rendered');
-  }
-});
+  console.log('rendered');
+} catch (err) {
+  console.log('error rendering', err);
+}
 ```
 
 Checkout our [examples](https://github.com/bpmn-io/bpmn-js-examples) for many
@@ -43,7 +42,7 @@ more supported usage scenarios.
 You may attach or detach the viewer dynamically to any element on the page, too:
 
 ```javascript
-var viewer = new BpmnJS();
+const viewer = new BpmnJS();
 
 // attach it to some element
 viewer.attachTo('#container');
@@ -62,21 +61,29 @@ viewer.detach();
 * [Changelog](./CHANGELOG.md)
 
 
-## Building the Project
+## Build and Run
 
-Perform the following steps to build the library, including running all tests:
+Prepare the project by installing all dependencies:
 
-```
-cd bpmn-js
+```sh
 npm install
+```
+
+Then, depending on your use-case you may run any of the following commands:
+
+```sh
+# build the library and run all tests
 npm run all
+
+# spin up a single local modeler instance
+npm start
+
+# run the full development setup
+npm run dev
 ```
 
 You may need to perform [additional project setup](./docs/project/SETUP.md) when
 building the latest development snapshot.
-
-Please checkout our [contributing guidelines](./.github/CONTRIBUTING.md) if you plan to
-file an issue or pull request.
 
 
 ## Related
@@ -85,6 +92,17 @@ bpmn-js builds on top of a few powerful tools:
 
 * [bpmn-moddle](https://github.com/bpmn-io/bpmn-moddle): Read / write support for BPMN 2.0 XML in the browsers
 * [diagram-js](https://github.com/bpmn-io/diagram-js): Diagram rendering and editing toolkit
+
+
+## Contributing
+
+Please checkout our [contributing guidelines](./.github/CONTRIBUTING.md) if you plan to
+file an issue or pull request.
+
+
+## Code of Conduct
+
+By participating to this project, please uphold to our [Code of Conduct](https://github.com/bpmn-io/.github/blob/master/.github/CODE_OF_CONDUCT.md).
 
 
 ## License
