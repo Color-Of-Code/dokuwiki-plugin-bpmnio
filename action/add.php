@@ -5,21 +5,10 @@
  * @author     Jaap de Haan <jaap.dehaan@color-of-code.de>
  */
 
-// must be run within DokuWiki
-if (!defined('DOKU_INC')) {
-    die();
-}
-
-if (!defined('DOKU_PLUGIN')) {
-    define('DOKU_PLUGIN', DOKU_INC . 'lib/plugins/');
-}
-
-require_once DOKU_PLUGIN . 'action.php';
-
 // See help: https://www.dokuwiki.org/devel:toolbar
 // See help: https://www.dokuwiki.org/devel:section_editor
 
-class action_plugin_bpmnio extends DokuWiki_Action_Plugin
+class action_plugin_bpmnio_add extends DokuWiki_Action_Plugin
 {
 
     public function register(Doku_Event_Handler $controller)
@@ -34,42 +23,12 @@ class action_plugin_bpmnio extends DokuWiki_Action_Plugin
      */
     public function handle_tpl_metaheader_output(Doku_Event &$event, $param)
     {
-
-        $event->data['link'][] = $this->create_css("vendor/bpmn-js/dist/assets/diagram-js.css");
-        $event->data['link'][] = $this->create_css("vendor/bpmn-js/dist/assets/bpmn-font/css/bpmn.css");
-        $event->data['link'][] = $this->create_css("vendor/bpmn-js/dist/assets/bpmn-font/css/bpmn-codes.css");
-        $event->data['link'][] = $this->create_css("vendor/bpmn-js/dist/assets/bpmn-font/css/bpmn-embedded.css");
-
-        // Load bpmn.io
-        $event->data['script'][] = $this->create_js("vendor/bpmn-js/dist/bpmn-viewer.production.min.js");
-
-        // If activated we can edit but we cannot save
-        // $event->data['script'][] = $this->create_js("vendor/bpmn-js/dist/bpmn-modeler.production.min.js");
-        $event->data['script'][] = $this->create_js("script.js");
-    }
-
-    private function create_css($rel)
-    {
-        return array(
-            'type' => 'text/css',
-            'rel' => 'stylesheet',
-            'href' => $this->to_abs_url($rel),
+        $event->data["script"][] = array(
+            "type" => "text/javascript",
+            "src" => DOKU_BASE."lib/plugins/bpmnio/script/bpmn_render.js",
+            "defer" => "defer",
+            "_data" => "",
         );
-    }
-
-    private function create_js($rel)
-    {
-        return array(
-            'type' => 'text/javascript',
-            'charset' => 'utf-8',
-            'src' => $this->to_abs_url($rel),
-            '_data' => '',
-        );
-    }
-
-    private function to_abs_url($rel)
-    {
-        return DOKU_BASE . "lib/plugins/bpmnio/" . $rel;
     }
 
     public function handle_toolbar(Doku_Event $event, $param)
