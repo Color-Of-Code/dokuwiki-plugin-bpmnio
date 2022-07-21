@@ -12,7 +12,7 @@ async function replaceBpmnTag(tag) {
     // bundle exposes the viewer / modeler via the BpmnJS variable
     const BpmnViewer = window.BpmnJS;
     let containerdiv = document.createElement("div");
-    containerdiv.className = "canvas";
+    containerdiv.className = "plugin-bpmnio";
     jQuery(tag).parent().append(containerdiv);
     const viewer = new BpmnViewer({ container: containerdiv });
 
@@ -29,12 +29,7 @@ async function replaceBpmnTag(tag) {
             width: bboxSvg.width,
             height: bboxSvg.height,
         });
-        const height = bboxViewport.height + 4;
-        // hack: adjust the div height because it doesn't automatically.
-        containerdiv.style.height = `${height}px`;
-        containerdiv.style.width = `${bboxViewport.width}px`;
-        // Fix #3 by introducing a small space to allow clicks.
-        containerdiv.style.marginRight = "32px";
+        containerdiv.style.height = `${bboxViewport.height}px`;
     } catch (err) {
         containerdiv.text = err;
         console.log(err.message, err.warnings);
