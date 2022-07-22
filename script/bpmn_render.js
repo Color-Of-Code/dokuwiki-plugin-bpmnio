@@ -30,6 +30,7 @@ async function replaceBpmnTag(tag) {
             height: bboxSvg.height,
         });
         containerdiv.style.height = `${bboxViewport.height}px`;
+        containerdiv.style.width = `max(100%,${bboxViewport.width}px)`;
     } catch (err) {
         containerdiv.text = err;
         console.log(err.message, err.warnings);
