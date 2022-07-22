@@ -1,3 +1,49 @@
+/* Color definitions */
+.dmn-js-parent {
+  --color-grey-225-10-15: hsl(225, 10%, 15%);
+  --color-grey-225-10-35: hsl(225, 10%, 35%);
+  --color-grey-225-10-55: hsl(225, 10%, 55%);
+  --color-grey-225-10-75: hsl(225, 10%, 75%);
+  --color-grey-225-10-80: hsl(225, 10%, 80%);
+  --color-grey-225-10-85: hsl(225, 10%, 85%);
+  --color-grey-225-10-90: hsl(225, 10%, 90%);
+  --color-grey-225-10-95: hsl(225, 10%, 95%);
+  --color-grey-225-10-97: hsl(225, 10%, 97%);
+  --color-blue-205-100-45: hsl(205, 100%, 45%);
+  --color-blue-205-100-45-opacity-30: hsla(205, 100%, 45%, 30%);
+  --color-blue-205-100-50: hsl(205, 100%, 50%);
+  --color-blue-205-100-80: hsl(205, 100%, 80%);
+  --color-blue-205-100-95: hsl(205, 100%, 95%);
+  --color-green-150-86-44: hsl(150, 86%, 44%);
+  --color-red-360-100-40: hsl(360, 100%, 40%);
+  --color-red-360-100-45: hsl(360, 100%, 45%);
+  --color-red-360-100-92: hsl(360, 100%, 92%);
+  --color-red-360-100-97: hsl(360, 100%, 97%);
+  --color-white: hsl(0, 0%, 100%);
+  --color-black: hsl(0, 0%, 0%);
+  --color-black-opacity-10: hsla(0, 0%, 0%, 10%);
+  --color-black-opacity-20: hsla(0, 0%, 0%, 20%);
+  --hint-button-color: var(--color-blue-205-100-50);
+  --hint-button-hover-color: var(--color-blue-205-100-45);
+  --hint-invalid-color: var(--color-red-360-100-45);
+  --separator-color: var(--color-grey-225-10-75);
+  --input-border-color: var(--color-grey-225-10-75);
+  --input-color: var(--color-grey-225-10-15);
+  --input-focus-border-color: var(--color-blue-205-100-50);
+  --input-focus-box-shadow-color: var(--color-blue-205-100-80);
+  --input-focus-box-shadow-inset-color: var(--color-grey-225-10-75);
+  --input-focus-invalid-border-color: var(--color-red-360-100-45);
+  --input-focus-invalid-box-shadow-color: var(--color-red-360-100-92);
+  --input-invalid-border-color: var(--color-red-360-100-45);
+  --input-invalid-color: var(--color-red-360-100-45);
+  --select-option-selected-color: var(--color-blue-205-100-45);
+  --select-option-hover-background-color: var(--color-black-opacity-10);
+  --select-options-background-color: var(--color-white);
+  --select-options-border-color: var(--color-grey-225-10-75);
+  --select-options-box-shadow-color: var(--color-black-opacity-10);
+  --select-options-color: var(--color-grey-225-10-15);
+}
+
 .dms-list-component .items {
   margin: 0;
   padding: 0;
@@ -31,8 +77,7 @@
 
 .dms-hrule {
   border: 0;
-  border-top: dotted 1px #DDD;
-
+  border-top: dotted 1px var(--separator-color);
   margin: 10px auto;
 }
 
@@ -41,18 +86,30 @@
   font-weight: bold;
 }
 
-p.dms-hint a {
-  color: #3960a2;
+.dms-hint {
+  font-size: 12px;
+  margin-top: 5px;
+  color: var(--hint-color);
+}
+
+.dms-hint button {
+  color: var(--hint-button-color);
   text-decoration: none;
+  display: inline;
+  border: none;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+  font: inherit;
+  background: none;
 }
 
-p.dms-hint a:hover {
-  color: #4285f4;
+.dms-hint button:hover {
+  color: var(--hint-button-hover-color);
 }
 
-/* validated input */
-p.dms-validation-warning {
-  color: #c9302c;
+.dms-validation-warning {
+  color: var(--hint-invalid-color);
 }
 
 h3.dms-heading {
@@ -63,20 +120,15 @@ h4.dms-heading {
   font-size: 14px;
 }
 
-.dms-validated-input.dms-block .dms-input,
-.dms-block {
-  display: block;
-  width: 100%;
-}
-
 .dms-input,
 .dms-select {
   outline: none;
   padding: 3px 6px;
-  border: 1px solid #ccc;
+  border: 1px solid var(--input-border-color);
   background: none;
   font-size: 14px;
-  color: #444;
+  font-family: inherit;
+  color: var(--input-color);
   min-height: 26px;
 }
 
@@ -89,28 +141,37 @@ h4.dms-heading {
   height: 26px;
 }
 
-.dms-input:focus,
-.dms-select:focus {
-  border-color: #52B415;
+.dms-input-select .dms-input {
+  padding-right: 24px;
 }
 
-.dms-select.invalid:focus,
-.dms-input.invalid:focus {
-  border-color: #c9302c;
+.dms-input:focus,
+.dms-select:focus {
+  border: solid 1px var(--input-focus-border-color);
+  box-shadow: 0 0 0 2px var(--input-focus-box-shadow-color), 0 0 0 1px var(--input-focus-box-shadow-inset-color) inset;
 }
 
 .dms-input.invalid,
 .dms-select.invalid {
-  background: #f4cecd;
-  border-color: #c9302c;
-  color: #c9302c;
+  border-color: var(--input-invalid-border-color);
+  color: var(--input-invalid-color);
+}
+
+.dms-select.invalid:focus,
+.dms-input.invalid:focus {
+  border: solid 1px var(--input-focus-invalid-border-color);
+  box-shadow: 0 0 0 2px var(--input-focus-invalid-box-shadow-color), 0 0 0 1px var(--input-focus-box-shadow-inset-color) inset;
+}
+
+.dms-validated-input.dms-block .dms-input,
+.dms-block {
+  display: block;
+  width: 100%;
 }
 
 .dms-script-input {
   height: 150px;
-
   white-space: pre-wrap;
-
   overflow: auto;
 }
 
@@ -118,10 +179,6 @@ h4.dms-heading {
   display: inline-block;
   position: relative;
   min-width: 128px;
-}
-
-.dms-input-select .dms-input {
-  padding-right: 24px;
 }
 
 .dms-input-select .dms-input-select-icon {
@@ -132,19 +189,20 @@ h4.dms-heading {
 }
 
 .dms-input-select .options {
-  background: #fff;
+  background: var(--select-options-background-color);
 }
 
 .dms-select-options {
-  position: fixed;
-  background-color: #fff;
-  border: solid 1px #CCC;
+  position: absolute;
+  background-color: var(--select-options-background-color);
+  border: solid 1px var(--select-options-border-color);
   border-radius: 2px;
   font-size: 14px;
-  color: #444;
-  box-shadow: 1px 1px 1px 1px rgba(0, 0, 0, 0.1);
+  color: var(--select-options-color);
+  box-shadow: 1px 1px 1px 1px var(--select-options-box-shadow-color);
   z-index: 20;
   cursor: pointer;
+  overflow: auto;
 }
 
 .dms-select-options .option {
@@ -152,10 +210,16 @@ h4.dms-heading {
 }
 
 .dms-select-options .option.active {
-  background: #FAFAF0;
+  color: var(--select-option-selected-color);
 }
 
 .dms-select-options .option:focus,
 .dms-select-options .option:hover {
-  color: #52B415;
+  background-color: var(--select-option-hover-background-color);
+}
+
+.dmn-js-parent .content-editable--with-placeholder::before {
+  content: attr(data-placeholder);
+  position: absolute;
+  opacity: 0.5;
 }

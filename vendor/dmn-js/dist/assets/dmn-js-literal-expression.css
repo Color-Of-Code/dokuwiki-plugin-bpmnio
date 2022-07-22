@@ -1,11 +1,37 @@
 .dmn-literal-expression-container {
-  font-family: 'Arial', sans-serif;
-  position: relative;
-  color: #444;
+  --decision-properties-background-color: var(--color-white);
+  --decision-properties-border-color: var(--color-grey-225-10-15);
+  --decision-properties-color: var(--color-grey-225-10-15);
+  --literal-expression-color: var(--color-grey-225-10-15);
+  --literal-expression-properties-border-color: var(--color-grey-225-10-15);
+  --literal-expression-properties-color: var(--color-grey-225-10-15);
+  --powered-by-overlay-background-color: var(--color-black-opacity-20);
+  --powered-by-overlay-content-background-color: var(--color-white);
+  --powered-by-overlay-content-border-color: var(--color-grey-225-10-75);
+  --powered-by-overlay-content-color: var(--color-grey-225-10-15);
+  --textarea-border-color: var(--color-grey-225-10-15);
+  --textarea-color: var(--color-grey-225-10-15);
+  --view-drd-button-background-color: var(--color-white);
+  --view-drd-button-border-color: var(--color-grey-225-10-75);
+  --view-drd-button-color: var(--color-grey-225-10-15);
+  --view-drd-button-hover-background-color: var(--color-grey-225-10-97);
+  --literal-expression-font-family: 'Arial', sans-serif;
+  --literal-expression-font-family-monospace: monospace;
 
+  font-family: var(--literal-expression-font-family);
+  position: relative;
+  color: var(--literal-expression-color);
   width: 100%;
   height: 100%;
-  position: relative;
+
+  /* required to apply position: fixed correctly */
+  transform: translate(0);
+}
+
+.dmn-literal-expression-container .viewer-container {
+  width: 100%;
+  height: 100%;
+  overflow: auto;
 }
 
 .dmn-literal-expression-container * {
@@ -14,68 +40,40 @@
 
 /* decision properties */
 .dmn-literal-expression-container .decision-properties {
-  color: #444;
-  background-color: #fff;
-  display: inline-block;
-  border: 1px solid #444;
+  border: 1px solid var(--decision-properties-border-color);
   border-bottom: none;
+  padding: 10px;
+  padding-right: 75px;
+  color: var(--decision-properties-color);
+  background-color: var(--decision-properties-background-color);
   position: relative;
   min-width: 192px;
-  max-width: 50%;
-}
-
-.dmn-literal-expression-container .decision-name:not(.editor),
-.dmn-literal-expression-container .decision-id:not(.editor) {
-  cursor: default;
-}
-
-.dmn-literal-expression-container .decision-name.editor,
-.dmn-literal-expression-container .decision-id.editor {
-  cursor: text;
-}
-
-.dmn-literal-expression-container .decision-name,
-.dmn-literal-expression-container .decision-id {
-  margin: 0;
-  padding: 3px 6px;
-  text-align: center;
-  white-space: pre;
-}
-
-.dmn-literal-expression-container .decision-name div,
-.dmn-literal-expression-container .decision-id div {
-  outline: none;
-}
-
-.dmn-literal-expression-container .decision-name.editor:not(.focussed):hover,
-.dmn-literal-expression-container .decision-id.editor:not(.focussed):hover {
-  cursor: text;
 }
 
 .dmn-literal-expression-container .decision-name {
-  font-size: 24px;
-  line-height: 30px;
-  padding: .3em;
-  font-weight: bold;
-}
-
-.dmn-literal-expression-container .decision-id {
-  border-top: 1px solid #444;
-  font-family: monospace;
-  font-size: 18px;
-}
-
-/* textarea */
-.dmn-literal-expression-container .textarea {
-  box-sizing: border-box;
-  width: 100%;
-  font-family: monospace;
-  border: 1px solid #444;
-  border-bottom-width: 1px;
+  margin: 0;
+  font-size: 21px;
+  font-weight: normal;
   white-space: pre;
-  font-size: 14px;
-  color: #444;
-  height: 250px;
+}
+
+.dmn-literal-expression-container .decision-name:not(.editor) {
+  cursor: default;
+}
+
+.dmn-literal-expression-container .decision-name.editor {
+  cursor: text;
+}
+
+.dmn-literal-expression-container .decision-name div {
+  outline: none;
+}
+
+.dmn-literal-expression-container .decision-name:not(.editable),
+.dmn-literal-expression-container .decision-name .content-editable {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
 }
 
 .dmn-literal-expression-container .textarea .content,
@@ -86,7 +84,28 @@
 .dmn-literal-expression-container .textarea .content-editable {
   height: 100%;
   box-sizing: border-box;
-  overflow-y: auto;
+}
+
+.dmn-literal-expression-container .decision-name.editor:not(.focussed):hover {
+  cursor: text;
+}
+
+.dmn-literal-expression-container .decision-name.focussed .content-editable {
+  text-overflow: unset;
+}
+
+/* textarea */
+.dmn-literal-expression-container .textarea {
+  box-sizing: border-box;
+  width: 100%;
+  font-family: var(--literal-expression-font-family-monospace);
+  border: 1px solid var(--textarea-border-color);
+  border-bottom-width: 1px;
+  white-space: pre;
+  font-size: 14px;
+  color: var(--textarea-color);
+  height: 250px;
+  overflow: auto;
 }
 
 .dmn-literal-expression-container .textarea div:focus {
@@ -105,11 +124,11 @@
 .dmn-literal-expression-container .literal-expression-properties {
   box-sizing: border-box;
   width: 100%;
-  padding:  0;
-  border: 1px solid #444;
+  padding: 0;
+  border: 1px solid var(--literal-expression-properties-border-color);
   border-top: none;
   font-size: 14px;
-  color: #444;
+  color: var(--literal-expression-properties-color);
 }
 
 .dmn-literal-expression-container .literal-expression-properties table {
@@ -124,38 +143,48 @@
   min-width: 100px;
 }
 
+.dmn-literal-expression-container .literal-expression-properties .variable-name-input {
+  width: 100%;
+}
+
 /* view drd */
 .dmn-literal-expression-container .view-drd {
-  float: right;
   margin-right: 10px;
+  padding-bottom: 10px;
 }
 
 .dmn-literal-expression-container .view-drd .view-drd-button {
-  background: #fff;
+  background: var(--view-drd-button-background-color);
   padding: 8px;
-  border: solid 1px #CCC;
+  border: solid 1px var(--view-drd-button-border-color);
   border-radius: 2px;
   font-size: 14px;
-  color: #444;
+  color: var(--view-drd-button-color);
   font-weight: bold;
   cursor: pointer;
   outline: none;
 }
 
 .dmn-literal-expression-container .view-drd .view-drd-button:hover {
-  background: #f6f6f6;
+  background: var(--view-drd-button-hover-background-color);
 }
 
 /* powered by */
-.dmn-literal-expression-container .powered-by-logo {
-  float: right;
-  width: 38px;
-  z-index: 10;
-  cursor: pointer;
+
+.dmn-literal-expression-container .powered-by {
+  position: fixed;
+  bottom: 10px;
+  right: 10px;
+  z-index: 100;
+  display: flex;
+  flex-direction: row-reverse;
+  align-items: center;
+  padding: 5px;
+  background-color: var(--color-white);
 }
 
-.dmn-literal-expression-container .powered-by-logo .logo {
-  width: 100%;
+.dmn-literal-expression-container .powered-by__logo {
+  z-index: 10;
 }
 
 .dmn-literal-expression-container .powered-by-overlay {
@@ -164,7 +193,7 @@
   right: 0;
   bottom: 0;
   left: 0;
-  background: rgba(0,0,0,0.2);
+  background: var(--powered-by-overlay-background-color);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -172,24 +201,18 @@
 }
 
 .dmn-literal-expression-container .powered-by-overlay .powered-by-overlay-content {
-  background: #fff;
-  padding: 8px;
-  border: solid 1px #CCC;
-  border-radius: 2px;
-  box-shadow: 0 1px 2px rgba(0,0,0,0.3);
-  font-size: 14px;
-  color: #444;
   display: flex;
   flex-direction: row;
+  align-items: center;
+  padding: 10px;
   max-width: 260px;
+  background: var(--powered-by-overlay-content-background-color);
+  color: var(--powered-by-overlay-content-color);
+  border: solid 1px var(--powered-by-overlay-content-border-color);
+  border-radius: 2px;
+  font-size: 14px;
 }
 
-.dmn-literal-expression-container .powered-by-overlay .powered-by-overlay-content div:first-child {
-  margin-right: 8px;
-}
-
-.dmn-decision-table-container p.dms-hint {
-  font-size: 0.85em;
-  margin-top: 5px;
-  color: #888;
+.dmn-literal-expression-container .powered-by-overlay .powered-by-overlay-content .logo {
+  margin: 15px 20px 15px 10px;
 }
