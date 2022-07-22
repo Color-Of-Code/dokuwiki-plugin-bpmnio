@@ -1,2 +1,3 @@
 <?php
-$lang['bpmnio_edit_name']       = 'Edit BPMN';
+$lang['picker']          = 'BPMNIO Diagram Picker';
+$lang['bpmn_add']        = 'Add a BPMN diagram';

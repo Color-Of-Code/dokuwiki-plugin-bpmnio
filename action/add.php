@@ -14,7 +14,7 @@ class action_plugin_bpmnio_add extends DokuWiki_Action_Plugin
     public function register(Doku_Event_Handler $controller)
     {
         $controller->register_hook('TPL_METAHEADER_OUTPUT', 'BEFORE', $this, 'handle_tpl_metaheader_output');
-        $controller->register_hook('TOOLBAR_DEFINE', 'AFTER', $this, 'handle_toolbar', array());
+        $controller->register_hook('TOOLBAR_DEFINE', 'AFTER', $this, 'handle_toolbar');
         $controller->register_hook('HTML_SECEDIT_BUTTON', 'BEFORE', $this, 'handle_section_edit_button');
     }
 
@@ -31,7 +31,7 @@ class action_plugin_bpmnio_add extends DokuWiki_Action_Plugin
         );
     }
 
-    public function handle_toolbar(Doku_Event $event, $param)
+    public function handle_toolbar(Doku_Event $event)
     {
         $event->data[] = array(
             'type' => 'picker',
@@ -40,7 +40,7 @@ class action_plugin_bpmnio_add extends DokuWiki_Action_Plugin
             'list' => array(
                 array(
                     'type' => 'format',
-                    'title' => $this->getLang('add'),
+                    'title' => $this->getLang('bpmn_add'),
                     'icon' => '../../plugins/bpmnio/images/toolbar/bpmn_add.png',
                     'open' => '<bpmnio zoom=1.0>\n' . $this->_get_open_text(),
                     'close' => $this->_get_close_text() . '\n</bpmnio>\n',
