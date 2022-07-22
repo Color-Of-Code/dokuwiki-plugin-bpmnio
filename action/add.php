@@ -40,11 +40,12 @@ class action_plugin_bpmnio_add extends DokuWiki_Action_Plugin
             'list' => array(
                 array(
                     'type' => 'format',
+                    'class' => 'plugin-bpmnio icon-large',
                     'title' => $this->getLang('bpmn_add'),
                     'icon' => '../../plugins/bpmnio/images/toolbar/bpmn_add.png',
-                    'open' => '<bpmnio zoom=1.0>\n' . $this->_get_open_text(),
+                    'open' => '<bpmnio type="bpmn" zoom=1.0>\n' . $this->_get_open_text(),
                     'close' => $this->_get_close_text() . '\n</bpmnio>\n',
-                ),
+                )
             ),
         );
     }
