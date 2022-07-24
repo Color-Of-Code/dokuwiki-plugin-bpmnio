@@ -25,7 +25,7 @@ class action_plugin_bpmnio_add extends DokuWiki_Action_Plugin
     {
         $event->data["script"][] = array(
             "type" => "text/javascript",
-            "src" => DOKU_BASE."lib/plugins/bpmnio/script/bpmn_render.js",
+            "src" => DOKU_BASE . "lib/plugins/bpmnio/script/bpmn_render.js",
             "defer" => "defer",
             "_data" => "",
         );
