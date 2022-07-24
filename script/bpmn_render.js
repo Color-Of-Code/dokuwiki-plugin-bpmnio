@@ -1,10 +1,10 @@
-function extractXm(tag) {
+function extractXml(tag) {
     const text = jQuery(tag).text();
     return decodeURIComponent(escape(window.atob(text)));
 }
 
 async function replaceBpmnTag(tag) {
-    const xml = extractXm(tag);
+    const xml = extractXml(tag);
 
     // avoid doing it twice
     jQuery(tag).removeAttr("id");
