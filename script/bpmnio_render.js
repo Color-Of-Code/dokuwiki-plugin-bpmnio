@@ -79,11 +79,12 @@ async function renderDmnDiagram(xml, container) {
 
 function safeRender(tag, fn) {
     try {
-        const container = jQuery(tag).find(".bpmn_js_container")[0];
+        const root = jQuery(tag);
+        const container = root.find(".bpmn_js_container")[0];
         // avoid double rendering
         if (container.children.length > 0) return;
 
-        const data = jQuery(tag).find(".bpmn_js_data")[0];
+        const data = root.find(".bpmn_js_data")[0];
         const xml = extractXml(data.textContent);
 
         fn(xml, container);
