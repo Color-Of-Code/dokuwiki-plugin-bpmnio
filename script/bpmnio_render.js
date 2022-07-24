@@ -25,14 +25,20 @@ async function renderDiagram(xml, container, viewer) {
 }
 
 async function renderBpmnDiagram(xml, container) {
-    // bundle exposes the viewer / modeler via the BpmnJS variable
     const BpmnViewer = window.BpmnJS;
     const viewer = new BpmnViewer({ container });
 
     renderDiagram(xml, container, viewer);
 }
 
-function safeRenderBpmnTag(tag) {
+async function renderDmnDiagram(xml, container) {
+    const DmnViewer = window.DmnJS;
+    const viewer = new DmnViewer({ container });
+
+    renderDiagram(xml, container, viewer);
+}
+
+function safeRender(tag, fn) {
     try {
         const container = jQuery(tag).find(".bpmn_js_container")[0];
         // avoid double rendering
@@ -41,12 +47,13 @@ function safeRenderBpmnTag(tag) {
         const data = jQuery(tag).find(".bpmn_js_data")[0];
         const xml = extractXml(data.textContent);
 
-        renderBpmnDiagram(xml, container);
+        fn(xml, container);
     } catch (err) {
         console.warn(err.message);
     }
 }
 
 jQuery(document).ready(function () {
-    jQuery("div[id^=__bpmn_js_]").each((_, tag) => safeRenderBpmnTag(tag));
+    jQuery("div[id^=__bpmn_js_]").each((_, tag) => safeRender(tag, renderBpmnDiagram));
+    jQuery("div[id^=__dmn_js_]").each((_, tag) => safeRender(tag, renderDmnDiagram));
 });
