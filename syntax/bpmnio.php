@@ -12,7 +12,7 @@ if (!defined('DOKU_INC')) {
 
 // See help: https://www.dokuwiki.org/devel:syntax_plugins
 
-class syntax_plugin_bpmnio extends DokuWiki_Syntax_Plugin
+class syntax_plugin_bpmnio_bpmnio extends DokuWiki_Syntax_Plugin
 {
 
     public function getPType()
@@ -32,12 +32,12 @@ class syntax_plugin_bpmnio extends DokuWiki_Syntax_Plugin
 
     public function connectTo($mode)
     {
-        $this->Lexer->addEntryPattern('<bpmnio.*?>(?=.*?</bpmnio>)', $mode, 'plugin_bpmnio');
+        $this->Lexer->addEntryPattern('<bpmnio.*?>(?=.*?</bpmnio>)', $mode, 'plugin_bpmnio_bpmnio');
     }
 
     public function postConnect()
     {
-        $this->Lexer->addExitPattern('</bpmnio>', 'plugin_bpmnio');
+        $this->Lexer->addExitPattern('</bpmnio>', 'plugin_bpmnio_bpmnio');
     }
 
     public function handle($match, $state, $pos, Doku_Handler $handler)
@@ -65,10 +65,10 @@ class syntax_plugin_bpmnio extends DokuWiki_Syntax_Plugin
                     preg_match('/<bpmnio type="(\w+)">/', $match, $type);
                     $type = $type[1] ?? 'bpmn';
                     $bpmnid = uniqid('__' . $type . '_js_');
-                    $sectionEditData = ['target' => 'plugin_bpmnio'];
+                    $sectionEditData = ['target' => 'plugin_bpmnio_bpmnio'];
                     if (!defined('SEC_EDIT_PATTERN')) {
                         // backwards-compatibility for Frusterick Manners (2017-02-19)
-                        $sectionEditData = 'plugin_bpmnio';
+                        $sectionEditData = 'plugin_bpmnio_bpmnio';
                     }
                     $class = $renderer->startSectionEdit($data[$pos], $sectionEditData);
 
