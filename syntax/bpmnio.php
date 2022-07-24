@@ -48,7 +48,6 @@ class syntax_plugin_bpmnio_bpmnio extends DokuWiki_Syntax_Plugin
         return array($match, $state);
     }
 
-    // $data is returned by handle()
     public function render($mode, Doku_Renderer $renderer, $data)
     {
         if ($mode == 'xhtml' || $mode == 'odt') {
@@ -60,7 +59,7 @@ class syntax_plugin_bpmnio_bpmnio extends DokuWiki_Syntax_Plugin
                     $bpmnid = uniqid('__' . $type . '_js_');
                     $renderer->doc .= <<<HTML
                         <div class="plugin-bpmnio" id="{$bpmnid}">
-                            <textarea class="bpmn_js_data" style="visibility:hidden;">
+                            <textarea class="bpmn_js_data">
                         HTML;
                     break;
 
