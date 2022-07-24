@@ -19,7 +19,7 @@ async function renderDiagram(xml, container, viewer) {
         container.style.height = `${bboxViewport.height}px`;
         container.style.width = `max(100%,${bboxViewport.width}px)`;
     } catch (err) {
-        container.text = err;
+        container.textContent = err;
         console.log(err.message, err.warnings);
     }
 }
