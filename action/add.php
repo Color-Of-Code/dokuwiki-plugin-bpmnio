@@ -46,14 +46,6 @@ class action_plugin_bpmnio_add extends DokuWiki_Action_Plugin
                     'icon' => $basedir . 'bpmn_add.png',
                     'open' => '<bpmnio type="bpmn">\n' . $this->_get_open_text_bpmn(),
                     'close' => $this->_get_close_text_bpmn() . '\n</bpmnio>\n',
-                ),
-                array(
-                    'type' => 'format',
-                    'class' => 'plugin-bpmnio icon-large',
-                    'title' => $this->getLang('dmn_add'),
-                    'icon' => $basedir . 'dmn_add.png',
-                    'open' => '<bpmnio type="dmn">\n' . $this->_get_open_text_dmn(),
-                    'close' => $this->_get_close_text_dmn() . '\n</bpmnio>\n',
                 )
             ),
         );
@@ -70,14 +62,20 @@ class action_plugin_bpmnio_add extends DokuWiki_Action_Plugin
     private function _get_open_text_bpmn()
     {
         return '<?xml version="1.0" encoding="UTF-8"?>
-<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="sid-38422fae-e03e-43a3-bef4-bd33b32041b2" targetNamespace="http://bpmn.io/bpmn" exporter="http://bpmn.io" exporterVersion="0.10.1">
+<definitions
+  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+  xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI"
+  xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  id="sid-38422fae-e03e-43a3-bef4-bd33b32041b2"
+  targetNamespace="http://bpmn.io/bpmn" exporter="http://bpmn.io" exporterVersion="0.10.1">
   <collaboration id="Collaboration_1oh70al">
     <participant id="Participant_1r8g02m" name="';
     }
 
     private function _get_close_text_bpmn()
     {
-
         return '" processRef="Process_1" />
   </collaboration>
   <process id="Process_1" isExecutable="false">
@@ -179,13 +177,5 @@ class action_plugin_bpmnio_add extends DokuWiki_Action_Plugin
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
 </definitions>';
-    }
-
-    private function _get_open_text_dmn()
-    {
-    }
-
-    private function _get_close_text_dmn()
-    {
     }
 }
