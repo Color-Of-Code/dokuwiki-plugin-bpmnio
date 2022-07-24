@@ -1,17 +1,13 @@
-function extractXml(tag) {
-    const text = jQuery(tag).text();
-    return decodeURIComponent(escape(window.atob(text)));
+function extractXml(data) {
+    return decodeURIComponent(escape(window.atob(data)));
 }
 
-async function replaceBpmnTag(xml, container) {
-    const ViewerClass = window.BpmnJS;
-    const viewer = new ViewerClass({ container });
-
+async function renderDiagram(xml, container, viewer) {
     try {
         const result = await viewer.importXML(xml);
         const { warnings } = result;
         console.log(warnings);
-        let canvas = viewer.get("canvas");
+        const canvas = viewer.get("canvas");
         const bboxViewport = canvas.getActiveLayer().getBBox();
         const bboxSvg = canvas.getSize();
         canvas.viewbox({
@@ -28,56 +24,29 @@ async function replaceBpmnTag(xml, container) {
     }
 }
 
-async function replaceDmnTag(xml, container) {
-    const ViewerClass = window.DmnJS;
-    const viewer = new ViewerClass({ container });
+async function renderBpmnDiagram(xml, container) {
+    // bundle exposes the viewer / modeler via the BpmnJS variable
+    const BpmnViewer = window.BpmnJS;
+    const viewer = new BpmnViewer({ container });
 
-    try {
-        const result = await viewer.importXML(xml);
-        const { warnings } = result;
-        console.log(warnings);
-        let canvas = viewer.get("canvas");
-        const bboxViewport = canvas.getActiveLayer().getBBox();
-        const bboxSvg = canvas.getSize();
-        canvas.viewbox({
-            x: bboxViewport.x,
-            y: bboxViewport.y,
-            width: bboxSvg.width,
-            height: bboxSvg.height,
-        });
-        container.style.height = `${bboxViewport.height}px`;
-        container.style.width = `max(100%,${bboxViewport.width}px)`;
-    } catch (err) {
-        container.text = err;
-        console.log(err.message, err.warnings);
-    }
+    renderDiagram(xml, container, viewer);
 }
 
-function safeReplace(tag, fn) {
+function safeRenderBpmnTag(tag) {
     try {
-        const xml = extractXml(tag);
+        const container = jQuery(tag).find(".bpmn_js_container")[0];
+        // avoid double rendering
+        if (container.children.length > 0) return;
 
-        // avoid doing it twice
-        jQuery(tag).removeAttr("id");
+        const data = jQuery(tag).find(".bpmn_js_data")[0];
+        const xml = extractXml(data.textContent);
 
-        // bundle exposes the viewer / modeler via the BpmnJS variable
-        let container = document.createElement("div");
-        container.className = "plugin-bpmnio";
-        jQuery(tag).parent().append(container);
-
-        fn(xml, container);
-
-        jQuery(tag).remove();
+        renderBpmnDiagram(xml, container);
     } catch (err) {
         console.warn(err.message);
     }
 }
 
 jQuery(document).ready(function () {
-    jQuery("textarea[id^=__bpmn_js_]").each((_, tag) =>
-        safeReplace(tag, replaceBpmnTag)
-    );
-    jQuery("textarea[id^=__dmn_js_]").each((_, tag) =>
-        safeReplace(tag, replaceDmnTag)
-    );
+    jQuery("div[id^=__bpmn_js_]").each((_, tag) => safeRenderBpmnTag(tag));
 });
