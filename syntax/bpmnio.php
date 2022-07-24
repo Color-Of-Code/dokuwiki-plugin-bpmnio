@@ -45,31 +45,34 @@ class syntax_plugin_bpmnio_bpmnio extends DokuWiki_Syntax_Plugin
         if ($state == DOKU_LEXER_UNMATCHED) {
             $match = base64_encode($match);
         }
-        return array($match, $state, $pos);
+        return array($match, $state);
     }
 
+    // $data is returned by handle()
     public function render($mode, Doku_Renderer $renderer, $data)
     {
-        // $data is returned by handle()
         if ($mode == 'xhtml' || $mode == 'odt') {
-            list($match, $state, $pos) = $data;
+            list($match, $state) = $data;
             switch ($state) {
                 case DOKU_LEXER_ENTER:
                     preg_match('/<bpmnio type="(\w+)">/', $match, $type);
                     $type = $type[1] ?? 'bpmn';
                     $bpmnid = uniqid('__' . $type . '_js_');
-                    $renderer->doc .= '<div class="plugin-bpmnio" id="' . $bpmnid . '">';
-                    $renderer->doc .= '<textarea class="bpmn_js_data" style="visibility:hidden;">';
+                    $renderer->doc .= <<<HTML
+                        <div class="plugin-bpmnio" id="{$bpmnid}">
+                            <textarea class="bpmn_js_data" style="visibility:hidden;">
+                        HTML;
                     break;
 
                 case DOKU_LEXER_UNMATCHED:
                     $renderer->doc .= trim($match);
                     break;
                 case DOKU_LEXER_EXIT:
-                    $renderer->doc .= '</textarea>';
-                    $renderer->doc .= '<div class="bpmn_js_container">';
-                    $renderer->doc .= '</div>';
-                    $renderer->doc .= '</div>';
+                    $renderer->doc .= <<<HTML
+                            </textarea>
+                            <div class="bpmn_js_container"></div>
+                        </div>
+                        HTML;
                     break;
             }
             return true;
