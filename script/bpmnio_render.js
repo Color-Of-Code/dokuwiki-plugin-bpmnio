@@ -2,7 +2,7 @@ function extractXml(data) {
     return decodeURIComponent(escape(window.atob(data)));
 }
 
-async function renderDiagram(xml, container, viewer, computeSizeFn, resizeFn) {
+async function renderDiagram(xml, container, viewer, computeSizeFn) {
     try {
         const result = await viewer.importXML(xml);
         const { warnings } = result;
