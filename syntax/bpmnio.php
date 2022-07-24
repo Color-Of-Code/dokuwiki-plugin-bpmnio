@@ -59,7 +59,6 @@ class syntax_plugin_bpmnio_bpmnio extends DokuWiki_Syntax_Plugin
         // $data is returned by handle()
         if ($mode == 'xhtml' || $mode == 'odt') {
             list($state, $match, $pos) = $data;
-            // $renderer->doc .= '<textarea class="bpmn_js_data">' . $match . '</textarea>';
             switch ($state) {
                 case DOKU_LEXER_ENTER:
                     preg_match('/<bpmnio type="(\w+)">/', $match, $type);
@@ -73,6 +72,7 @@ class syntax_plugin_bpmnio_bpmnio extends DokuWiki_Syntax_Plugin
                     $class = $renderer->startSectionEdit($data[$pos], $sectionEditData);
 
                     $renderer->doc .= '<div class="' . $class . '">';
+                    $renderer->doc .= '<div>'; // used to set proper overflow triggered by content
                     $renderer->doc .= '<textarea class="bpmn_js_data" id="' . $bpmnid . '" style="visibility:hidden;">';
                     break;
 
@@ -81,6 +81,7 @@ class syntax_plugin_bpmnio_bpmnio extends DokuWiki_Syntax_Plugin
                     break;
                 case DOKU_LEXER_EXIT:
                     $renderer->doc .= '</textarea>';
+                    $renderer->doc .= '</div>';
                     $renderer->doc .= '</div>';
                     $renderer->finishSectionEdit($pos);
                     break;
