@@ -1,26 +1,19 @@
-function extractXml(tag) {
-    const text = jQuery(tag).text();
-    return decodeURIComponent(escape(window.atob(text)));
+function extractXml(data) {
+    return decodeURIComponent(escape(window.atob(data)));
 }
 
-async function replaceBpmnTag(tag) {
-    const xml = extractXml(tag);
-
-    // avoid doing it twice
-    jQuery(tag).removeAttr("id");
+async function renderBpmnTag(data, container) {
+    const xml = extractXml(data);
 
     // bundle exposes the viewer / modeler via the BpmnJS variable
     const BpmnViewer = window.BpmnJS;
-    let containerdiv = document.createElement("div");
-    containerdiv.className = "plugin-bpmnio";
-    jQuery(tag).parent().append(containerdiv);
-    const viewer = new BpmnViewer({ container: containerdiv });
+    const viewer = new BpmnViewer({ container });
 
     try {
         const result = await viewer.importXML(xml);
         const { warnings } = result;
         console.log(warnings);
-        let canvas = viewer.get("canvas");
+        const canvas = viewer.get("canvas");
         const bboxViewport = canvas.getActiveLayer().getBBox();
         const bboxSvg = canvas.getSize();
         canvas.viewbox({
@@ -29,26 +22,28 @@ async function replaceBpmnTag(tag) {
             width: bboxSvg.width,
             height: bboxSvg.height,
         });
-        containerdiv.style.height = `${bboxViewport.height}px`;
-        containerdiv.style.width = `max(100%,${bboxViewport.width}px)`;
+        container.style.height = `${bboxViewport.height}px`;
+        container.style.width = `max(100%,${bboxViewport.width}px)`;
     } catch (err) {
-        containerdiv.text = err;
+        container.text = err;
         console.log(err.message, err.warnings);
     }
-
-    jQuery(tag).remove();
 }
 
-function safeReplaceBpmnTag(tag) {
+function safeRenderBpmnTag(tag) {
     try {
-        replaceBpmnTag(tag);
+        const container = jQuery(tag).find(".bpmn_js_container")[0];
+        // avoid double rendering
+        if (container.children.length > 0) return;
+
+        const data = jQuery(tag).find(".bpmn_js_data")[0];
+        const encodedData = data.textContent;
+        renderBpmnTag(encodedData, container);
     } catch (err) {
         console.warn(err.message);
     }
 }
 
 jQuery(document).ready(function () {
-    jQuery("textarea[id^=__bpmn_js_]").each((_, tag) =>
-        safeReplaceBpmnTag(tag)
-    );
+    jQuery("div[id^=__bpmn_js_]").each((_, tag) => safeRenderBpmnTag(tag));
 });
