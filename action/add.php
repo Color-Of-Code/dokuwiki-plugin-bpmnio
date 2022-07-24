@@ -25,7 +25,7 @@ class action_plugin_bpmnio_add extends DokuWiki_Action_Plugin
     {
         $event->data["script"][] = array(
             "type" => "text/javascript",
-            "src" => DOKU_BASE."lib/plugins/bpmnio/script/bpmn_render.js",
+            "src" => DOKU_BASE . "lib/plugins/bpmnio/script/bpmn_render.js",
             "defer" => "defer",
             "_data" => "",
         );
@@ -33,18 +33,19 @@ class action_plugin_bpmnio_add extends DokuWiki_Action_Plugin
 
     public function handle_toolbar(Doku_Event $event)
     {
+        $basedir = DOKU_BASE . 'lib/plugins/bpmnio/images/toolbar/';
         $event->data[] = array(
             'type' => 'picker',
             'title' => $this->getLang('picker'),
-            'icon' => '../../plugins/bpmnio/images/toolbar/picker.png',
+            'icon' => $basedir . 'picker.png',
             'list' => array(
                 array(
                     'type' => 'format',
                     'class' => 'plugin-bpmnio icon-large',
                     'title' => $this->getLang('bpmn_add'),
-                    'icon' => '../../plugins/bpmnio/images/toolbar/bpmn_add.png',
-                    'open' => '<bpmnio type="bpmn" zoom=1.0>\n' . $this->_get_open_text(),
-                    'close' => $this->_get_close_text() . '\n</bpmnio>\n',
+                    'icon' => $basedir . 'bpmn_add.png',
+                    'open' => '<bpmnio type="bpmn">\n' . $this->_get_open_text_bpmn(),
+                    'close' => $this->_get_close_text_bpmn() . '\n</bpmnio>\n',
                 )
             ),
         );
@@ -58,17 +59,23 @@ class action_plugin_bpmnio_add extends DokuWiki_Action_Plugin
         $event->data['name'] = $this->getLang('section_name');
     }
 
-    private function _get_open_text()
+    private function _get_open_text_bpmn()
     {
         return '<?xml version="1.0" encoding="UTF-8"?>
-<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="sid-38422fae-e03e-43a3-bef4-bd33b32041b2" targetNamespace="http://bpmn.io/bpmn" exporter="http://bpmn.io" exporterVersion="0.10.1">
+<definitions
+  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+  xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI"
+  xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  id="sid-38422fae-e03e-43a3-bef4-bd33b32041b2"
+  targetNamespace="http://bpmn.io/bpmn" exporter="http://bpmn.io" exporterVersion="0.10.1">
   <collaboration id="Collaboration_1oh70al">
     <participant id="Participant_1r8g02m" name="';
     }
 
-    private function _get_close_text()
+    private function _get_close_text_bpmn()
     {
-
         return '" processRef="Process_1" />
   </collaboration>
   <process id="Process_1" isExecutable="false">
