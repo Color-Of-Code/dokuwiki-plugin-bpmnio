@@ -50,8 +50,20 @@ class syntax_plugin_bpmnio_bpmnio extends DokuWiki_Syntax_Plugin
 
     public function render($mode, Doku_Renderer $renderer, $data)
     {
+        list($match, $state) = $data;
+
+        if (is_a($renderer, 'renderer_plugin_dw2pdf')) {
+            if ($state == DOKU_LEXER_EXIT) {
+                $renderer->doc .= <<<HTML
+                    <div class="plugin-bpmnio">
+                        <a href="https://github.com/Color-Of-Code/dokuwiki-plugin-bpmnio/issues/4">DW2PDF support missing: Help wanted</a>
+                    </div>
+                    HTML;
+            }
+            return true;
+        }
+
         if ($mode == 'xhtml' || $mode == 'odt') {
-            list($match, $state) = $data;
             switch ($state) {
                 case DOKU_LEXER_ENTER:
                     preg_match('/<bpmnio type="(\w+)">/', $match, $type);
