@@ -8,9 +8,6 @@
 // * https://www.dokuwiki.org/devel:section_editor
 // * https://www.dokuwiki.org/devel:releases:refactor2021
 
-// must be run within Dokuwiki
-if (!defined('DOKU_INC')) die();
-
 class action_plugin_bpmnio_editor extends DokuWiki_Action_Plugin
 {
     public function register(Doku_Event_Handler $controller)
