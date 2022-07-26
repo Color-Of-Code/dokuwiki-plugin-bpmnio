@@ -1,20 +1,17 @@
 <?php
-
 /**
  * @license    See LICENSE file
  * @author     Jaap de Haan <jaap.dehaan@color-of-code.de>
  */
 
 // See help: https://www.dokuwiki.org/devel:toolbar
-// See help: https://www.dokuwiki.org/devel:section_editor
 
-class action_plugin_bpmnio_add extends DokuWiki_Action_Plugin
+class action_plugin_bpmnio_toolbar extends DokuWiki_Action_Plugin
 {
 
     public function register(Doku_Event_Handler $controller)
     {
         $controller->register_hook('TOOLBAR_DEFINE', 'AFTER', $this, 'handle_toolbar');
-        $controller->register_hook('HTML_SECEDIT_BUTTON', 'BEFORE', $this, 'handle_section_edit_button');
     }
 
     public function handle_toolbar(Doku_Event $event)
@@ -43,14 +40,6 @@ class action_plugin_bpmnio_add extends DokuWiki_Action_Plugin
                 )
             ),
         );
-    }
-
-    public function handle_section_edit_button(Doku_Event $event, $param)
-    {
-        if ($event->data['target'] !== 'plugin_bpmnio') {
-            return;
-        }
-        $event->data['name'] = $this->getLang('section_name');
     }
 
     private function _get_open_text_bpmn()
@@ -173,7 +162,7 @@ class action_plugin_bpmnio_add extends DokuWiki_Action_Plugin
                     </bpmndi:BPMNEdge>
                     </bpmndi:BPMNPlane>
                 </bpmndi:BPMNDiagram>
-                </definitions>
+            </definitions>
             XML;
     }
 

@@ -82,7 +82,7 @@ function safeRender(tag, fn) {
         const root = jQuery(tag);
         const container = root.find(".bpmn_js_container")[0];
         // avoid double rendering
-        if (container.children.length > 0) return;
+        if (container.children?.length > 0) return;
 
         const data = root.find(".bpmn_js_data")[0];
         const xml = extractXml(data.textContent);
