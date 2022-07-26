@@ -34,10 +34,8 @@ function computeBpmnDiagramSize(viewer) {
 }
 
 function computeDmnDiagramSize(viewer) {
-    // fetch currently active view
     const activeView = viewer.getActiveView();
 
-    // apply initial logic in DRD view
     if (activeView.type === "drd") {
         const activeEditor = viewer.getActiveViewer();
 
@@ -58,8 +56,8 @@ function computeDmnDiagramSize(viewer) {
         };
     }
     return {
-        width: 600,
-        height: 32,
+        width: 0,
+        height: 0,
     };
 }
 
