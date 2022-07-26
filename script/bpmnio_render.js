@@ -81,7 +81,9 @@ async function transferXmlToForm(editor) {
         const options = { format: true };
         const result = await editor.saveXML(options);
         const { xml } = result;
-        jQuery('input[name="plugin_bpmnio_data"]').val(window.btoa(xml));
+        if (xml.length > 0) {
+            jQuery('input[name="plugin_bpmnio_data"]').val(window.btoa(xml));
+        }
     } catch (err) {
         console.log(err);
     }

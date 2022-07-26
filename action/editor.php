@@ -70,10 +70,11 @@ class action_plugin_bpmnio_editor extends DokuWiki_Action_Plugin
     function handle_post(Doku_Event $event)
     {
         global $TEXT;
-        if (!isset($_POST['plugin_bpmnio_data']))
-            return;
+        global $INPUT;
 
-        $TEXT = base64_decode($_POST['plugin_bpmnio_data']);
+        if (!$INPUT->post->has('plugin_bpmnio_data')) return;
+
+        $TEXT = base64_decode($INPUT->post->str('plugin_bpmnio_data'));
     }
 
     private function _addHidden($form, $field, $data)
