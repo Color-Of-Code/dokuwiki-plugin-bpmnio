@@ -76,11 +76,25 @@ async function renderDmnDiagram(xml, container) {
     renderDiagram(xml, container, viewer, computeDmnDiagramSize);
 }
 
+async function transferXmlToForm(editor) {
+    try {
+        const options = { format: true };
+        const result = await editor.saveXML(options);
+        const { xml } = result;
+        jQuery('input[name="plugin_bpmnio_data"]').val(window.btoa(xml));
+    } catch (err) {
+        console.log(err);
+    }
+}
+
 async function renderEditor(xml, container) {
     const BpmnEditor = window.BpmnJS;
-    const viewer = new BpmnEditor({ container });
+    const editor = new BpmnEditor({ container });
 
-    renderDiagram(xml, container, viewer, null);
+    editor.on("commandStack.changed", () => transferXmlToForm(editor));
+
+    renderDiagram(xml, container, editor, null);
+    transferXmlToForm(editor);
 }
 
 function safeRender(tag, fn) {
