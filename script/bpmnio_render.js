@@ -6,9 +6,13 @@ async function renderDiagram(xml, container, viewer, computeSizeFn) {
     try {
         const result = await viewer.importXML(xml);
         const { warnings } = result;
-        console.log(warnings);
+        if (warnings?.length > 0) console.log(warnings);
+
+        if (!computeSizeFn) return;
 
         const size = computeSizeFn(viewer);
+        if (!size) return;
+
         container.style.height = `${size.height}px`;
         container.style.width = `max(100%,${size.width}px)`;
     } catch (err) {
@@ -55,14 +59,11 @@ function computeDmnDiagramSize(viewer) {
             height: bboxViewport.height,
         };
     }
-    return {
-        width: 0,
-        height: 0,
-    };
+    return undefined;
 }
 
 async function renderBpmnDiagram(xml, container) {
-    const BpmnViewer = window.BpmnJS;
+    const BpmnViewer = window.BpmnJS.Viewer;
     const viewer = new BpmnViewer({ container });
 
     renderDiagram(xml, container, viewer, computeBpmnDiagramSize);
@@ -73,6 +74,13 @@ async function renderDmnDiagram(xml, container) {
     const viewer = new DmnViewer({ container });
 
     renderDiagram(xml, container, viewer, computeDmnDiagramSize);
+}
+
+async function renderEditor(xml, container) {
+    const BpmnEditor = window.BpmnJS;
+    const viewer = new BpmnEditor({ container });
+
+    renderDiagram(xml, container, viewer, null);
 }
 
 function safeRender(tag, fn) {
@@ -97,5 +105,8 @@ jQuery(document).ready(function () {
     );
     jQuery("div[id^=__dmn_js_]").each((_, tag) =>
         safeRender(tag, renderDmnDiagram)
+    );
+    jQuery("div[id=plugin_bpmnio__editor]").each((_, tag) =>
+        safeRender(tag, renderEditor)
     );
 });
