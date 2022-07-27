@@ -21,7 +21,7 @@ class action_plugin_bpmnio_editor extends DokuWiki_Action_Plugin
         $controller->register_hook('EDIT_FORM_ADDTEXTAREA', 'BEFORE', $this, 'handle_form');
         $controller->register_hook('HTML_EDIT_FORMSELECTION', 'BEFORE', $this, 'handle_form');
 
-        $controller->register_hook('PLUGIN_EDITTABLE_PREPROCESS_EDITOR', 'BEFORE', $this, 'handle_post');
+        $controller->register_hook('ACTION_ACT_PREPROCESS', 'BEFORE', $this, 'handle_post');
     }
 
     function secedit_button(Doku_Event $event)
