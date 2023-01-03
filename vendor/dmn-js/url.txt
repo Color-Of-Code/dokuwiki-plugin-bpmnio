@@ -1,1 +1,2 @@
-https://unpkg.com/dmn-js@12.2.0/
+https://raw.githubusercontent.com/bpmn-io/dmn-js/v14.0.2/packages/dmn-js/CHANGELOG.md
+https://unpkg.com/dmn-js@14.0.2/
