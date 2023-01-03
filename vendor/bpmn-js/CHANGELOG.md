@@ -2,10 +2,102 @@
 
 All notable changes to [bpmn-js](https://github.com/bpmn-io/bpmn-js) are documented here. We use [semantic versioning](http://semver.org/) for releases.
 
-
 ## Unreleased
 
 ___Note:__ Yet to be released changes appear here._
+
+## 11.1.0
+
+* `FEAT`: add replace element keyboard binding ([#1785](https://github.com/bpmn-io/bpmn-js/pull/1785))
+* `FEAT`: add `replaceElement` editor action ([#1785](https://github.com/bpmn-io/bpmn-js/pull/1785))
+* `DEPS`: update to `diagram-js@11.4.1`
+
+## 11.0.5
+
+* `DEPS`: update to `diagram-js@11.3.0`
+
+## 11.0.4
+
+* `DEPS`: update to `diagram-js@11.2.0`
+
+## 11.0.3
+
+_Re-release of `v11.0.2`._
+
+## 11.0.2
+
+* `FIX`: correct test for replace options ([#1787](https://github.com/bpmn-io/bpmn-js/pull/1787))
+
+## 11.0.1
+
+* `DEPS`: update to `diagram-js@11.1.1`
+
+## 11.0.0
+
+* `FEAT`: integrate new popup menu UI ([#1776](https://github.com/bpmn-io/bpmn-js/pull/1776))
+* `DEPS`: update to `diagram-js@11.1.0` ([#1776](https://github.com/bpmn-io/bpmn-js/pull/1776))
+
+### Breaking Changes
+
+* New popup menu UI introduced with `diagram-js@11`. See [`diagram-js` breaking changes and migration guide](https://github.com/bpmn-io/diagram-js/blob/develop/CHANGELOG.md#breaking-changes).
+* Keyboard-related features no longer use `KeyboardEvent#keyCode`. Use a polyfill (e.g. [keyboardevent-key-polyfill](https://www.npmjs.com/package/keyboardevent-key-polyfill)) if you need to support old browsers.
+
+
+## 10.3.0
+
+* `FEAT`: add BPMN specific space tool ([#1344](https://github.com/bpmn-io/bpmn-js/pull/1344))
+* `FIX`: do not resize `bpmn:TextAnnotation` when using space tool ([#1344](https://github.com/bpmn-io/bpmn-js/pull/1344))
+* `FIX`: correct attachers left hanging when using space tool ([#1344](https://github.com/bpmn-io/bpmn-js/pull/1344))
+* `FIX`: stick labels to label targets when using space tool ([#1344](https://github.com/bpmn-io/bpmn-js/pull/1344), [#1302](https://github.com/bpmn-io/bpmn-js/issues/1302))
+* `DEPS`: update to `diagram-js@10`
+
+## 10.2.1
+
+* `FIX`: correct preserving of outgoing connections on event-based gateway morph ([#1738](https://github.com/bpmn-io/bpmn-js/issues/1738))
+
+## 10.2.0
+
+* `DEPS`: update to `bpmn-moddle@8`
+
+## 10.1.0
+
+* `DEPS`: update to `diagram-js@9.1.0`
+
+## 10.0.0
+
+_Updates the library target to ES2018._
+
+* `FEAT`: use ES2018 syntax ([#1737](https://github.com/bpmn-io/bpmn-js/pull/1737))
+
+### Breaking Changes
+
+* Migrated to ES2018 syntax. [Read the blog post with details and a migration guide](https://bpmn.io/blog/posts/2022-migration-to-es2018.html).
+
+## 9.4.1
+
+* `FIX`: ignore elements which cannot be colored ([#1734](https://github.com/bpmn-io/bpmn-js/pull/1734))
+
+## 9.4.0
+
+* `FEAT`: allow clipboard to be serialized ([#1707](https://github.com/bpmn-io/bpmn-js/pull/1707))
+* `FEAT`: allow cloning of elements ([#1707](https://github.com/bpmn-io/bpmn-js/pull/1707))
+* `FEAT`: copy groups in a safe manner ([#1707](https://github.com/bpmn-io/bpmn-js/pull/1707))
+* `FIX`: make clipboard contents immutable ([#1707](https://github.com/bpmn-io/bpmn-js/pull/1707))
+* `FIX`: do not alter inputs passed to `ElementFactory#create` ([#1711](https://github.com/bpmn-io/bpmn-js/pull/1711))
+* `FIX`: prevent bogus meta-data to be attached on paste ([#1707](https://github.com/bpmn-io/bpmn-js/pull/1707))
+* `FIX`: only claim existing IDs ([#1707](https://github.com/bpmn-io/bpmn-js/pull/1707))
+* `FIX`: prevent double paste on label creation ([#1707](https://github.com/bpmn-io/bpmn-js/pull/1707))
+* `FIX`: move labels when collapsing sub-process ([#1695](https://github.com/bpmn-io/bpmn-js/issues/1695))
+* `FIX`: assign default size when expanding element ([#1687](https://github.com/bpmn-io/bpmn-js/issues/1687))
+* `FIX`: render sequence flows always on top ([#1716](https://github.com/bpmn-io/bpmn-js/issues/1716))
+* `DEPS`: update to `diagram-js@8.9.0`
+* `DEPS`: update to `bpmn-moddle@7.1.3`
+
+## 9.3.2
+
+* `FIX`: prevent unnecessary scrollbar ([#1692](https://github.com/bpmn-io/bpmn-js/issues/1692))
+* `FIX`: check for replacement using actual target ([#1699](https://github.com/bpmn-io/bpmn-js/pull/1699))
+* `DEPS`: update to `diagram-js@8.7.1`
 
 ## 9.3.1
 
@@ -109,7 +201,7 @@ ___Note:__ Yet to be released changes appear here._
 * `FIX`: set label color on `bpmndi:BPMNLabel#color` ([#1543](https://github.com/bpmn-io/bpmn-js/pull/1543))
 * `FIX`: don't create illegal `bpmndi:BPMNEdge#waypoints` property ([#1544](https://github.com/bpmn-io/bpmn-js/issues/1544))
 * `FIX`: correct direct editing on touch devices
-* `DEPS`: update to diagram-js@7.8.2
+* `DEPS`: update to `diagram-js@7.8.2`
 
 ## 8.8.3
 
