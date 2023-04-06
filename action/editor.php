@@ -51,19 +51,23 @@ class action_plugin_bpmnio_editor extends DokuWiki_Action_Plugin
         $form = &$event->data['form'];
         $data = base64_encode($TEXT);
 
+        $type = 'bpmn';
+        if ($event->data['target'] === 'plugin_bpmnio_dmn')
+            $type = 'dmn';
+
         $this->_addHidden($form, 'plugin_bpmnio_data', $data);
         $this->_addHTML($form, <<<HTML
-            <div class="plugin-bpmnio" id="plugin_bpmnio__editor">
-                <div class="bpmn_js_data">{$data}</div>
-                <div class="bpmn_js_canvas">
-                    <div class="bpmn_js_container"></div>
+            <div class="plugin-bpmnio" id="plugin_bpmnio__{$type}_editor">
+                <div class="{$type}_js_data">{$data}</div>
+                <div class="{$type}_js_canvas">
+                    <div class="{$type}_js_container"></div>
                 </div>
                 </div>
             </div>
             HTML);
 
         // used during previews
-        $this->_addHidden($form, 'target', 'plugin_bpmnio');
+        $this->_addHidden($form, 'target', "plugin_bpmnio_{$type}");
         $this->_addHidden($form, 'range', $RANGE);
     }
 
@@ -93,8 +97,10 @@ class action_plugin_bpmnio_editor extends DokuWiki_Action_Plugin
 
     private function _shall_ignore(Doku_Event $event)
     {
-        if ($event->data['target'] !== 'plugin_bpmnio')
-            return true;
-        return false;
+        if ($event->data['target'] === 'plugin_bpmnio_bpmn')
+            return false;
+        if ($event->data['target'] === 'plugin_bpmnio_dmn')
+            return false;
+        return true;
     }
 }

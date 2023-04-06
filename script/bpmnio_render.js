@@ -89,7 +89,7 @@ async function transferXmlToForm(editor) {
     }
 }
 
-async function renderEditor(xml, container) {
+async function renderBpmnEditor(xml, container) {
     const BpmnEditor = window.BpmnJS;
     const editor = new BpmnEditor({ container });
 
@@ -99,14 +99,26 @@ async function renderEditor(xml, container) {
     transferXmlToForm(editor);
 }
 
-function safeRender(tag, fn) {
+async function renderDmnEditor(xml, container) {
+    const DmnEditor = window.DmnJS;
+    const editor = new DmnEditor({ container });
+
+    editor.on("commandStack.changed", () => transferXmlToForm(editor));
+
+    renderDiagram(xml, container, editor, null);
+    transferXmlToForm(editor);
+}
+
+function safeRender(tag, type, fn) {
     try {
         const root = jQuery(tag);
-        const container = root.find(".bpmn_js_container")[0];
+        const containerId = "."+type+"_js_container";
+        const container = root.find(containerId)[0];
         // avoid double rendering
         if (container.children?.length > 0) return;
 
-        const data = root.find(".bpmn_js_data")[0];
+        const dataId = "."+type+"_js_data";
+        const data = root.find(dataId)[0];
         const xml = extractXml(data.textContent);
 
         fn(xml, container);
@@ -117,12 +129,15 @@ function safeRender(tag, fn) {
 
 jQuery(document).ready(function () {
     jQuery("div[id^=__bpmn_js_]").each((_, tag) =>
-        safeRender(tag, renderBpmnDiagram)
+        safeRender(tag, 'bpmn', renderBpmnDiagram)
     );
     jQuery("div[id^=__dmn_js_]").each((_, tag) =>
-        safeRender(tag, renderDmnDiagram)
+        safeRender(tag, 'dmn',  renderDmnDiagram)
     );
-    jQuery("div[id=plugin_bpmnio__editor]").each((_, tag) =>
-        safeRender(tag, renderEditor)
+    jQuery("div[id=plugin_bpmnio__bpmn_editor]").each((_, tag) =>
+        safeRender(tag, 'bpmn', renderBpmnEditor)
+    );
+    jQuery("div[id=plugin_bpmnio__dmn_editor]").each((_, tag) =>
+        safeRender(tag, 'dmn', renderDmnEditor)
     );
 });
