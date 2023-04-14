@@ -6,6 +6,51 @@ All notable changes to [dmn-js](https://github.com/bpmn-io/dmn-js) are documente
 
 ___Note:__ Yet to be released changes appear here._
 
+## 14.1.1
+
+* `FIX`: break additional table headers ([#737](https://github.com/bpmn-io/dmn-js/issues/737))
+
+## 14.1.0
+
+* `FEAT`: break long table headers in multiple lines ([#719](https://github.com/bpmn-io/dmn-js/issues/719))
+
+## 14.0.2
+
+* `DEPS`: update dependencies ([#725](https://github.com/bpmn-io/dmn-js/pull/725))
+
+## 14.0.1
+
+* `DEPS`: update to `diagram-js-direct-editing@2`
+
+## 14.0.0
+* `FIX`: add `type=button` to view drd button ([#721](https://github.com/bpmn-io/dmn-js/pull/721))
+* `DEPS`: update to `diagram-js@11.3.0` ([#772](https://github.com/bpmn-io/dmn-js/pull/722))
+* `DEPS`: update to `table-js@8.0.1` ([#772](https://github.com/bpmn-io/dmn-js/pull/722))
+
+### Breaking Changes
+
+* New popup menu UI introduced with `diagram-js@11`. See [`diagram-js` breaking changes and migration guide](https://github.com/bpmn-io/diagram-js/blob/develop/CHANGELOG.md#breaking-changes).
+
+## 13.0.0
+
+* `FEAT`: use ES2018 syntax ([#717](https://github.com/bpmn-io/bpmn-js/pull/717))
+
+### Breaking Changes
+
+* Migrated to ES2018 syntax. [Read the blog post with details and a migration guide](https://bpmn.io/blog/posts/2022-migration-to-es2018.html).
+
+## 12.3.0
+
+* `FEAT`: add missing translations ([#710](https://github.com/bpmn-io/dmn-js/pull/710), [#88](https://github.com/bpmn-io/dmn-js/issues/88))
+* `DEPS`: update to `didi@8`
+* `DEPS`: use `inherits-browser`
+* `DEPS`: update DRD editor to `diagram-js@8.8.0`
+* `DEPS`: update to `table-js@7.3.0`
+
+## 12.2.1
+
+* `FIX`: fix DRD SVG creation ([#708](https://github.com/bpmn-io/dmn-js/pull/708))
+
 ## 12.2.0
 
 * `FEAT`: change default black to off black ([#701](https://github.com/bpmn-io/dmn-js/pull/701))
