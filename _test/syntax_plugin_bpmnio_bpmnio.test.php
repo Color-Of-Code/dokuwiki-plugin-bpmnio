@@ -15,7 +15,7 @@ class syntax_plugin_bpmnio_bpmnio_test extends DokuWikiTest {
         <bpmnio type="bpmn">
             XML...
         </bpmnio>
-        IN
+        IN;
  
         $instructions = p_get_instructions($input);
         $xhtml = p_render('xhtml', $instructions, $info);
