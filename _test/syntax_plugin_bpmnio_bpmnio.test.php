@@ -7,13 +7,21 @@ require_once dirname(__FILE__).'/../syntax/bpmnio.php';
  */
 class syntax_plugin_bpmnio_bpmnio_test extends DokuWikiTest {
 
-    public function test_superscript() {
+    public function syntax_bpmn() {
         $info = array();
-        $expected = "\n<p>\nThis is <sup>superscripted</sup> text.<br />\n</p>\n";
+        $expected = <<<OUT
+        <p>
+        &lt;bpmnio type=“bpmn”&gt;
+        </p>
+        <pre class="code">XML...</pre>
+        <p>
+        &lt;/bpmnio&gt;
+        </p>
+        OUT;
 
         $input = <<<IN
         <bpmnio type="bpmn">
-            XML...
+        XML...
         </bpmnio>
         IN;
  
