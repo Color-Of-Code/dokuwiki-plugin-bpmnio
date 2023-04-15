@@ -11,10 +11,9 @@ class syntax_plugin_bpmnio_test extends DokuWikiTest {
         $info = array();
         $expected = <<<OUT
         <div class="plugin-bpmnio" id="__bpmn_js_643ada031891e"><div class="bpmn_js_data">
-        ClhNTC4uLgo=
+            ClhNTC4uLgo=
         </div><div class="bpmn_js_canvas sectionedit1">
             <div class="bpmn_js_container"></div>
-        </div>
         </div>
         OUT;
 
@@ -34,10 +33,9 @@ class syntax_plugin_bpmnio_test extends DokuWikiTest {
         $info = array();
         $expected = <<<OUT
         <div class="plugin-bpmnio" id="__dmn_js_643ada031891e"><div class="dmn_js_data">
-        ClhNTC4uLgo=
+            ClhNTC4uLgo=
         </div><div class="dmn_js_canvas sectionedit1">
             <div class="dmn_js_container"></div>
-        </div>
         </div>
         OUT;
 
