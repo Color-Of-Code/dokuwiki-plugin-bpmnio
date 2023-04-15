@@ -30,4 +30,28 @@ class syntax_plugin_bpmnio_bpmnio_test extends DokuWikiTest {
  
         $this->assertEquals($expected, $xhtml);
     }
+
+    public function syntax_dmn() {
+        $info = array();
+        $expected = <<<OUT
+        <p>
+        &lt;bpmnio type=“dmn”&gt;
+        </p>
+        <pre class="code">XML...</pre>
+        <p>
+        &lt;/bpmnio&gt;
+        </p>
+        OUT;
+
+        $input = <<<IN
+        <bpmnio type="dmn">
+        XML...
+        </bpmnio>
+        IN;
+ 
+        $instructions = p_get_instructions($input);
+        $xhtml = p_render('xhtml', $instructions, $info);
+ 
+        $this->assertEquals($expected, $xhtml);
+    }
 }
