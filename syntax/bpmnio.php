@@ -21,7 +21,7 @@
 
 class syntax_plugin_bpmnio_bpmnio extends DokuWiki_Syntax_Plugin
 {
-    private $type; // 'bpmn' or 'dmn'
+    public string $type = ''; // 'bpmn' or 'dmn'
 
     public function getPType()
     {
@@ -54,17 +54,17 @@ class syntax_plugin_bpmnio_bpmnio extends DokuWiki_Syntax_Plugin
             case DOKU_LEXER_ENTER :
                 $matched = '';
                 preg_match('/<bpmnio type="(\w+)">/', $match, $matched);
-                $this->$type = $matched[1] ?? 'bpmn';
-                return array($state, $this->$type, '', '', '');
+                $this->type = $matched[1] ?? 'bpmn';
+                return array($state, $this->type, '', $pos, '');
 
             case DOKU_LEXER_UNMATCHED:
                 $posStart = $pos;
                 $posEnd = $pos + strlen($match);
                 $match = base64_encode($match);
-                return array($state, $this->$type, $match, $posStart, $posEnd);
+                return array($state, $this->type, $match, $posStart, $posEnd);
 
             case DOKU_LEXER_EXIT:
-                $this->$type = '';
+                $this->type = '';
                 return array($state, '', '', '', '');
         }
         return array();
@@ -88,7 +88,7 @@ class syntax_plugin_bpmnio_bpmnio extends DokuWiki_Syntax_Plugin
         if ($mode == 'xhtml' || $mode == 'odt') {
             switch ($state) {
                 case DOKU_LEXER_ENTER:
-                    $bpmnid = uniqid("__{$type}_js_");
+                    $bpmnid = "__{$type}_js_{$posStart}";
                     $renderer->doc .= <<<HTML
                         <div class="plugin-bpmnio" id="{$bpmnid}">
                         HTML;
