@@ -7,6 +7,8 @@ require_once dirname(__FILE__).'/../syntax/bpmnio.php';
  */
 class syntax_plugin_bpmnio_bpmnio_test extends DokuWikiTest {
 
+    protected $pluginsEnabled = array('bpmnio');
+
     public function syntax_bpmn() {
         $info = array();
         $expected = <<<OUT
