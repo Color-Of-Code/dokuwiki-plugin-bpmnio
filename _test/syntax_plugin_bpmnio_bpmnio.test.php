@@ -10,8 +10,14 @@ class syntax_plugin_bpmnio_bpmnio_test extends DokuWikiTest {
     public function test_superscript() {
         $info = array();
         $expected = "\n<p>\nThis is <sup>superscripted</sup> text.<br />\n</p>\n";
+
+        $input = <<<IN
+        <bpmnio type="bpmn">
+            XML...
+        </bpmnio>
+        IN
  
-        $instructions = p_get_instructions('This is ^^superscripted^^ text.');
+        $instructions = p_get_instructions($input);
         $xhtml = p_render('xhtml', $instructions, $info);
  
         $this->assertEquals($expected, $xhtml);
