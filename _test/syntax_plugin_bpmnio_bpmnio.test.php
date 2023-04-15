@@ -10,7 +10,7 @@ class syntax_plugin_bpmnio_test extends DokuWikiTest {
     public function test_syntax_bpmn() {
         $info = array();
         $expected = <<<OUT
-        <div class="plugin-bpmnio" id="__bpmn_js_"><div class="bpmn_js_data">
+        <div class="plugin-bpmnio" id="__bpmn_js_1"><div class="bpmn_js_data">
             ClhNTC4uLgo=
         </div><div class="bpmn_js_canvas sectionedit1">
             <div class="bpmn_js_container"></div>
@@ -32,7 +32,7 @@ class syntax_plugin_bpmnio_test extends DokuWikiTest {
     public function test_sytax_dmn() {
         $info = array();
         $expected = <<<OUT
-        <div class="plugin-bpmnio" id="__dmn_js_"><div class="dmn_js_data">
+        <div class="plugin-bpmnio" id="__dmn_js_1"><div class="dmn_js_data">
             ClhNTC4uLgo=
         </div><div class="dmn_js_canvas sectionedit1">
             <div class="dmn_js_container"></div>
