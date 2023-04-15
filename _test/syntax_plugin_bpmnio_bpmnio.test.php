@@ -1,18 +1,17 @@
 <?php
-require_once dirname(__FILE__).'/../syntax/bpmnio.php';
-
 /**
  * @group plugin_bpmnio
  * @group plugins
  */
-class syntax_plugin_bpmnio_bpmnio_test extends DokuWikiTest {
+class syntax_plugin_bpmnio_test extends DokuWikiTest {
 
     protected $pluginsEnabled = array('bpmnio');
 
-    public function syntax_bpmn() {
+    public function test_syntax_bpmn() {
         $info = array();
         $expected = <<<OUT
         <p>
+
         &lt;bpmnio type=“bpmn”&gt;
         </p>
         <pre class="code">XML...</pre>
@@ -33,10 +32,11 @@ class syntax_plugin_bpmnio_bpmnio_test extends DokuWikiTest {
         $this->assertEquals($expected, $xhtml);
     }
 
-    public function syntax_dmn() {
+    public function test_sytax_dmn() {
         $info = array();
         $expected = <<<OUT
         <p>
+
         &lt;bpmnio type=“dmn”&gt;
         </p>
         <pre class="code">XML...</pre>
