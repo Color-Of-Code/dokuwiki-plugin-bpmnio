@@ -10,14 +10,12 @@ class syntax_plugin_bpmnio_test extends DokuWikiTest {
     public function test_syntax_bpmn() {
         $info = array();
         $expected = <<<OUT
-        <p>
-
-        &lt;bpmnio type=“bpmn”&gt;
-        </p>
-        <pre class="code">XML...</pre>
-        <p>
-        &lt;/bpmnio&gt;
-        </p>
+        <div class="plugin-bpmnio" id="__bpmn_js_643ada031891e"><div class="bpmn_js_data">
+        ClhNTC4uLgo=
+        </div><div class="bpmn_js_canvas sectionedit1">
+            <div class="bpmn_js_container"></div>
+        </div>
+        </div>
         OUT;
 
         $input = <<<IN
@@ -35,14 +33,12 @@ class syntax_plugin_bpmnio_test extends DokuWikiTest {
     public function test_sytax_dmn() {
         $info = array();
         $expected = <<<OUT
-        <p>
-
-        &lt;bpmnio type=“dmn”&gt;
-        </p>
-        <pre class="code">XML...</pre>
-        <p>
-        &lt;/bpmnio&gt;
-        </p>
+        <div class="plugin-bpmnio" id="__dmn_js_643ada031891e"><div class="dmn_js_data">
+        ClhNTC4uLgo=
+        </div><div class="dmn_js_canvas sectionedit1">
+            <div class="dmn_js_container"></div>
+        </div>
+        </div>
         OUT;
 
         $input = <<<IN

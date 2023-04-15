@@ -21,7 +21,7 @@
 
 class syntax_plugin_bpmnio_bpmnio extends DokuWiki_Syntax_Plugin
 {
-    private $type; // 'bpmn' or 'dmn'
+    private $type = ''; // 'bpmn' or 'dmn'
 
     public function getPType()
     {
@@ -51,20 +51,20 @@ class syntax_plugin_bpmnio_bpmnio extends DokuWiki_Syntax_Plugin
     public function handle($match, $state, $pos, Doku_Handler $handler)
     {
         switch ($state) {
-            case DOKU_LEXER_ENTER:
+            case DOKU_LEXER_ENTER :
                 $matched = '';
                 preg_match('/<bpmnio type="(\w+)">/', $match, $matched);
-                $this->type = $matched[1] ?? 'bpmn';
-                return array($state, $this->type, '', '', '');
+                $this->$type = $matched[1] ?? 'bpmn';
+                return array($state, $this->$type, '', '', '');
 
             case DOKU_LEXER_UNMATCHED:
                 $posStart = $pos;
                 $posEnd = $pos + strlen($match);
                 $match = base64_encode($match);
-                return array($state, $this->type, $match, $posStart, $posEnd);
+                return array($state, $this->$type, $match, $posStart, $posEnd);
 
             case DOKU_LEXER_EXIT:
-                $this->type = '';
+                $this->$type = '';
                 return array($state, '', '', '', '');
         }
         return array();
