@@ -21,7 +21,7 @@
 
 class syntax_plugin_bpmnio_bpmnio extends DokuWiki_Syntax_Plugin
 {
-    private $type = ''; // 'bpmn' or 'dmn'
+    var $type = ''; // 'bpmn' or 'dmn'
 
     public function getPType()
     {
