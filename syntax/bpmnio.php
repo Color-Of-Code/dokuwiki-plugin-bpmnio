@@ -88,7 +88,7 @@ class syntax_plugin_bpmnio_bpmnio extends DokuWiki_Syntax_Plugin
         if ($mode == 'xhtml' || $mode == 'odt') {
             switch ($state) {
                 case DOKU_LEXER_ENTER:
-                    $bpmnid = uniqid("__{$type}_js_");
+                    $bpmnid = "__{$type}_js_"+$posStart;
                     $renderer->doc .= <<<HTML
                         <div class="plugin-bpmnio" id="{$bpmnid}">
                         HTML;
