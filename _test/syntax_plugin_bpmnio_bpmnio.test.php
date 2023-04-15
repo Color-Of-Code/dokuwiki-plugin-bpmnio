@@ -36,7 +36,7 @@ class syntax_plugin_bpmnio_test extends DokuWikiTest {
             ClhNTC4uLgo=
         </div><div class="dmn_js_canvas sectionedit1">
             <div class="dmn_js_container"></div>
-        </div><!-- EDIT{&quot;target&quot;:&quot;plugin_bpmnio_dmn&quot;,&quot;secid&quot;:1,&quot;range&quot;:&quot;21-29&quot;} --></div>
+        </div><!-- EDIT{&quot;target&quot;:&quot;plugin_bpmnio_dmn&quot;,&quot;secid&quot;:1,&quot;range&quot;:&quot;20-28&quot;} --></div>
         OUT;
 
         $input = <<<IN
