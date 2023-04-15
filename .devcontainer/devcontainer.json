@@ -1,0 +1,16 @@
+{
+	"name": "PHP",
+	"image": "mcr.microsoft.com/devcontainers/php:0-8.2",
+
+	"forwardPorts": [
+		8080
+	],
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"DEVSENSE.phptools-vscode",
+				"EditorConfig.EditorConfig"
+			]
+		}
+	}
+}
