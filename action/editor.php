@@ -2,7 +2,6 @@
 
 /**
  * @license    See LICENSE file
- * @author     Jaap de Haan <jaap.dehaan@color-of-code.de>
  */
 
 // See help:
