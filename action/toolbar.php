@@ -1,7 +1,6 @@
 <?php
 /**
  * @license    See LICENSE file
- * @author     Jaap de Haan <jaap.dehaan@color-of-code.de>
  */
 
 // See help: https://www.dokuwiki.org/devel:toolbar
