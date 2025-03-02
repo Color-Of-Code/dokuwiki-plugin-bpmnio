@@ -1,5 +1,5 @@
 function extractXml(data) {
-    return decodeURIComponent(escape(atob(data)));
+    return new TextDecoder().decode(Uint8Array.from(atob(data), c => c.charCodeAt(0)));
 }
 
 async function renderDiagram(xml, container, viewer, computeSizeFn) {
