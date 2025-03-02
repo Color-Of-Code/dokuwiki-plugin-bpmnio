@@ -1,5 +1,5 @@
 function extractXml(data) {
-    return decodeURIComponent(escape(window.atob(data)));
+    return new TextDecoder().decode(Uint8Array.from(atob(data), c => c.charCodeAt(0)));
 }
 
 async function renderDiagram(xml, container, viewer, computeSizeFn) {
@@ -82,7 +82,10 @@ async function transferXmlToForm(editor) {
         const result = await editor.saveXML(options);
         const { xml } = result;
         if (xml.length > 0) {
-            jQuery('input[name="plugin_bpmnio_data"]').val(window.btoa(xml));
+            const encoder = new TextEncoder();
+            const data = encoder.encode(xml);
+            const base64 = btoa(String.fromCharCode(...data));
+            jQuery('input[name="plugin_bpmnio_data"]').val(base64);
         }
     } catch (err) {
         console.log(err);
