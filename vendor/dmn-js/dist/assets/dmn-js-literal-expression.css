@@ -19,19 +19,17 @@
   --literal-expression-font-family-monospace: monospace;
 
   font-family: var(--literal-expression-font-family);
-  position: relative;
   color: var(--literal-expression-color);
   width: 100%;
   height: 100%;
-
-  /* required to apply position: fixed correctly */
-  transform: translate(0);
 }
 
 .dmn-literal-expression-container .viewer-container {
   width: 100%;
   height: 100%;
   overflow: auto;
+  display: flex;
+  flex-direction: column;
 }
 
 .dmn-literal-expression-container * {
@@ -70,15 +68,10 @@
 }
 
 .dmn-literal-expression-container .decision-name:not(.editable),
-.dmn-literal-expression-container .decision-name .content-editable {
+.dmn-literal-expression-container .decision-name [contenteditable="true"] {
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
-}
-
-.dmn-literal-expression-container .textarea .content,
-.dmn-literal-expression-container .textarea .content-editable {
-  padding: 12px;
 }
 
 .dmn-literal-expression-container .textarea .content-editable {
@@ -98,13 +91,15 @@
 .dmn-literal-expression-container .textarea {
   box-sizing: border-box;
   width: 100%;
+  padding: 12px;
   font-family: var(--literal-expression-font-family-monospace);
+  line-height: 1.4;
   border: 1px solid var(--textarea-border-color);
   border-bottom-width: 1px;
   white-space: pre;
   font-size: 14px;
   color: var(--textarea-color);
-  height: 250px;
+  min-height: 250px;
   overflow: auto;
 }
 
@@ -131,15 +126,16 @@
   color: var(--literal-expression-properties-color);
 }
 
-.dmn-literal-expression-container .literal-expression-properties table {
+.dmn-literal-expression-container .literal-expression-properties .variables-table {
   border-spacing: 8px;
+  border-collapse: separate;
 }
 
-.dmn-literal-expression-container .literal-expression-properties table tr td:first-child {
+.dmn-literal-expression-container .literal-expression-properties .variables-table tr td:first-child {
   font-weight: bold;
 }
 
-.dmn-literal-expression-container .literal-expression-properties table tr td:last-child {
+.dmn-literal-expression-container .literal-expression-properties .variables-table tr td:last-child {
   min-width: 100px;
 }
 
@@ -162,57 +158,8 @@
   color: var(--view-drd-button-color);
   font-weight: bold;
   cursor: pointer;
-  outline: none;
 }
 
 .dmn-literal-expression-container .view-drd .view-drd-button:hover {
   background: var(--view-drd-button-hover-background-color);
-}
-
-/* powered by */
-
-.dmn-literal-expression-container .powered-by {
-  position: fixed;
-  bottom: 10px;
-  right: 10px;
-  z-index: 100;
-  display: flex;
-  flex-direction: row-reverse;
-  align-items: center;
-  padding: 5px;
-  background-color: var(--color-white);
-}
-
-.dmn-literal-expression-container .powered-by__logo {
-  z-index: 10;
-}
-
-.dmn-literal-expression-container .powered-by-overlay {
-  position: fixed;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  background: var(--powered-by-overlay-background-color);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 10;
-}
-
-.dmn-literal-expression-container .powered-by-overlay .powered-by-overlay-content {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  padding: 10px;
-  max-width: 260px;
-  background: var(--powered-by-overlay-content-background-color);
-  color: var(--powered-by-overlay-content-color);
-  border: solid 1px var(--powered-by-overlay-content-border-color);
-  border-radius: 2px;
-  font-size: 14px;
-}
-
-.dmn-literal-expression-container .powered-by-overlay .powered-by-overlay-content .logo {
-  margin: 15px 20px 15px 10px;
 }

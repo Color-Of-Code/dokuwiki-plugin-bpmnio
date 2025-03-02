@@ -1,7 +1,7 @@
 {
   "name": "dmn-js",
   "description": "A dmn toolkit and web modeler",
-  "version": "12.2.0",
+  "version": "17.1.0",
   "files": [
     "dist",
     "lib",
@@ -10,8 +10,8 @@
   "scripts": {
     "test": "karma start",
     "dev": "npm run test -- --no-single-run --auto-watch",
-    "test:distro": "node tasks/test-distro.js",
-    "distro": "node tasks/build-distro.js",
+    "test:distro": "node tasks/test-distro.mjs",
+    "distro": "node tasks/build-distro.mjs",
     "prepublishOnly": "run-s build distro test:distro",
     "build": "del-cli lib && babel -s --quiet -d lib src"
   },
@@ -42,28 +42,29 @@
     "decision modeling"
   ],
   "devDependencies": {
-    "cpx": "^1.5.0",
-    "del": "^5.1.0",
-    "del-cli": "^4.0.1",
-    "diagram-js": "^8.7.0",
+    "@rollup/plugin-babel": "^6.0.4",
+    "@rollup/plugin-commonjs": "^28.0.1",
+    "@rollup/plugin-json": "^6.1.0",
+    "@rollup/plugin-node-resolve": "^16.0.0",
+    "@rollup/plugin-replace": "^6.0.0",
+    "@rollup/plugin-terser": "^0.4.4",
+    "axe-core": "^4.10.2",
+    "cpy": "^11.1.0",
+    "del": "^8.0.0",
+    "del-cli": "^6.0.0",
+    "diagram-js": "^15.2.0",
     "dmn-font": "^0.6.2",
-    "execa": "^3.3.0",
-    "min-dom": "^3.1.3",
-    "mkdirp": "^0.5.1",
-    "rollup": "^1.27.2",
-    "rollup-plugin-babel": "^4.3.3",
-    "rollup-plugin-commonjs": "^10.1.0",
-    "rollup-plugin-json": "^4.0.0",
-    "rollup-plugin-license": "^0.12.1",
-    "rollup-plugin-node-resolve": "^5.2.0",
-    "rollup-plugin-replace": "^2.1.0",
-    "rollup-plugin-uglify": "^6.0.0"
+    "execa": "^9.5.1",
+    "min-dom": "^4.2.1",
+    "rollup": "^4.24.4",
+    "rollup-plugin-license": "^3.5.3"
   },
   "dependencies": {
-    "dmn-js-decision-table": "^12.2.0",
-    "dmn-js-drd": "^12.2.0",
-    "dmn-js-literal-expression": "^12.2.0",
-    "dmn-js-shared": "^12.2.0"
+    "dmn-js-boxed-expression": "^17.1.0",
+    "dmn-js-decision-table": "^17.1.0",
+    "dmn-js-drd": "^17.1.0",
+    "dmn-js-literal-expression": "^17.1.0",
+    "dmn-js-shared": "^17.1.0"
   },
-  "gitHead": "90d9cba44e1eb0e073d386c166c2f249fedf5d5c"
+  "gitHead": "333bcf385585281e48f292313c0796a619a2a7e8"
 }
