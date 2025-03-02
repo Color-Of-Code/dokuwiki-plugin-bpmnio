@@ -1,8 +1,8 @@
 .dmn-decision-table-container {
-  --allowed-values-placeholder-color: var(--color-grey-225-10-75);
+  --allowed-values-placeholder-color: var(--color-grey-225-10-35);
   --cell-description-editor-border-color: var(--color-grey-225-10-15);
   --create-inputs-border-color: var(--color-grey-225-10-75);
-  --create-inputs-color: var(--color-grey-225-10-75);
+  --create-inputs-color: var(--color-grey-225-10-35);
   --create-inputs-hover-color: var(--color-grey-225-10-15);
   --context-menu-background-color: var(--color-white);
   --context-menu-border-color: var(--color-grey-225-10-75);
@@ -13,8 +13,13 @@
   --context-menu-group-entry-hover-background-color: var(--color-grey-225-10-95);
   --drag-and-drop-handle-color: var(--color-grey-225-10-55);
   --drag-and-drop-handle-hover-color: var(--color-grey-225-10-15);
-  --form-control-label-color: var(--color-grey-225-10-55);
-  --hint-color: var(--color-grey-225-10-55);
+  --form-control-label-color: var(--color-grey-225-10-15);
+  --hint-color: var(--color-grey-225-10-15);
+  --edit-button-color: var(--color-grey-225-10-15);
+  --edit-button-background-color: var(--color-grey-225-10-97);
+  --edit-button-border-color: var(--color-grey-225-10-75);
+  --edit-button-box-shadow-color: var(--color-black-opacity-10);
+  --edit-button-disabled-color: var(--color-grey-225-10-75);
 }
 
 /* simple string edit */
@@ -137,7 +142,7 @@
 
 .dmn-decision-table-container .context-menu .context-menu-container.input-edit,
 .dmn-decision-table-container .context-menu .context-menu-container.output-edit {
-  margin: 34px 10px 10px 10px;
+  margin: 34px 10px 10px;
 }
 
 .dmn-decision-table-container .context-menu .context-menu-container.type-ref-edit,
@@ -217,8 +222,6 @@
 .dmn-icon-drag.horizontal,
 .dmn-icon-drag.vertical {
   cursor: grab;
-  cursor: -moz-grab;
-  cursor: -webkit-grab;
 }
 
 /* description editor */
@@ -250,4 +253,49 @@
 .dmn-decision-table-container .resize-column-handle:last-child {
   width: 20px;
   right: 0;
+}
+
+/* cell editor */
+.dmn-decision-table-container .cell-editor:focus-within .dmn-expression-language {
+  display: none;
+}
+
+.dmn-decision-table-container .cell-editor,
+.dmn-decision-table-container .cell-editor .cm-scroller {
+  line-height: 1.4;
+  font-family: monospace;
+}
+
+.dmn-decision-table-container .cell-editor .feel-editor.focussed > :nth-child(2) {
+  display: none;
+}
+
+/* edit-button */
+
+.dmn-decision-table-container .edit-button {
+  color: var(--edit-button-color);
+  background-color: var(--edit-button-background-color);
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  padding: 4px;
+  border-radius: 2px;
+  border: solid 1px var(--edit-button-border-color);
+  font-size: var(--font-size);
+  box-shadow: 1px 1px 1px 1px var(--edit-button-box-shadow-color);
+}
+
+.dmn-decision-table-container :not(:has(:focus-visible)) .edit-button {
+  clip-path: inset(50%);
+  height: 1px;
+  overflow: hidden;
+  position: absolute;
+  white-space: nowrap;
+  width: 1px;
+}
+
+/* context menu */
+
+.dmn-decision-table-container .context-menu-group-entry.focused {
+  background-color: var(--color-grey-225-10-95);
 }

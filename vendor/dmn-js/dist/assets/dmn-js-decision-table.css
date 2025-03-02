@@ -1,5 +1,6 @@
 .dmn-decision-table-container {
   --action-icon-color: var(--color-blue-205-100-50);
+  --action-icon-background-color: transparent;
   --action-icon-hover-background-color: var(--color-blue-205-100-45);
   --action-icon-hover-color: var(--color-white);
   --add-column-icon-color: var(--color-white);
@@ -59,7 +60,6 @@
 .dmn-decision-table-container .tjs-container {
   display: flex;
   flex-direction: column;
-  position: relative;
   width: min-content;
   max-width: 100%;
   height: 100%;
@@ -364,9 +364,12 @@
 /* actionable icon */
 
 .dmn-decision-table-container .action-icon {
+  border: none;
   border-radius: 2px;
   box-shadow: 0 0 0 2px var(--decision-table-background-color);
   color: var(--action-icon-color);
+  background-color: var(--action-icon-background-color);
+  padding: 0;
 }
 
 .dmn-decision-table-container .create-inputs .action-icon,
@@ -381,6 +384,7 @@
   border-radius: 50%;
   color: var(--add-column-icon-color);
   background-color: var(--add-column-icon-background-color);
+  outline-offset: 4px;
 }
 
 .dmn-decision-table-container .actionable:hover .action-icon {
@@ -420,7 +424,6 @@
   color: var(--view-drd-button-color);
   font-weight: bold;
   cursor: pointer;
-  outline: none;
 }
 
 .dmn-decision-table-container .view-drd .view-drd-button:hover {
@@ -428,56 +431,6 @@
 }
 
 /* end view drd */
-
-/* powered by */
-.dmn-js-parent {
-  /* required to apply position: fixed correctly */
-  transform: translate(0);
-}
-
-.dmn-decision-table-container .powered-by {
-  position: fixed;
-  bottom: 10px;
-  right: 10px;
-  z-index: 9999;
-  display: flex;
-  align-items: center;
-  flex-direction: row-reverse;
-  margin: 10px;
-  background-color: var(--color-white);
-}
-
-.dmn-decision-table-container .powered-by-overlay {
-  position: fixed;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  background: var(--powered-by-overlay-background-color);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 10000;
-}
-
-.dmn-decision-table-container .powered-by-overlay .powered-by-overlay-content {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  padding: 10px;
-  max-width: 260px;
-  background: var(--powered-by-overlay-content-background-color);
-  color: var(--powered-by-overlay-content-color);
-  border: solid 1px var(--powered-by-overlay-content-border-color);
-  border-radius: 2px;
-  font-size: 14px;
-}
-
-.dmn-decision-table-container .powered-by-overlay .powered-by-overlay-content .logo {
-  margin: 15px 20px 15px 10px;
-}
-
-/* end powered by */
 
 /* simple mode */
 

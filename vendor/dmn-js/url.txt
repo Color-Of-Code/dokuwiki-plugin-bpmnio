@@ -1,2 +1,3 @@
-https://raw.githubusercontent.com/bpmn-io/dmn-js/v14.0.2/packages/dmn-js/CHANGELOG.md
-https://unpkg.com/dmn-js@14.0.2/
+https://github.com/bpmn-io/dmn-js/archive/refs/tags/v17.0.1.tar.gz
+https://github.com/bpmn-io/dmn-js/blob/develop/packages/dmn-js/CHANGELOG.md
+https://unpkg.com/dmn-js@17.0.1/
