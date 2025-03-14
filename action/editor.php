@@ -7,27 +7,29 @@
 // See help:
 // * https://www.dokuwiki.org/devel:section_editor
 // * https://www.dokuwiki.org/devel:releases:refactor2021
-
+use dokuwiki\Extension\ActionPlugin;
+use dokuwiki\Extension\EventHandler;
+use dokuwiki\Extension\Event;
 use dokuwiki\Form\Form;
 use dokuwiki\Utf8;
 
-class action_plugin_bpmnio_editor extends DokuWiki_Action_Plugin
+class action_plugin_bpmnio_editor extends ActionPlugin
 {
-    public function register(Doku_Event_Handler $controller)
+    public function register(EventHandler $controller)
     {
         $controller->register_hook('HTML_SECEDIT_BUTTON', 'BEFORE', $this, 'sectionEditButton');
         $controller->register_hook('EDIT_FORM_ADDTEXTAREA', 'BEFORE', $this, 'handleForm');
         $controller->register_hook('ACTION_ACT_PREPROCESS', 'BEFORE', $this, 'handlePost');
     }
 
-    public function sectionEditButton(Doku_Event $event)
+    public function sectionEditButton(Event $event)
     {
         if ($this->shallIgnore($event)) return;
 
         $event->data['name'] = $this->getLang('edit_diagram');
     }
 
-    public function handleForm(Doku_Event $event)
+    public function handleForm(Event $event)
     {
         if ($this->shallIgnore($event)) return;
 
@@ -68,7 +70,7 @@ class action_plugin_bpmnio_editor extends DokuWiki_Action_Plugin
         $form->setHiddenField('range', $RANGE);
     }
 
-    public function handlePost(Doku_Event $event)
+    public function handlePost(Event $event)
     {
         global $TEXT;
         global $INPUT;
@@ -78,7 +80,7 @@ class action_plugin_bpmnio_editor extends DokuWiki_Action_Plugin
         $TEXT = base64_decode($INPUT->post->str('plugin_bpmnio_data'));
     }
 
-    private function shallIgnore(Doku_Event $event)
+    private function shallIgnore(Event $event)
     {
         if ($event->data['target'] === 'plugin_bpmnio_bpmn')
             return false;
