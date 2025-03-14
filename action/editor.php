@@ -15,19 +15,19 @@ class action_plugin_bpmnio_editor extends DokuWiki_Action_Plugin
 {
     public function register(Doku_Event_Handler $controller)
     {
-        $controller->register_hook('HTML_SECEDIT_BUTTON', 'BEFORE', $this, 'secedit_button');
-        $controller->register_hook('EDIT_FORM_ADDTEXTAREA', 'BEFORE', $this, 'handle_form');
-        $controller->register_hook('ACTION_ACT_PREPROCESS', 'BEFORE', $this, 'handle_post');
+        $controller->register_hook('HTML_SECEDIT_BUTTON', 'BEFORE', $this, 'sectionEditButton');
+        $controller->register_hook('EDIT_FORM_ADDTEXTAREA', 'BEFORE', $this, 'handleForm');
+        $controller->register_hook('ACTION_ACT_PREPROCESS', 'BEFORE', $this, 'handlePost');
     }
 
-    function secedit_button(Doku_Event $event)
+    public function sectionEditButton(Doku_Event $event)
     {
         if ($this->shallIgnore($event)) return;
 
         $event->data['name'] = $this->getLang('edit_diagram');
     }
 
-    function handle_form(Doku_Event $event)
+    public function handleForm(Doku_Event $event)
     {
         if ($this->shallIgnore($event)) return;
 
@@ -68,7 +68,7 @@ class action_plugin_bpmnio_editor extends DokuWiki_Action_Plugin
         $form->setHiddenField('range', $RANGE);
     }
 
-    function handle_post(Doku_Event $event)
+    public function handlePost(Doku_Event $event)
     {
         global $TEXT;
         global $INPUT;
