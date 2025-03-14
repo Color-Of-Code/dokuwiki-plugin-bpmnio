@@ -50,7 +50,7 @@ class syntax_plugin_bpmnio_bpmnio extends DokuWiki_Syntax_Plugin
     public function handle($match, $state, $pos, Doku_Handler $handler)
     {
         switch ($state) {
-            case DOKU_LEXER_ENTER :
+            case DOKU_LEXER_ENTER:
                 $matched = '';
                 preg_match('/<bpmnio type="(\w+)">/', $match, $matched);
                 $this->type = $matched[1] ?? 'bpmn';
@@ -77,7 +77,9 @@ class syntax_plugin_bpmnio_bpmnio extends DokuWiki_Syntax_Plugin
             if ($state == DOKU_LEXER_EXIT) {
                 $renderer->doc .= <<<HTML
                     <div class="plugin-bpmnio">
-                        <a href="https://github.com/Color-Of-Code/dokuwiki-plugin-bpmnio/issues/4">DW2PDF support missing: Help wanted</a>
+                        <a href="https://github.com/Color-Of-Code/dokuwiki-plugin-bpmnio/issues/4">
+                            DW2PDF support missing: Help wanted
+                        </a>
                     </div>
                     HTML;
             }
@@ -100,13 +102,15 @@ class syntax_plugin_bpmnio_bpmnio extends DokuWiki_Syntax_Plugin
                         </div>
                         HTML;
 
-                    $class = $this->_startSectionEdit($renderer, $posStart, $type);
+                    $target = "plugin_bpmnio_{$type}";
+                    $sectionEditData = ['target' => $target];
+                    $class = $renderer->startSectionEdit($posStart, $sectionEditData);
                     $renderer->doc .= <<<HTML
                         <div class="{$type}_js_canvas {$class}">
                             <div class="{$type}_js_container"></div>
                         </div>
                         HTML;
-                    $this->_finishSectionEdit($renderer, $posEnd);
+                    $renderer->finishSectionEdit($posEnd);
                     break;
 
                 case DOKU_LEXER_EXIT:
@@ -118,21 +122,5 @@ class syntax_plugin_bpmnio_bpmnio extends DokuWiki_Syntax_Plugin
             return true;
         }
         return false;
-    }
-
-    private function _startSectionEdit(Doku_Renderer $renderer, $pos, $type)
-    {
-        $target = "plugin_bpmnio_{$type}";
-        $sectionEditData = ['target' => $target];
-        if (!defined('SEC_EDIT_PATTERN')) {
-            // backwards-compatibility for Frusterick Manners (2017-02-19)
-            $sectionEditData = $target;
-        }
-        return $renderer->startSectionEdit($pos, $sectionEditData);
-    }
-
-    private function _finishSectionEdit(Doku_Renderer $renderer, $pos)
-    {
-        $renderer->finishSectionEdit($pos);
     }
 }

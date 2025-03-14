@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @license    See LICENSE file
  */
@@ -7,7 +8,6 @@
 
 class action_plugin_bpmnio_toolbar extends DokuWiki_Action_Plugin
 {
-
     public function register(Doku_Event_Handler $controller)
     {
         $controller->register_hook('TOOLBAR_DEFINE', 'AFTER', $this, 'handle_toolbar');
@@ -175,8 +175,8 @@ class action_plugin_bpmnio_toolbar extends DokuWiki_Action_Plugin
                 xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/"
                 xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"
                 id="dmn_diagram" name="
-            XML;
-        }
+        XML;
+    }
 
     private function _get_close_text_dmn()
     {
