@@ -9,7 +9,8 @@
 		"vscode": {
 			"extensions": [
 				"DEVSENSE.phptools-vscode",
-				"EditorConfig.EditorConfig"
+				"EditorConfig.EditorConfig",
+				"eamodio.gitlens"
 			]
 		}
 	}
