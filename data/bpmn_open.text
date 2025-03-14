@@ -1,12 +1,13 @@
 <bpmnio type="bpmn">
-    <?xml version="1.0" encoding="UTF-8"?>
-    <definitions
-        xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
-        xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
-        xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI"
-        xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC"
-        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        id="sid-38422fae-e03e-43a3-bef4-bd33b32041b2"
-        targetNamespace="http://bpmn.io/bpmn" exporter="http://bpmn.io" exporterVersion="0.10.1">
-        <collaboration id="Collaboration_1oh70al">
-            <participant id="Participant_1r8g02m" name="
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions
+    xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+    xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+    xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI"
+    xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    targetNamespace="http://bpmn.io/bpmn"
+    exporter="bpmn-js (https://demo.bpmn.io)"
+    exporterVersion="18.3.1">
+    <collaboration id="Collaboration_1oh70al">
+        <participant id="Participant_1r8g02m" name="
