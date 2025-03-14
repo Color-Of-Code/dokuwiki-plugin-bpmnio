@@ -28,7 +28,6 @@ class action_plugin_bpmnio_toolbar extends DokuWiki_Action_Plugin
                     'icon' => $basedir . 'bpmn_add.png',
                     'open' => $this->getFileContent('bpmn_open'),
                     'close' => $this->getFileContent('bpmn_close')
-                )
                 ),
                 array(
                     'type' => 'format',
