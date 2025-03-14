@@ -26,18 +26,24 @@ class action_plugin_bpmnio_toolbar extends DokuWiki_Action_Plugin
                     'class' => 'plugin-bpmnio icon-large',
                     'title' => $this->getLang('bpmn_add'),
                     'icon' => $basedir . 'bpmn_add.png',
-                    'open' => file_get_contents(__DIR__ . '/../data/bpmn_open.text'),
-                    'close' => file_get_contents(__DIR__ . '/../data/bpmn_close.text')
+                    'open' => $this->getFileContent('bpmn_open'),
+                    'close' => $this->getFileContent('bpmn_close')
+                )
                 ),
                 array(
                     'type' => 'format',
                     'class' => 'plugin-bpmnio icon-large',
                     'title' => $this->getLang('dmn_add'),
                     'icon' => $basedir . 'dmn_add.png',
-                    'open' => file_get_contents(__DIR__ . '/../data/dmn_open.text'),
-                    'close' => file_get_contents(__DIR__ . '/../data/dmn_close.text')
+                    'open' => $this->getFileContent('dmn_open'),
+                    'close' => $this->getFileContent('dmn_close')
                 )
             ),
         );
+    }
+
+    private function getFileContent($file)
+    {
+        return trim(file_get_contents(__DIR__ . '/../data/' . $file . '.text'));
     }
 }
