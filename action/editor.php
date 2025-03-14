@@ -15,24 +15,21 @@ class action_plugin_bpmnio_editor extends DokuWiki_Action_Plugin
 {
     public function register(Doku_Event_Handler $controller)
     {
-        $controller->register_hook('HTML_SECEDIT_BUTTON', 'BEFORE', $this, 'secedit_button');
-
-        $controller->register_hook('EDIT_FORM_ADDTEXTAREA', 'BEFORE', $this, 'handle_form');
-        $controller->register_hook('HTML_EDIT_FORMSELECTION', 'BEFORE', $this, 'handle_form');
-
-        $controller->register_hook('ACTION_ACT_PREPROCESS', 'BEFORE', $this, 'handle_post');
+        $controller->register_hook('HTML_SECEDIT_BUTTON', 'BEFORE', $this, 'sectionEditButton');
+        $controller->register_hook('EDIT_FORM_ADDTEXTAREA', 'BEFORE', $this, 'handleForm');
+        $controller->register_hook('ACTION_ACT_PREPROCESS', 'BEFORE', $this, 'handlePost');
     }
 
-    function secedit_button(Doku_Event $event)
+    public function sectionEditButton(Doku_Event $event)
     {
-        if ($this->_shall_ignore($event)) return;
+        if ($this->shallIgnore($event)) return;
 
         $event->data['name'] = $this->getLang('edit_diagram');
     }
 
-    function handle_form(Doku_Event $event)
+    public function handleForm(Doku_Event $event)
     {
-        if ($this->_shall_ignore($event)) return;
+        if ($this->shallIgnore($event)) return;
 
         global $TEXT;
         global $RANGE;
@@ -47,6 +44,7 @@ class action_plugin_bpmnio_editor extends DokuWiki_Action_Plugin
         $event->stopPropagation();
         $event->preventDefault();
 
+        /** @var Doku_Form $form */
         $form = &$event->data['form'];
         $data = base64_encode($TEXT);
 
@@ -54,8 +52,8 @@ class action_plugin_bpmnio_editor extends DokuWiki_Action_Plugin
         if ($event->data['target'] === 'plugin_bpmnio_dmn')
             $type = 'dmn';
 
-        $this->_addHidden($form, 'plugin_bpmnio_data', $data);
-        $this->_addHTML($form, <<<HTML
+        $form->setHiddenField('plugin_bpmnio_data', $data);
+        $form->addHTML(<<<HTML
             <div class="plugin-bpmnio" id="plugin_bpmnio__{$type}_editor">
                 <div class="{$type}_js_data">{$data}</div>
                 <div class="{$type}_js_canvas">
@@ -66,11 +64,11 @@ class action_plugin_bpmnio_editor extends DokuWiki_Action_Plugin
             HTML);
 
         // used during previews
-        $this->_addHidden($form, 'target', "plugin_bpmnio_{$type}");
-        $this->_addHidden($form, 'range', $RANGE);
+        $form->setHiddenField('target', "plugin_bpmnio_{$type}");
+        $form->setHiddenField('range', $RANGE);
     }
 
-    function handle_post(Doku_Event $event)
+    public function handlePost(Doku_Event $event)
     {
         global $TEXT;
         global $INPUT;
@@ -80,21 +78,7 @@ class action_plugin_bpmnio_editor extends DokuWiki_Action_Plugin
         $TEXT = base64_decode($INPUT->post->str('plugin_bpmnio_data'));
     }
 
-    private function _addHidden($form, $field, $data)
-    {
-        if (is_a($form, Form::class)) { // $event->name is EDIT_FORM_ADDTEXTAREA
-            $form->setHiddenField($field, $data);
-        } else { // $event->name is HTML_EDIT_FORMSELECTION
-            $form->addHidden($field, $data);
-        }
-    }
-
-    private function _addHTML($form, $data)
-    {
-        $form->addHTML($data);
-    }
-
-    private function _shall_ignore(Doku_Event $event)
+    private function shallIgnore(Doku_Event $event)
     {
         if ($event->data['target'] === 'plugin_bpmnio_bpmn')
             return false;
