@@ -20,6 +20,18 @@ class action_plugin_bpmnio_editor extends ActionPlugin
         $controller->register_hook('HTML_SECEDIT_BUTTON', 'BEFORE', $this, 'sectionEditButton');
         $controller->register_hook('EDIT_FORM_ADDTEXTAREA', 'BEFORE', $this, 'handleForm');
         $controller->register_hook('ACTION_ACT_PREPROCESS', 'BEFORE', $this, 'handlePost');
+        $controller->register_hook('FORM_EDIT_OUTPUT', 'BEFORE', $this, 'handleFormEditOutput');
+    }
+
+    public function handleFormEditOutput(Event $event)
+    {
+        /** @var Doku_Form $form */
+        $form = &$event->data;
+
+        $previewButtonPosition = $form->findPositionByAttribute('id', 'edbtn__preview');
+        if ($previewButtonPosition !== false) {
+            $form->removeElement($previewButtonPosition);
+        }
     }
 
     public function sectionEditButton(Event $event)
