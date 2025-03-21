@@ -93,6 +93,10 @@ class syntax_plugin_bpmnio_bpmnio extends SyntaxPlugin
 
     private function getMedia($src)
     {
+        if (!auth_quickaclcheck($src) >= AUTH_READ) {
+            return "Error: Access denied for file $src";
+        }
+
         $file = mediaFN($src);
 
         if (!file_exists($file) || !is_readable($file)) {
