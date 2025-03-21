@@ -2,4 +2,4 @@
 $lang['picker']          = 'BPMNIO Diagram';
 $lang['bpmn_add']        = 'BPMN Diagram hinzufügen';
 $lang['dmn_add']         = 'DMN Diagram hinzufügen';
-$lang['edit_diagram']    = 'Diagram editieren';
+$lang['edit_diagram']    = 'Diagram mit dem grafischen Editor bearbeiten';
