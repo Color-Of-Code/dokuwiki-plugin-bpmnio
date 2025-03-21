@@ -18,7 +18,8 @@ use dokuwiki\Extension\SyntaxPlugin;
 // </div>
 class syntax_plugin_bpmnio_bpmnio extends SyntaxPlugin
 {
-    public string $type = ''; // 'bpmn' or 'dmn'
+    protected string $type = ''; // 'bpmn' or 'dmn'
+    protected string $src = ''; // media file
 
     public function getPType()
     {
@@ -49,27 +50,61 @@ class syntax_plugin_bpmnio_bpmnio extends SyntaxPlugin
     {
         switch ($state) {
             case DOKU_LEXER_ENTER:
-                $matched = '';
-                preg_match('/<bpmnio type="(\w+)">/', $match, $matched);
-                $this->type = $matched[1] ?? 'bpmn';
-                return [$state, $this->type, '', $pos, ''];
+                $matched = [];
+                preg_match('/<bpmnio\s+([^>]+)>/', $match, $matched);
+
+                $attrs = [];
+                if (!empty($matched[1])) {
+                    $attrs = $this->buildAttributes($matched[1]);
+                }
+
+                $this->type = $attrs['type'] ?? 'bpmn';
+                $this->src = $attrs['src'] ?? '';
+
+                return [$state, $this->type, '', $pos, '', false];
 
             case DOKU_LEXER_UNMATCHED:
                 $posStart = $pos;
                 $posEnd = $pos + strlen($match);
-                $match = base64_encode($match);
-                return [$state, $this->type, $match, $posStart, $posEnd];
+
+                $inline = empty($this->src);
+                if (!$inline) {
+                    $match = $this->getMedia($this->src);
+                }
+                return [$state, $this->type, base64_encode($match), $posStart, $posEnd, $inline];
 
             case DOKU_LEXER_EXIT:
                 $this->type = '';
-                return [$state, '', '', '', ''];
+                $this->src = '';
+                return [$state, '', '', '', '', '', false];
         }
         return [];
     }
 
+    private function buildAttributes($string)
+    {
+        $attrs = [];
+        preg_match_all('/(\w+)=["\'](.*?)["\']/', $string, $matches, PREG_SET_ORDER);
+        foreach ($matches as $match) {
+            $attrs[$match[1]] = $match[2];
+        }
+        return $attrs;
+    }
+
+    private function getMedia($src)
+    {
+        $file = mediaFN($src);
+
+        if (!file_exists($file) || !is_readable($file)) {
+            return "Error: Cannot load file $src";
+        }
+
+        return file_get_contents($file);
+    }
+
     public function render($mode, Doku_Renderer $renderer, $data)
     {
-        [$state, $type, $match, $posStart, $posEnd] = $data;
+        [$state, $type, $match, $posStart, $posEnd, $inline] = $data;
 
         if (is_a($renderer, 'renderer_plugin_dw2pdf')) {
             if ($state == DOKU_LEXER_EXIT) {
@@ -99,16 +134,21 @@ class syntax_plugin_bpmnio_bpmnio extends SyntaxPlugin
                             {$match}
                         </div>
                         HTML;
-
-                    $target = "plugin_bpmnio_{$type}";
-                    $sectionEditData = ['target' => $target];
-                    $class = $renderer->startSectionEdit($posStart, $sectionEditData);
+                    if ($inline) {
+                        $target = "plugin_bpmnio_{$type}";
+                        $sectionEditData = ['target' => $target];
+                        $class = $renderer->startSectionEdit($posStart, $sectionEditData);
+                    } else {
+                        $class = '';
+                    }
                     $renderer->doc .= <<<HTML
                         <div class="{$type}_js_canvas {$class}">
                             <div class="{$type}_js_container"></div>
                         </div>
                         HTML;
-                    $renderer->finishSectionEdit($posEnd);
+                    if ($inline) {
+                        $renderer->finishSectionEdit($posEnd);
+                    }
                     break;
 
                 case DOKU_LEXER_EXIT:
