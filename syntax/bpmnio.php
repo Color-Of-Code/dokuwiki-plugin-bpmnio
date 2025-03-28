@@ -1,6 +1,7 @@
 <?php
 
 use dokuwiki\Extension\SyntaxPlugin;
+use dokuwiki\File\MediaResolver;
 
 /**
  * @license    See LICENSE file
@@ -93,12 +94,15 @@ class syntax_plugin_bpmnio_bpmnio extends SyntaxPlugin
 
     private function getMedia($src)
     {
-        if (!auth_quickaclcheck($src) >= AUTH_READ) {
+        global $ID;
+
+        $id = (new MediaResolver($ID))->resolveId($src);
+        if (auth_quickaclcheck($id) < AUTH_READ)
+        {
             return "Error: Access denied for file $src";
         }
 
-        $file = mediaFN($src);
-
+        $file = mediaFN($id);
         if (!file_exists($file) || !is_readable($file)) {
             return "Error: Cannot load file $src";
         }
