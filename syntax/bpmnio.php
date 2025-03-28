@@ -97,8 +97,7 @@ class syntax_plugin_bpmnio_bpmnio extends SyntaxPlugin
         global $ID;
 
         $id = (new MediaResolver($ID))->resolveId($src);
-        if (auth_quickaclcheck($id) < AUTH_READ)
-        {
+        if (auth_quickaclcheck($id) < AUTH_READ) {
             return "Error: Access denied for file $src";
         }
 
