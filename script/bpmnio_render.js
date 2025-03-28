@@ -131,6 +131,12 @@ function safeRender(tag, type, fn) {
         const data = root.find(dataId)[0];
         const xml = extractXml(data.textContent);
 
+        if (xml.startsWith("Error:")) {
+            container.textContent = xml;
+            container.style.color = 'red';
+            return;
+        }
+
         fn(xml, container);
     } catch (err) {
         console.warn(err.message);
