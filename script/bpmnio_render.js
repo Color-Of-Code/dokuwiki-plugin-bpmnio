@@ -28,14 +28,14 @@ function computeBpmnDiagramSize(viewer) {
     const bboxViewport = canvas.getActiveLayer().getBBox();
     const bboxSvg = canvas.getSize();
     canvas.viewbox({
-        x: bboxViewport.x,
-        y: bboxViewport.y,
+        x: bboxViewport.x - 2,
+        y: bboxViewport.y - 2,
         width: bboxSvg.width,
         height: bboxSvg.height,
     });
     return {
-        width: bboxViewport.width,
-        height: bboxViewport.height,
+        width: bboxViewport.width + 4,
+        height: bboxViewport.height + 4,
     };
 }
 
@@ -51,14 +51,14 @@ function computeDmnDiagramSize(viewer) {
         const bboxViewport = canvas.getActiveLayer().getBBox();
         const bboxSvg = canvas.getSize();
         canvas.viewbox({
-            x: bboxViewport.x,
-            y: bboxViewport.y,
+            x: bboxViewport.x - 2,
+            y: bboxViewport.y - 2,
             width: bboxSvg.width,
             height: bboxSvg.height,
         });
         return {
-            width: bboxViewport.width,
-            height: bboxViewport.height,
+            width: bboxViewport.width + 4,
+            height: bboxViewport.height + 4,
         };
     }
     return undefined;
@@ -95,8 +95,8 @@ async function exportDataBase64(editor) {
 }
 
 function addFormSubmitListener(editor) {
-    const form = document.getElementById('dw__editform');
-    form.addEventListener('submit', async () => {
+    const form = document.getElementById("dw__editform");
+    form.addEventListener("submit", async () => {
         const data = await exportDataBase64(editor);
         const field = form.querySelector('input[name="plugin_bpmnio_data"]');
         if (field && data) {
@@ -133,7 +133,7 @@ function safeRender(tag, type, fn) {
 
         if (xml.startsWith("Error:")) {
             container.textContent = xml;
-            container.style.color = 'red';
+            container.style.color = "red";
             return;
         }
 
