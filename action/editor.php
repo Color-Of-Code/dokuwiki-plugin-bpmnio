@@ -28,10 +28,12 @@ class action_plugin_bpmnio_editor extends ActionPlugin
         /** @var Doku_Form $form */
         $form = &$event->data;
 
-        $previewButtonPosition = $form->findPositionByAttribute('id', 'edbtn__preview');
-        if ($previewButtonPosition !== false) {
-            $form->removeElement($previewButtonPosition);
-        }
+        // TODO: commented out for now, as it seems to create trouble for users
+        // remove the preview button, as it does not work with our editor
+        // $previewButtonPosition = $form->findPositionByAttribute('id', 'edbtn__preview');
+        // if ($previewButtonPosition !== false) {
+        //     $form->removeElement($previewButtonPosition);
+        // }
     }
 
     public function sectionEditButton(Event $event)
