@@ -223,3 +223,4 @@ class syntax_plugin_bpmnio_test extends DokuWikiTest
         $this->assertEquals('protected', $plugin->getType());
         $this->assertEquals(0, $plugin->getSort());
     }
+}
