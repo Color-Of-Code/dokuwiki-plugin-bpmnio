@@ -53,6 +53,11 @@ update_library() {
     # Restore url.txt and update version references
     cp "$url_backup" "$dest/url.txt"
 
+    # Rename .css to .less so DokuWiki's LESS compiler inlines them.
+    # DokuWiki's default nginx config blocks /vendor/ paths (403), so CSS
+    # @import directives for .css files would fail at runtime.
+    find "$dest" -name '*.css' -exec bash -c 'mv "$1" "${1%.css}.less"' _ {} \;
+
     echo "Updated $name to $version successfully."
 }
 
