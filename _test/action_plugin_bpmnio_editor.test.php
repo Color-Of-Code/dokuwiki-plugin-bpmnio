@@ -1,16 +1,18 @@
 <?php
+
 /**
  * @group plugin_bpmnio
  * @group plugins
  */
-class action_plugin_bpmnio_editor_test extends DokuWikiTest {
-
+class action_plugin_bpmnio_editor_test extends DokuWikiTest
+{
     protected $pluginsEnabled = array('bpmnio');
 
     /**
      * Test that the editor plugin can be loaded
      */
-    public function test_plugin_load() {
+    public function test_plugin_load()
+    {
         $plugin = plugin_load('action', 'bpmnio_editor');
         $this->assertNotNull($plugin, 'Editor action plugin should be loadable');
     }
@@ -18,7 +20,8 @@ class action_plugin_bpmnio_editor_test extends DokuWikiTest {
     /**
      * Test section edit button for BPMN target
      */
-    public function test_section_edit_button_bpmn() {
+    public function test_section_edit_button_bpmn()
+    {
         $plugin = plugin_load('action', 'bpmnio_editor');
 
         $data = ['target' => 'plugin_bpmnio_bpmn', 'name' => ''];
@@ -32,7 +35,8 @@ class action_plugin_bpmnio_editor_test extends DokuWikiTest {
     /**
      * Test section edit button for DMN target
      */
-    public function test_section_edit_button_dmn() {
+    public function test_section_edit_button_dmn()
+    {
         $plugin = plugin_load('action', 'bpmnio_editor');
 
         $data = ['target' => 'plugin_bpmnio_dmn', 'name' => ''];
@@ -46,7 +50,8 @@ class action_plugin_bpmnio_editor_test extends DokuWikiTest {
     /**
      * Test section edit button ignores non-bpmnio targets
      */
-    public function test_section_edit_button_ignores_other() {
+    public function test_section_edit_button_ignores_other()
+    {
         $plugin = plugin_load('action', 'bpmnio_editor');
 
         $data = ['target' => 'section', 'name' => ''];
@@ -60,7 +65,8 @@ class action_plugin_bpmnio_editor_test extends DokuWikiTest {
     /**
      * Test handlePost does nothing when plugin data not in POST
      */
-    public function test_handle_post_noop_without_data() {
+    public function test_handle_post_noop_without_data()
+    {
         $plugin = plugin_load('action', 'bpmnio_editor');
 
         global $TEXT;

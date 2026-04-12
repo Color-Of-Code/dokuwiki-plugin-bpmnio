@@ -15,7 +15,7 @@ use dokuwiki\Utf8;
 
 class action_plugin_bpmnio_editor extends ActionPlugin
 {
-    public function register(EventHandler $controller)
+    public function register(EventHandler $controller): void
     {
         $controller->register_hook('HTML_SECEDIT_BUTTON', 'BEFORE', $this, 'sectionEditButton');
         $controller->register_hook('EDIT_FORM_ADDTEXTAREA', 'BEFORE', $this, 'handleForm');
@@ -25,27 +25,22 @@ class action_plugin_bpmnio_editor extends ActionPlugin
 
     public function handleFormEditOutput(Event $event)
     {
-        /** @var Doku_Form $form */
-        $form = &$event->data;
-
-        // TODO: commented out for now, as it seems to create trouble for users
-        // remove the preview button, as it does not work with our editor
-        // $previewButtonPosition = $form->findPositionByAttribute('id', 'edbtn__preview');
-        // if ($previewButtonPosition !== false) {
-        //     $form->removeElement($previewButtonPosition);
-        // }
     }
 
     public function sectionEditButton(Event $event)
     {
-        if ($this->shallIgnore($event)) return;
+        if ($this->shallIgnore($event)) {
+            return;
+        }
 
         $event->data['name'] = $this->getLang('edit_diagram');
     }
 
     public function handleForm(Event $event)
     {
-        if ($this->shallIgnore($event)) return;
+        if ($this->shallIgnore($event)) {
+            return;
+        }
 
         global $TEXT;
         global $RANGE;
@@ -65,8 +60,9 @@ class action_plugin_bpmnio_editor extends ActionPlugin
         $data = base64_encode($TEXT);
 
         $type = 'bpmn';
-        if ($event->data['target'] === 'plugin_bpmnio_dmn')
+        if ($event->data['target'] === 'plugin_bpmnio_dmn') {
             $type = 'dmn';
+        }
 
         $form->setHiddenField('plugin_bpmnio_data', $data);
         $form->addHTML(<<<HTML
@@ -89,17 +85,21 @@ class action_plugin_bpmnio_editor extends ActionPlugin
         global $TEXT;
         global $INPUT;
 
-        if (!$INPUT->post->has('plugin_bpmnio_data')) return;
+        if (!$INPUT->post->has('plugin_bpmnio_data')) {
+            return;
+        }
 
         $TEXT = base64_decode($INPUT->post->str('plugin_bpmnio_data'));
     }
 
     private function shallIgnore(Event $event)
     {
-        if ($event->data['target'] === 'plugin_bpmnio_bpmn')
+        if ($event->data['target'] === 'plugin_bpmnio_bpmn') {
             return false;
-        if ($event->data['target'] === 'plugin_bpmnio_dmn')
+        }
+        if ($event->data['target'] === 'plugin_bpmnio_dmn') {
             return false;
+        }
         return true;
     }
 }

@@ -3,8 +3,10 @@
     "ignoreFiles": ["vendor/**"],
     "rules": {
         "selector-class-pattern": null,
+        "selector-id-pattern": null,
         "custom-property-pattern": null,
         "no-descending-specificity": null,
+        "at-rule-empty-line-before": null,
         "at-rule-no-unknown": [true, {
             "ignoreAtRules": ["plugin"]
         }]

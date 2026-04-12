@@ -1,0 +1,23 @@
+{
+    "name": "color-of-code/dokuwiki-plugin-bpmnio",
+    "description": "DokuWiki plugin for rendering BPMN and DMN diagrams using bpmn.io",
+    "type": "project",
+    "license": "GPL-2.0-or-later",
+    "require-dev": {
+        "squizlabs/php_codesniffer": "^3.7",
+        "phpstan/phpstan": "^1.10"
+    },
+    "scripts": {
+        "cs": ".composer-vendor/bin/phpcs",
+        "cs-fix": ".composer-vendor/bin/phpcbf",
+        "stan": ".composer-vendor/bin/phpstan analyse --no-progress",
+        "lint": [
+            "@cs",
+            "@stan"
+        ]
+    },
+    "config": {
+        "sort-packages": true,
+        "vendor-dir": ".composer-vendor"
+    }
+}

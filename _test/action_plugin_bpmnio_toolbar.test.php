@@ -1,16 +1,18 @@
 <?php
+
 /**
  * @group plugin_bpmnio
  * @group plugins
  */
-class action_plugin_bpmnio_toolbar_test extends DokuWikiTest {
-
+class action_plugin_bpmnio_toolbar_test extends DokuWikiTest
+{
     protected $pluginsEnabled = array('bpmnio');
 
     /**
      * Test that the toolbar plugin can be loaded
      */
-    public function test_plugin_load() {
+    public function test_plugin_load()
+    {
         $plugin = plugin_load('action', 'bpmnio_toolbar');
         $this->assertNotNull($plugin, 'Toolbar action plugin should be loadable');
     }
@@ -18,7 +20,8 @@ class action_plugin_bpmnio_toolbar_test extends DokuWikiTest {
     /**
      * Test that the toolbar handler adds the picker to event data
      */
-    public function test_toolbar_handler_adds_picker() {
+    public function test_toolbar_handler_adds_picker()
+    {
         $plugin = plugin_load('action', 'bpmnio_toolbar');
 
         $data = [];
@@ -50,7 +53,8 @@ class action_plugin_bpmnio_toolbar_test extends DokuWikiTest {
     /**
      * Test that toolbar icons reference the correct directory
      */
-    public function test_toolbar_icon_paths() {
+    public function test_toolbar_icon_paths()
+    {
         $plugin = plugin_load('action', 'bpmnio_toolbar');
 
         $data = [];
@@ -66,7 +70,8 @@ class action_plugin_bpmnio_toolbar_test extends DokuWikiTest {
     /**
      * Test that BPMN template contains valid XML structure
      */
-    public function test_bpmn_template_content() {
+    public function test_bpmn_template_content()
+    {
         $plugin = plugin_load('action', 'bpmnio_toolbar');
 
         $data = [];
@@ -83,7 +88,8 @@ class action_plugin_bpmnio_toolbar_test extends DokuWikiTest {
     /**
      * Test that DMN template contains valid XML structure
      */
-    public function test_dmn_template_content() {
+    public function test_dmn_template_content()
+    {
         $plugin = plugin_load('action', 'bpmnio_toolbar');
 
         $data = [];

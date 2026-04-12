@@ -10,7 +10,7 @@ use dokuwiki\Extension\Event;
 // See help: https://www.dokuwiki.org/devel:toolbar
 class action_plugin_bpmnio_toolbar extends ActionPlugin
 {
-    public function register(EventHandler $controller)
+    public function register(EventHandler $controller): void
     {
         $controller->register_hook('TOOLBAR_DEFINE', 'AFTER', $this, 'handleToolbar');
     }
@@ -45,6 +45,10 @@ class action_plugin_bpmnio_toolbar extends ActionPlugin
 
     private function getFileContent($file)
     {
-        return trim(file_get_contents(__DIR__ . '/../data/' . $file . '.text'));
+        $path = __DIR__ . '/../data/' . $file . '.text';
+        if (!file_exists($path) || !is_readable($path)) {
+            return '';
+        }
+        return trim(file_get_contents($path));
     }
 }
