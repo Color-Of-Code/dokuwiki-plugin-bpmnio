@@ -3,12 +3,5 @@ parameters:
     paths:
         - syntax
         - action
-    scanDirectories:
-        - _test
-    ignoreErrors:
-        # DokuWiki global functions and constants not available during static analysis
-        - '#Function (p_get_instructions|p_render|plugin_load|auth_quickaclcheck|mediaFN|msg) not found#'
-        - '#Constant DOKU_LEXER_\w+ not found#'
-        - '#Constant AUTH_READ not found#'
-        - '#Constant DOKU_BASE not found#'
-        - '#Class (Doku_Handler|Doku_Renderer|DokuWikiTest|Doku_Form) not found#'
+    scanFiles:
+        - .phpstan/dokuwiki.stub

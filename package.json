@@ -1,0 +1,19 @@
+{
+    "name": "dokuwiki-plugin-bpmnio",
+    "version": "1.0.0",
+    "private": true,
+    "type": "module",
+    "description": "Dev tooling for dokuwiki-plugin-bpmnio",
+    "devDependencies": {
+        "@eslint/js": "^9.0.0",
+        "eslint": "^9.0.0",
+        "globals": "^15.0.0",
+        "stylelint": "^16.0.0",
+        "stylelint-config-standard-less": "^3.0.0"
+    },
+    "scripts": {
+        "lint:js": "eslint script.js script/",
+        "lint:css": "stylelint 'css/**/*.less' '*.less'",
+        "lint": "npm run lint:js && npm run lint:css"
+    }
+}

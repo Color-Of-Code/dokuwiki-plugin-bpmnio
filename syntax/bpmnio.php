@@ -22,32 +22,32 @@ class syntax_plugin_bpmnio_bpmnio extends SyntaxPlugin
     protected string $type = ''; // 'bpmn' or 'dmn'
     protected string $src = ''; // media file
 
-    public function getPType()
+    public function getPType(): string
     {
         return 'block';
     }
 
-    public function getType()
+    public function getType(): string
     {
         return 'protected';
     }
 
-    public function getSort()
+    public function getSort(): int
     {
         return 0;
     }
 
-    public function connectTo($mode)
+    public function connectTo($mode): void
     {
         $this->Lexer->addEntryPattern('<bpmnio.*?>(?=.*?</bpmnio>)', $mode, 'plugin_bpmnio_bpmnio');
     }
 
-    public function postConnect()
+    public function postConnect(): void
     {
         $this->Lexer->addExitPattern('</bpmnio>', 'plugin_bpmnio_bpmnio');
     }
 
-    public function handle($match, $state, $pos, Doku_Handler $handler)
+    public function handle($match, $state, $pos, Doku_Handler $handler): array
     {
         switch ($state) {
             case DOKU_LEXER_ENTER:
@@ -109,7 +109,7 @@ class syntax_plugin_bpmnio_bpmnio extends SyntaxPlugin
         return file_get_contents($file);
     }
 
-    public function render($mode, Doku_Renderer $renderer, $data)
+    public function render($mode, Doku_Renderer $renderer, $data): bool
     {
         [$state, $type, $match, $posStart, $posEnd, $inline] = $data;
 

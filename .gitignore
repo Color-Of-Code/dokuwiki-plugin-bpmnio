@@ -1,0 +1,6 @@
+# Composer dev dependencies (vendor/ holds committed bpmn-js/dmn-js libs)
+/.composer-vendor/
+composer.lock
+
+# npm
+node_modules/

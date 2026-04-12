@@ -14,5 +14,26 @@
         <!-- DokuWiki plugins use snake_case class names by convention -->
         <exclude name="PSR1.Classes.ClassDeclaration.MissingNamespace"/>
         <exclude name="Squiz.Classes.ValidClassName.NotCamelCaps"/>
+        <!-- PHPUnit test methods use test_snake_case naming convention -->
+        <exclude name="PSR1.Methods.CamelCapsMethodName.NotCamelCaps"/>
+    </rule>
+
+    <!-- Test files may have side effects (group annotations) -->
+    <rule ref="PSR1.Files.SideEffects.FoundWithSymbols">
+        <exclude-pattern>*/_test/*</exclude-pattern>
+    </rule>
+
+    <!-- phpcs parser struggles with PHP 7.3+ flexible heredoc in test files -->
+    <rule ref="Generic.WhiteSpace.ScopeIndent">
+        <exclude-pattern>*/_test/*</exclude-pattern>
+    </rule>
+    <rule ref="Squiz.Classes.ValidClassName.MissingBrace">
+        <exclude-pattern>*/_test/*</exclude-pattern>
+    </rule>
+    <rule ref="PSR2.Classes.ClassDeclaration.MissingBrace">
+        <exclude-pattern>*/_test/*</exclude-pattern>
+    </rule>
+    <rule ref="Generic.Files.LineLength.TooLong">
+        <exclude-pattern>*/_test/*</exclude-pattern>
     </rule>
 </ruleset>

@@ -1,0 +1,215 @@
+<?php
+/**
+ * PHPStan stubs for DokuWiki framework classes.
+ * These provide type signatures so PHPStan can analyse DokuWiki plugins
+ * without requiring a full DokuWiki installation.
+ */
+
+namespace dokuwiki\Extension {
+
+    class Plugin
+    {
+        public function getLang(string $key): string
+        {
+            return '';
+        }
+    }
+
+    class ActionPlugin extends Plugin
+    {
+        public function register(EventHandler $controller): void
+        {
+        }
+    }
+
+    class SyntaxPlugin extends Plugin
+    {
+        /** @var object */
+        public $Lexer;
+
+        public function getPType(): string
+        {
+            return '';
+        }
+
+        public function getType(): string
+        {
+            return '';
+        }
+
+        public function getSort(): int
+        {
+            return 0;
+        }
+
+        public function connectTo(string $mode): void
+        {
+        }
+
+        public function postConnect(): void
+        {
+        }
+
+        /**
+         * @param mixed[] $data
+         * @return mixed[]
+         */
+        public function handle(string $match, int $state, int $pos, \Doku_Handler $handler): array
+        {
+            return [];
+        }
+
+        /**
+         * @param mixed[] $data
+         */
+        public function render(string $mode, \Doku_Renderer $renderer, array $data): bool
+        {
+            return false;
+        }
+    }
+
+    class EventHandler
+    {
+        /**
+         * @param mixed $param
+         */
+        public function register_hook(string $event, string $advise, object $obj, string $method, $param = null): void
+        {
+        }
+    }
+
+    class Event
+    {
+        /** @var mixed */
+        public $data;
+
+        public function stopPropagation(): void
+        {
+        }
+
+        public function preventDefault(): void
+        {
+        }
+    }
+}
+
+namespace dokuwiki\File {
+
+    class MediaResolver
+    {
+        public function __construct(string $id)
+        {
+        }
+
+        public function resolveId(string $src): string
+        {
+            return '';
+        }
+    }
+}
+
+namespace dokuwiki\Form {
+
+    class Form
+    {
+    }
+}
+
+namespace {
+
+    class Doku_Handler
+    {
+    }
+
+    class Doku_Renderer
+    {
+        /** @var string */
+        public string $doc = '';
+
+        /**
+         * @param array<string, mixed> $data
+         */
+        public function startSectionEdit(int $start, array $data): string
+        {
+            return '';
+        }
+
+        public function finishSectionEdit(int $end = 0): void
+        {
+        }
+    }
+
+    class Doku_Form
+    {
+        public function setHiddenField(string $name, string $value): void
+        {
+        }
+
+        public function addHTML(string $html): void
+        {
+        }
+
+        /** @return int|false */
+        public function findPositionByAttribute(string $name, string $value)
+        {
+            return false;
+        }
+
+        public function removeElement(int $pos): void
+        {
+        }
+    }
+
+    class renderer_plugin_dw2pdf extends Doku_Renderer
+    {
+    }
+
+    // DokuWiki constants
+    define('DOKU_LEXER_ENTER', 1);
+    define('DOKU_LEXER_MATCHED', 2);
+    define('DOKU_LEXER_UNMATCHED', 3);
+    define('DOKU_LEXER_EXIT', 4);
+    define('DOKU_LEXER_SPECIAL', 5);
+    define('AUTH_READ', 1);
+    define('DOKU_BASE', '/');
+
+    /**
+     * @param string $text
+     * @return mixed[]
+     */
+    function p_get_instructions(string $text): array
+    {
+        return [];
+    }
+
+    /**
+     * @param mixed[] $instructions
+     * @param mixed[] $info
+     */
+    function p_render(string $mode, array $instructions, array &$info): string
+    {
+        return '';
+    }
+
+    /**
+     * @return object|null
+     */
+    function plugin_load(string $type, string $name)
+    {
+        return null;
+    }
+
+    function auth_quickaclcheck(string $id): int
+    {
+        return 0;
+    }
+
+    function mediaFN(string $id): string
+    {
+        return '';
+    }
+
+    function msg(string $message, int $lvl = 0): void
+    {
+    }
+}

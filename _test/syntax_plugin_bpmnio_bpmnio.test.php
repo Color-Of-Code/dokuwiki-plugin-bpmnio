@@ -1,13 +1,15 @@
 <?php
+
 /**
  * @group plugin_bpmnio
  * @group plugins
  */
-class syntax_plugin_bpmnio_test extends DokuWikiTest {
-
+class syntax_plugin_bpmnio_test extends DokuWikiTest
+{
     protected $pluginsEnabled = array('bpmnio');
 
-    public function test_syntax_bpmn() {
+    public function test_syntax_bpmn()
+    {
         $info = array();
         $expected = <<<OUT
         <div class="plugin-bpmnio" id="__bpmn_js_1"><div class="bpmn_js_data">
@@ -29,7 +31,8 @@ class syntax_plugin_bpmnio_test extends DokuWikiTest {
         $this->assertEquals($expected, $xhtml);
     }
 
-    public function test_syntax_dmn() {
+    public function test_syntax_dmn()
+    {
         $info = array();
         $expected = <<<OUT
         <div class="plugin-bpmnio" id="__dmn_js_1"><div class="dmn_js_data">
@@ -54,7 +57,8 @@ class syntax_plugin_bpmnio_test extends DokuWikiTest {
     /**
      * Test that type defaults to bpmn when not specified
      */
-    public function test_syntax_default_type() {
+    public function test_syntax_default_type()
+    {
         $info = array();
 
         $input = <<<IN
@@ -74,7 +78,8 @@ class syntax_plugin_bpmnio_test extends DokuWikiTest {
     /**
      * Test empty content between tags
      */
-    public function test_syntax_empty_content() {
+    public function test_syntax_empty_content()
+    {
         $info = array();
 
         $input = <<<IN
@@ -93,7 +98,8 @@ class syntax_plugin_bpmnio_test extends DokuWikiTest {
     /**
      * Test that multiline XML content is properly base64-encoded
      */
-    public function test_syntax_multiline_content() {
+    public function test_syntax_multiline_content()
+    {
         $info = array();
 
         $input = <<<IN
@@ -119,7 +125,8 @@ class syntax_plugin_bpmnio_test extends DokuWikiTest {
     /**
      * Test that the plugin produces section edit markers for inline content
      */
-    public function test_syntax_section_edit_bpmn() {
+    public function test_syntax_section_edit_bpmn()
+    {
         $info = array();
 
         $input = <<<IN
@@ -138,7 +145,8 @@ class syntax_plugin_bpmnio_test extends DokuWikiTest {
     /**
      * Test that the plugin produces section edit markers for DMN inline content
      */
-    public function test_syntax_section_edit_dmn() {
+    public function test_syntax_section_edit_dmn()
+    {
         $info = array();
 
         $input = <<<IN
@@ -157,7 +165,8 @@ class syntax_plugin_bpmnio_test extends DokuWikiTest {
     /**
      * Test that unrecognized text outside <bpmnio> is not affected
      */
-    public function test_syntax_no_interference() {
+    public function test_syntax_no_interference()
+    {
         $info = array();
 
         $input = <<<IN
@@ -179,7 +188,8 @@ class syntax_plugin_bpmnio_test extends DokuWikiTest {
     /**
      * Test the handle method directly for ENTER state
      */
-    public function test_handle_enter_state() {
+    public function test_handle_enter_state()
+    {
         $plugin = plugin_load('syntax', 'bpmnio_bpmnio');
         $this->assertNotNull($plugin, 'Plugin should be loadable');
 
@@ -193,7 +203,8 @@ class syntax_plugin_bpmnio_test extends DokuWikiTest {
     /**
      * Test the handle method directly for EXIT state
      */
-    public function test_handle_exit_state() {
+    public function test_handle_exit_state()
+    {
         $plugin = plugin_load('syntax', 'bpmnio_bpmnio');
         $handler = new Doku_Handler();
         $result = $plugin->handle('</bpmnio>', DOKU_LEXER_EXIT, 0, $handler);
@@ -204,7 +215,8 @@ class syntax_plugin_bpmnio_test extends DokuWikiTest {
     /**
      * Test that the plugin is correctly registered
      */
-    public function test_plugin_registration() {
+    public function test_plugin_registration()
+    {
         $plugin = plugin_load('syntax', 'bpmnio_bpmnio');
         $this->assertNotNull($plugin, 'Plugin should be loadable');
         $this->assertEquals('block', $plugin->getPType());
