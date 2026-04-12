@@ -29,7 +29,7 @@ class syntax_plugin_bpmnio_test extends DokuWikiTest {
         $this->assertEquals($expected, $xhtml);
     }
 
-    public function test_sytax_dmn() {
+    public function test_syntax_dmn() {
         $info = array();
         $expected = <<<OUT
         <div class="plugin-bpmnio" id="__dmn_js_1"><div class="dmn_js_data">
