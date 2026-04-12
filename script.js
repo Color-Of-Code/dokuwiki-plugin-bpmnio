@@ -2,6 +2,7 @@
 /* DOKUWIKI:include_once vendor/bpmn-js/dist/bpmn-modeler.production.min.js */
 
 /* DOKUWIKI:include_once vendor/dmn-js/dist/dmn-viewer.production.min.js */
+/* DOKUWIKI:include_once script/dmn_viewer_ref.js */
 /* DOKUWIKI:include_once vendor/dmn-js/dist/dmn-modeler.production.min.js */
 
 /* DOKUWIKI:include_once script/bpmnio_render.js */
