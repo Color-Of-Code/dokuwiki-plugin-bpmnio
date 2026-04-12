@@ -1,7 +1,9 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Update vendor libraries (bpmn-js and dmn-js) from their release URLs.
+# Update vendor libraries (bpmn-js and dmn-js) from npm registry.
+# Downloads pre-built npm packages (which include dist/) and keeps only
+# the files needed to run the plugin.
 # Usage: ./update-vendor.sh
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -9,51 +11,77 @@ VENDOR_DIR="$SCRIPT_DIR/vendor"
 TMP_DIR=$(mktemp -d)
 trap 'rm -rf "$TMP_DIR"' EXIT
 
+# Files/dirs to keep from the npm package
+KEEP_PATTERNS=(dist package.json LICENSE README.md CHANGELOG.md)
+
 update_library() {
     local name="$1"
-    local url_file="$VENDOR_DIR/$name/url.txt"
+    local version="$2"
+    local dest="$VENDOR_DIR/$name"
 
-    if [[ ! -f "$url_file" ]]; then
-        echo "ERROR: $url_file not found"
-        return 1
-    fi
+    local tarball_url="https://registry.npmjs.org/${name}/-/${name}-${version}.tgz"
+    echo "Updating $name to $version from $tarball_url ..."
 
-    local tarball_url
-    tarball_url=$(head -1 "$url_file")
-
-    echo "Updating $name from $tarball_url ..."
-
-    local archive="$TMP_DIR/$name.tar.gz"
+    local archive="$TMP_DIR/$name.tgz"
     curl -sL "$tarball_url" -o "$archive"
 
     local extract_dir="$TMP_DIR/$name-extract"
     mkdir -p "$extract_dir"
+    # npm tarballs extract to a package/ directory
     tar xzf "$archive" -C "$extract_dir"
 
-    # The archive extracts to a single directory like bpmn-js-18.3.1/
-    local src_dir
-    src_dir=$(find "$extract_dir" -mindepth 1 -maxdepth 1 -type d | head -1)
-
-    if [[ -z "$src_dir" ]]; then
-        echo "ERROR: Could not find extracted directory for $name"
+    local src_dir="$extract_dir/package"
+    if [[ ! -d "$src_dir" ]]; then
+        echo "ERROR: Could not find extracted package/ directory for $name"
         return 1
     fi
 
-    local dest="$VENDOR_DIR/$name"
     # Preserve url.txt
     local url_backup="$TMP_DIR/${name}_url.txt"
     cp "$dest/url.txt" "$url_backup"
 
-    # Replace vendor directory contents
+    # Remove old vendor dir and recreate with only needed files
     rm -rf "$dest"
-    cp -r "$src_dir" "$dest"
+    mkdir -p "$dest"
+
+    for pattern in "${KEEP_PATTERNS[@]}"; do
+        if [[ -e "$src_dir/$pattern" ]]; then
+            cp -r "$src_dir/$pattern" "$dest/$pattern"
+        fi
+    done
+
+    # Restore url.txt and update version references
     cp "$url_backup" "$dest/url.txt"
 
-    echo "Updated $name successfully."
+    echo "Updated $name to $version successfully."
 }
 
-update_library "bpmn-js"
-update_library "dmn-js"
+get_version() {
+    local name="$1"
+    local url_file="$VENDOR_DIR/$name/url.txt"
+
+    if [[ ! -f "$url_file" ]]; then
+        echo "ERROR: $url_file not found" >&2
+        return 1
+    fi
+
+    # Extract version from the npm URL in url.txt (e.g. ...@18.14.0/)
+    local version
+    version=$(grep -oP "${name}@\K[0-9]+\.[0-9]+\.[0-9]+" "$url_file" | head -1)
+
+    if [[ -z "$version" ]]; then
+        echo "ERROR: Could not extract version for $name from $url_file" >&2
+        return 1
+    fi
+
+    echo "$version"
+}
+
+bpmn_version=$(get_version "bpmn-js")
+dmn_version=$(get_version "dmn-js")
+
+update_library "bpmn-js" "$bpmn_version"
+update_library "dmn-js" "$dmn_version"
 
 echo ""
-echo "Done. Review the changes and update url.txt if needed."
+echo "Done. Updated bpmn-js to $bpmn_version and dmn-js to $dmn_version."
