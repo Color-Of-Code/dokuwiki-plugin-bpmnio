@@ -1,19 +1,88 @@
 div.plugin-bpmnio {
     overflow: hidden;
+
+    --plugin-bpmnio-surface: #fff;
+    --plugin-bpmnio-surface-alt: #f4f6f8;
+    --plugin-bpmnio-surface-muted: #e8edf2;
+    --plugin-bpmnio-border: #aeb8c2;
+    --plugin-bpmnio-text: #1f2933;
+    --plugin-bpmnio-text-muted: #52606d;
+    --plugin-bpmnio-accent: #0b74de;
+    --plugin-bpmnio-accent-soft: rgb(11 116 222 / 15%);
+    --plugin-bpmnio-danger: #c81e1e;
+    --plugin-bpmnio-danger-soft: #fde8e8;
+    --plugin-bpmnio-shadow: rgb(15 23 42 / 12%);
 }
 
 div.plugin-bpmnio .bpmn_js_canvas {
     overflow: auto;
     padding: 1em;
     border-radius: 0.5em;
-    background-color: #eee;
+    background-color: var(--plugin-bpmnio-surface-alt);
 }
 
 div.plugin-bpmnio .dmn_js_canvas {
     overflow: auto;
     padding: 1em;
     border-radius: 0.5em;
-    background-color: #eee;
+    background-color: var(--plugin-bpmnio-surface-alt);
+}
+
+.plugin-bpmnio .bjs-container,
+.plugin-bpmnio .djs-parent,
+.plugin-bpmnio .dmn-js-parent {
+    color: var(--plugin-bpmnio-text);
+    font-family: Arial, sans-serif;
+
+    --color-grey-225-10-15: var(--plugin-bpmnio-text);
+    --color-grey-225-10-35: var(--plugin-bpmnio-text-muted);
+    --color-grey-225-10-55: #7b8794;
+    --color-grey-225-10-75: var(--plugin-bpmnio-border);
+    --color-grey-225-10-80: #c7d0d9;
+    --color-grey-225-10-85: #d9e2ec;
+    --color-grey-225-10-90: #e5e7eb;
+    --color-grey-225-10-95: #f3f4f6;
+    --color-grey-225-10-97: var(--plugin-bpmnio-surface-alt);
+    --color-blue-205-100-35: #0a5bb5;
+    --color-blue-205-100-45: var(--plugin-bpmnio-accent);
+    --color-blue-205-100-45-opacity-30: rgb(11 116 222 / 30%);
+    --color-blue-205-100-50: #0a84ff;
+    --color-blue-205-100-50-opacity-15: var(--plugin-bpmnio-accent-soft);
+    --color-blue-205-100-70: #69aef5;
+    --color-blue-205-100-80: #8ec5ff;
+    --color-blue-205-100-95: #eaf4ff;
+    --color-green-150-86-44: #0f9d58;
+    --color-red-360-100-35: #b91c1c;
+    --color-red-360-100-40: var(--plugin-bpmnio-danger);
+    --color-red-360-100-45: #dc2626;
+    --color-red-360-100-92: #fee2e2;
+    --color-red-360-100-97: var(--plugin-bpmnio-danger-soft);
+    --color-white: var(--plugin-bpmnio-surface);
+    --color-black: #000;
+    --color-black-opacity-05: rgb(0 0 0 / 5%);
+    --color-black-opacity-10: rgb(15 23 42 / 10%);
+    --color-black-opacity-20: rgb(15 23 42 / 20%);
+    --color-black-opacity-30: rgb(15 23 42 / 30%);
+}
+
+.plugin-bpmnio .bjs-container,
+.plugin-bpmnio .djs-container,
+.plugin-bpmnio .dmn-js-parent,
+.plugin-bpmnio .dmn-decision-table-container,
+.plugin-bpmnio .dmn-literal-expression-container,
+.plugin-bpmnio .dmn-boxed-expression-container,
+.plugin-bpmnio .dmn-drd-container {
+    color: var(--plugin-bpmnio-text);
+}
+
+.plugin-bpmnio .bjs-container button,
+.plugin-bpmnio .djs-container button,
+.plugin-bpmnio .dmn-js-parent button,
+.plugin-bpmnio .dmn-js-parent [contenteditable],
+.plugin-bpmnio .dmn-js-parent input,
+.plugin-bpmnio .dmn-js-parent select,
+.plugin-bpmnio .dmn-js-parent textarea {
+    color: inherit;
 }
 
 .plugin-bpmnio svg {
@@ -23,10 +92,104 @@ div.plugin-bpmnio .dmn_js_canvas {
 
 .plugin-bpmnio .dmn-drd-container {
     height: 100%;
+
+    --dmn-definitions-background-color: var(--plugin-bpmnio-surface);
+    --dmn-definitions-border-color: var(--plugin-bpmnio-border);
+    --dmn-definitions-focus-border-color: var(--plugin-bpmnio-border);
+    --drill-down-overlay-background-color: var(--plugin-bpmnio-surface);
+    --drill-down-overlay-color: var(--plugin-bpmnio-text);
+}
+
+.plugin-bpmnio .dmn-definitions {
+    color: var(--plugin-bpmnio-text);
+    background-color: var(--dmn-definitions-background-color);
+    border-color: var(--dmn-definitions-border-color);
+}
+
+.plugin-bpmnio .dmn-definitions .dmn-definitions-name,
+.plugin-bpmnio .dmn-definitions .dmn-definitions-id {
+    color: var(--plugin-bpmnio-text);
+    background: transparent;
+}
+
+.plugin-bpmnio .dmn-definitions > [contenteditable]:hover,
+.plugin-bpmnio .dmn-definitions > [contenteditable]:focus {
+    color: var(--plugin-bpmnio-text);
+    background-color: var(--plugin-bpmnio-surface-alt);
+}
+
+.plugin-bpmnio .djs-overlay .drill-down-overlay > button,
+.plugin-bpmnio .djs-overlay .drill-down-overlay > span {
+    color: var(--drill-down-overlay-color);
+    background: var(--drill-down-overlay-background-color);
+    border: 1px solid var(--plugin-bpmnio-border);
+    box-shadow: none;
+}
+
+.plugin-bpmnio .djs-overlay .drill-down-overlay > button:hover,
+.plugin-bpmnio .djs-overlay .drill-down-overlay > button:focus {
+    background: var(--plugin-bpmnio-surface-alt);
+}
+
+.plugin-bpmnio .bjs-drilldown {
+    fill: var(--plugin-bpmnio-surface);
+    background-color: var(--plugin-bpmnio-accent);
 }
 
 .plugin-bpmnio .bjs-breadcrumbs {
     display: none;
+}
+
+.plugin-bpmnio .dmn-decision-table-container,
+.plugin-bpmnio .dmn-boxed-expression-container,
+.plugin-bpmnio .dmn-literal-expression-container {
+    --separator-color: var(--plugin-bpmnio-border);
+    --input-border-color: var(--plugin-bpmnio-border);
+    --input-color: var(--plugin-bpmnio-text);
+    --input-focus-box-shadow-inset-color: var(--plugin-bpmnio-border);
+    --select-option-hover-background-color: var(--plugin-bpmnio-surface-alt);
+    --select-options-background-color: var(--plugin-bpmnio-surface);
+    --select-options-border-color: var(--plugin-bpmnio-border);
+    --select-options-box-shadow-color: var(--plugin-bpmnio-shadow);
+    --select-options-color: var(--plugin-bpmnio-text);
+    --powered-by-overlay-content-background-color: var(--plugin-bpmnio-surface);
+    --powered-by-overlay-content-color: var(--plugin-bpmnio-text);
+    --powered-by-overlay-content-border-color: var(--plugin-bpmnio-border);
+    --view-drd-button-background-color: var(--plugin-bpmnio-surface);
+    --view-drd-button-border-color: var(--plugin-bpmnio-border);
+    --view-drd-button-color: var(--plugin-bpmnio-text);
+    --view-drd-button-hover-background-color: var(--plugin-bpmnio-surface-alt);
+
+    background-color: var(--plugin-bpmnio-surface);
+    color: var(--plugin-bpmnio-text);
+}
+
+.plugin-bpmnio .dmn-decision-table-container {
+    --decision-table-color: var(--plugin-bpmnio-text);
+    --decision-table-background-color: var(--plugin-bpmnio-surface);
+    --decision-table-properties-color: var(--plugin-bpmnio-text);
+    --hit-policy-explanation-color: var(--plugin-bpmnio-text-muted);
+    --simple-mode-button-color: var(--plugin-bpmnio-text);
+    --simple-mode-button-background-color: var(--plugin-bpmnio-surface);
+    --simple-mode-button-border-color: var(--plugin-bpmnio-border);
+    --simple-mode-button-box-shadow-color: var(--plugin-bpmnio-shadow);
+    --simple-mode-button-disabled-color: #9aa5b1;
+    --table-cell-color: var(--plugin-bpmnio-text);
+    --table-cell-border-color: var(--plugin-bpmnio-border);
+    --table-foot-add-rule-border-color: var(--plugin-bpmnio-border);
+    --table-foot-add-rule-color: var(--plugin-bpmnio-text-muted);
+    --table-foot-add-rule-hover-border-color: var(--plugin-bpmnio-text-muted);
+    --table-foot-add-rule-hover-color: var(--plugin-bpmnio-text);
+    --table-head-border-color: var(--plugin-bpmnio-border);
+    --table-head-clause-color: var(--plugin-bpmnio-text-muted);
+    --table-head-separator-color: var(--plugin-bpmnio-border);
+    --table-head-variable-color: var(--plugin-bpmnio-text-muted);
+    --table-row-alternative-background-color: var(--plugin-bpmnio-surface-alt);
+    --edit-button-color: var(--plugin-bpmnio-text);
+    --edit-button-background-color: var(--plugin-bpmnio-surface);
+    --edit-button-border-color: var(--plugin-bpmnio-border);
+    --edit-button-box-shadow-color: var(--plugin-bpmnio-shadow);
+    --edit-button-disabled-color: #9aa5b1;
 }
 
 .dmn-decision-table-container tbody tr {

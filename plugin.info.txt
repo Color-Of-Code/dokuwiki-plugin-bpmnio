@@ -1,7 +1,7 @@
 base    bpmnio
 author  Jaap de Haan
 email   ColorOfCode@googlemail.com
-date    2026-04-12
+date    2026-04-18
 name    BPMN.io Plugin
 desc    Renders BPMN or DMN xml using the bpmn.io js library
 url     http://www.dokuwiki.org/plugin:bpmnio
