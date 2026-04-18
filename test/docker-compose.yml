@@ -9,6 +9,7 @@ services:
     volumes:
       - ../:/config/dokuwiki/lib/plugins/bpmnio:ro
       - ./data:/config/dokuwiki/data/pages/test:rw
+      - ./media:/config/dokuwiki/data/media/test:rw
     ports:
       - "8080:80"
     healthcheck:

@@ -21,6 +21,7 @@ class syntax_plugin_bpmnio_bpmnio extends SyntaxPlugin
 {
     protected string $type = ''; // 'bpmn' or 'dmn'
     protected string $src = ''; // media file
+    protected string $zoom = ''; // optional scaling factor
 
     public function getPType(): string
     {
@@ -61,8 +62,9 @@ class syntax_plugin_bpmnio_bpmnio extends SyntaxPlugin
 
                 $this->type = $attrs['type'] ?? 'bpmn';
                 $this->src = $attrs['src'] ?? '';
+                $this->zoom = $this->normalizeZoom($attrs['zoom'] ?? null) ?? '';
 
-                return [$state, $this->type, '', $pos, '', false];
+                return [$state, $this->type, '', $pos, '', false, $this->zoom];
 
             case DOKU_LEXER_UNMATCHED:
                 $posStart = $pos;
@@ -72,12 +74,13 @@ class syntax_plugin_bpmnio_bpmnio extends SyntaxPlugin
                 if (!$inline) {
                     $match = $this->getMedia($this->src);
                 }
-                return [$state, $this->type, base64_encode($match), $posStart, $posEnd, $inline];
+                return [$state, $this->type, base64_encode($match), $posStart, $posEnd, $inline, $this->zoom];
 
             case DOKU_LEXER_EXIT:
                 $this->type = '';
                 $this->src = '';
-                return [$state, '', '', '', '', '', false];
+                $this->zoom = '';
+                return [$state, '', '', '', '', '', false, ''];
         }
         return [];
     }
@@ -90,6 +93,24 @@ class syntax_plugin_bpmnio_bpmnio extends SyntaxPlugin
             $attrs[$match[1]] = $match[2];
         }
         return $attrs;
+    }
+
+    private function normalizeZoom($zoom): ?string
+    {
+        if ($zoom === null || $zoom === '') {
+            return null;
+        }
+
+        if (!is_numeric($zoom)) {
+            return null;
+        }
+
+        $zoom = (float) $zoom;
+        if ($zoom <= 0) {
+            return null;
+        }
+
+        return rtrim(rtrim(number_format($zoom, 4, '.', ''), '0'), '.');
     }
 
     private function getMedia($src)
@@ -111,7 +132,7 @@ class syntax_plugin_bpmnio_bpmnio extends SyntaxPlugin
 
     public function render($mode, Doku_Renderer $renderer, $data): bool
     {
-        [$state, $type, $match, $posStart, $posEnd, $inline] = $data;
+        [$state, $type, $match, $posStart, $posEnd, $inline, $zoom] = array_pad($data, 7, '');
 
         if (is_a($renderer, 'renderer_plugin_dw2pdf')) {
             if ($state == DOKU_LEXER_EXIT) {
@@ -148,9 +169,10 @@ class syntax_plugin_bpmnio_bpmnio extends SyntaxPlugin
                     } else {
                         $class = '';
                     }
+                    $zoomAttr = $zoom !== '' ? " data-zoom=\"{$zoom}\"" : '';
                     $renderer->doc .= <<<HTML
                         <div class="{$type}_js_canvas {$class}">
-                            <div class="{$type}_js_container"></div>
+                            <div class="{$type}_js_container"{$zoomAttr}></div>
                         </div>
                         HTML;
                     if ($inline) {

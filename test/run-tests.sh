@@ -24,6 +24,12 @@ for file in plugin.info.txt syntax/bpmnio.php script/bpmnio_render.js vendor/bpm
 done
 echo "  All plugin files present"
 
+echo "Checking media fixtures..."
+for file in /config/dokuwiki/data/media/test/bpmn-test.bpmn /config/dokuwiki/data/media/test/dmn-test.dmn; do
+    docker exec "$CONTAINER" test -f "$file" || { echo "MISSING: $file"; exit 1; }
+done
+echo "  Shared media fixtures present"
+
 echo "Checking test pages..."
 for page in test:bpmn-test test:dmn-test; do
     curl -sf "http://localhost:$PORT/doku.php?id=$page" | grep -q "bpmn\|dmn" \

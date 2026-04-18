@@ -185,6 +185,38 @@ class syntax_plugin_bpmnio_test extends DokuWikiTest
         $this->assertStringContainsString('plugin-bpmnio', $xhtml);
     }
 
+    public function test_syntax_zoom_attribute()
+    {
+        $info = array();
+
+        $input = <<<IN
+        <bpmnio type="bpmn" zoom="0.5">
+        XML...
+        </bpmnio>
+        IN;
+
+        $instructions = p_get_instructions($input);
+        $xhtml = p_render('xhtml', $instructions, $info);
+
+        $this->assertStringContainsString('data-zoom="0.5"', $xhtml);
+    }
+
+    public function test_syntax_ignores_invalid_zoom_attribute()
+    {
+        $info = array();
+
+        $input = <<<IN
+        <bpmnio type="bpmn" zoom="0">
+        XML...
+        </bpmnio>
+        IN;
+
+        $instructions = p_get_instructions($input);
+        $xhtml = p_render('xhtml', $instructions, $info);
+
+        $this->assertStringNotContainsString('data-zoom=', $xhtml);
+    }
+
     /**
      * Test the handle method directly for ENTER state
      */

@@ -12,34 +12,56 @@ async function renderDiagram(xml, container, viewer, computeSizeFn) {
 
         if (!computeSizeFn) return;
 
-        const size = computeSizeFn(viewer);
-        if (!size) return;
+        const zoom = getZoomFactor(container);
+        const layout = computeSizeFn(viewer, zoom);
+        if (!layout) return;
 
-        container.style.height = `${size.height}px`;
-        container.style.width = `max(100%,${size.width}px)`;
+        container.style.height = `${layout.scaledHeight}px`;
+        container.style.width = `${layout.scaledWidth}px`;
+
+        if (typeof layout.applyZoom === "function") {
+            layout.applyZoom();
+        }
     } catch (err) {
         container.textContent = err;
         console.error(err.message, err.warnings);
     }
 }
 
-function computeBpmnDiagramSize(viewer) {
+function getZoomFactor(container) {
+    const zoom = Number.parseFloat(container.dataset.zoom ?? "1");
+
+    if (!Number.isFinite(zoom) || zoom <= 0) {
+        return 1;
+    }
+
+    return zoom;
+}
+
+function computeBpmnDiagramSize(viewer, zoom) {
     const canvas = viewer.get("canvas");
     const bboxViewport = canvas.getActiveLayer().getBBox();
-    const bboxSvg = canvas.getSize();
-    canvas.viewbox({
-        x: bboxViewport.x - 2,
-        y: bboxViewport.y - 2,
-        width: bboxSvg.width,
-        height: bboxSvg.height,
-    });
+    const width = bboxViewport.width + 4;
+    const height = bboxViewport.height + 4;
+
     return {
-        width: bboxViewport.width + 4,
-        height: bboxViewport.height + 4,
+        width,
+        height,
+        scaledWidth: Math.max(width * zoom, 1),
+        scaledHeight: Math.max(height * zoom, 1),
+        applyZoom() {
+            canvas.resized();
+            canvas.viewbox({
+                x: bboxViewport.x - 2,
+                y: bboxViewport.y - 2,
+                width,
+                height,
+            });
+        },
     };
 }
 
-function computeDmnDiagramSize(viewer) {
+function computeDmnDiagramSize(viewer, zoom) {
     const activeView = viewer.getActiveView();
 
     if (activeView.type === "drd") {
@@ -49,16 +71,22 @@ function computeDmnDiagramSize(viewer) {
         const canvas = activeEditor.get("canvas");
 
         const bboxViewport = canvas.getActiveLayer().getBBox();
-        const bboxSvg = canvas.getSize();
-        canvas.viewbox({
-            x: bboxViewport.x - 2,
-            y: bboxViewport.y - 2,
-            width: bboxSvg.width,
-            height: bboxSvg.height,
-        });
+        const width = bboxViewport.width + 4;
+        const height = bboxViewport.height + 4;
         return {
-            width: bboxViewport.width + 4,
-            height: bboxViewport.height + 4,
+            width,
+            height,
+            scaledWidth: Math.max(width * zoom, 1),
+            scaledHeight: Math.max(height * zoom, 1),
+            applyZoom() {
+                canvas.resized();
+                canvas.viewbox({
+                    x: bboxViewport.x - 2,
+                    y: bboxViewport.y - 2,
+                    width,
+                    height,
+                });
+            },
         };
     }
     return undefined;

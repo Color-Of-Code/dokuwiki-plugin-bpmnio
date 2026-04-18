@@ -20,4 +20,4 @@ DokuWiki: http://localhost:8080
 - BPMN: http://localhost:8080/doku.php?id=test:bpmn-test
 - DMN: http://localhost:8080/doku.php?id=test:dmn-test
 
-The plugin is mounted read-only from the parent directory. Edit files and refresh the browser to see changes.
+The plugin is mounted read-only from the parent directory. Test pages are mounted from `test/data` and shared media fixtures are mounted from `test/media`. Edit files and refresh the browser to see changes.
