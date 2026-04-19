@@ -1,0 +1,5 @@
+====== DMN Link Target ======
+
+This page is the target for the linked DMN DRD node in the plugin test area.
+
+If you reached this page by clicking the rendered decision node, the DMN link feature is working.

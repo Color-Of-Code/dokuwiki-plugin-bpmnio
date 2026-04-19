@@ -1,0 +1,5 @@
+====== BPMN Link Target ======
+
+This page is the target for the linked BPMN task in the plugin test area.
+
+If you reached this page by clicking the rendered task, the BPMN link feature is working.

@@ -14,6 +14,9 @@ class syntax_plugin_bpmnio_test extends DokuWikiTest
         $expected = <<<OUT
         <div class="plugin-bpmnio" id="__bpmn_js_1"><div class="bpmn_js_data">
             ClhNTC4uLgo=
+        </div>
+        <div class="bpmn_js_links">
+            W10=
         </div><div class="bpmn_js_canvas sectionedit1">
             <div class="bpmn_js_container"></div>
         </div><!-- EDIT{&quot;target&quot;:&quot;plugin_bpmnio_bpmn&quot;,&quot;secid&quot;:1,&quot;range&quot;:&quot;21-29&quot;} --></div>
@@ -37,6 +40,9 @@ class syntax_plugin_bpmnio_test extends DokuWikiTest
         $expected = <<<OUT
         <div class="plugin-bpmnio" id="__dmn_js_1"><div class="dmn_js_data">
             ClhNTC4uLgo=
+        </div>
+        <div class="dmn_js_links">
+            W10=
         </div><div class="dmn_js_canvas sectionedit1">
             <div class="dmn_js_container"></div>
         </div><!-- EDIT{&quot;target&quot;:&quot;plugin_bpmnio_dmn&quot;,&quot;secid&quot;:1,&quot;range&quot;:&quot;20-28&quot;} --></div>
@@ -216,6 +222,70 @@ class syntax_plugin_bpmnio_test extends DokuWikiTest
 
         $this->assertStringNotContainsString('data-zoom=', $xhtml);
     }
+
+        public function test_syntax_builds_link_payload_for_named_elements()
+        {
+                $info = array();
+                io_mkdir_p(dirname(wikiFN('docs:start')));
+                io_saveFile(wikiFN('docs:start'), 'Read docs');
+
+                $input = <<<IN
+                <bpmnio type="bpmn">
+                <definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL">
+                    <process id="Process_1">
+                        <task id="Task_1" name="[[:docs:start|Read docs]]" />
+                    </process>
+                </definitions>
+                </bpmnio>
+                IN;
+
+                $instructions = p_get_instructions($input);
+                $xhtml = p_render('xhtml', $instructions, $info);
+
+                preg_match('/<div class="bpmn_js_data">\s*(.*?)\s*<\/div>/s', $xhtml, $xmlMatch);
+                $this->assertNotEmpty($xmlMatch[1]);
+                $decodedXml = base64_decode(trim($xmlMatch[1]), true);
+                $this->assertNotFalse($decodedXml);
+                $this->assertStringContainsString('name="Read docs"', $decodedXml);
+                $this->assertStringNotContainsString('[[', $decodedXml);
+
+                preg_match('/<div class="bpmn_js_links">\s*(.*?)\s*<\/div>/s', $xhtml, $linkMatch);
+                $this->assertNotEmpty($linkMatch[1]);
+                $decodedLinks = base64_decode(trim($linkMatch[1]), true);
+                $this->assertNotFalse($decodedLinks);
+                $links = json_decode($decodedLinks, true);
+
+                $this->assertIsArray($links);
+                $this->assertArrayHasKey('Task_1', $links);
+                $this->assertEquals('/doku.php?id=docs%3Astart', $links['Task_1']['href']);
+                $this->assertEquals('docs:start', $links['Task_1']['target']);
+        }
+
+        public function test_syntax_keeps_unlinked_names_unchanged()
+        {
+                $info = array();
+
+                $input = <<<IN
+                <bpmnio type="dmn">
+                <?xml version="1.0" encoding="UTF-8"?>
+                <definitions xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" id="Definitions_1">
+                    <decision id="Decision_1" name="Approve Order" />
+                </definitions>
+                </bpmnio>
+                IN;
+
+                $instructions = p_get_instructions($input);
+                $xhtml = p_render('xhtml', $instructions, $info);
+
+                preg_match('/<div class="dmn_js_data">\s*(.*?)\s*<\/div>/s', $xhtml, $xmlMatch);
+                $decodedXml = base64_decode(trim($xmlMatch[1]), true);
+                $this->assertNotFalse($decodedXml);
+                $this->assertStringContainsString('Approve Order', $decodedXml);
+
+                preg_match('/<div class="dmn_js_links">\s*(.*?)\s*<\/div>/s', $xhtml, $linkMatch);
+                $decodedLinks = base64_decode(trim($linkMatch[1]), true);
+                $this->assertSame('[]', $decodedLinks);
+        }
 
     /**
      * Test the handle method directly for ENTER state

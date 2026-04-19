@@ -15,6 +15,11 @@ use dokuwiki\Utf8;
 
 class action_plugin_bpmnio_editor extends ActionPlugin
 {
+    private function loadLinkProcessor(): void
+    {
+        require_once __DIR__ . '/../inc/link_processor.php';
+    }
+
     public function register(EventHandler $controller): void
     {
         $controller->register_hook('HTML_SECEDIT_BUTTON', 'BEFORE', $this, 'sectionEditButton');
@@ -58,6 +63,10 @@ class action_plugin_bpmnio_editor extends ActionPlugin
         /** @var Doku_Form $form */
         $form = &$event->data['form'];
         $data = base64_encode($TEXT);
+        $this->loadLinkProcessor();
+        $payload = plugin_bpmnio_link_processor::buildPayload($TEXT);
+        $renderData = base64_encode($payload['xml']);
+        $linkData = base64_encode(json_encode($payload['links']));
 
         $type = 'bpmn';
         if ($event->data['target'] === 'plugin_bpmnio_dmn') {
@@ -65,9 +74,11 @@ class action_plugin_bpmnio_editor extends ActionPlugin
         }
 
         $form->setHiddenField('plugin_bpmnio_data', $data);
+        $form->setHiddenField('plugin_bpmnio_links', $linkData);
         $form->addHTML(<<<HTML
             <div class="plugin-bpmnio" id="plugin_bpmnio__{$type}_editor">
-                <div class="{$type}_js_data">{$data}</div>
+                <div class="{$type}_js_data">{$renderData}</div>
+                <div class="{$type}_js_links">{$linkData}</div>
                 <div class="{$type}_js_canvas">
                     <div class="{$type}_js_container"></div>
                 </div>

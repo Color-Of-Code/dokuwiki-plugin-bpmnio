@@ -5,3 +5,4 @@ parameters:
         - action
     scanFiles:
         - .phpstan/dokuwiki.stub
+        - inc/link_processor.php

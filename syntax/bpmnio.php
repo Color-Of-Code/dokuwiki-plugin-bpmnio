@@ -23,6 +23,11 @@ class syntax_plugin_bpmnio_bpmnio extends SyntaxPlugin
     protected string $src = ''; // media file
     protected string $zoom = ''; // optional scaling factor
 
+    private function loadLinkProcessor(): void
+    {
+        require_once __DIR__ . '/../inc/link_processor.php';
+    }
+
     public function getPType(): string
     {
         return 'block';
@@ -157,9 +162,21 @@ class syntax_plugin_bpmnio_bpmnio extends SyntaxPlugin
                     break;
 
                 case DOKU_LEXER_UNMATCHED:
+                    $xml = base64_decode($match, true);
+                    if ($xml === false) {
+                        $xml = $match;
+                    }
+
+                    $this->loadLinkProcessor();
+                    $payload = plugin_bpmnio_link_processor::buildPayload($xml);
+                    $encodedXml = base64_encode($payload['xml']);
+                    $encodedLinks = base64_encode(json_encode($payload['links']));
                     $renderer->doc .= <<<HTML
                         <div class="{$type}_js_data">
-                            {$match}
+                            {$encodedXml}
+                        </div>
+                        <div class="{$type}_js_links">
+                            {$encodedLinks}
                         </div>
                         HTML;
                     if ($inline) {

@@ -87,10 +87,158 @@ function getLayerBounds(canvas) {
     return bounds;
 }
 
-async function renderDiagram(xml, container, viewer, computeSizeFn) {
+function extractPayload(data) {
+    if (!data) {
+        return "";
+    }
+
+    return new TextDecoder().decode(
+        Uint8Array.from(atob(data), (c) => c.charCodeAt(0))
+    );
+}
+
+function parseLinkMap(root, type) {
+    const dataId = "." + type + "_js_links";
+    const payload = root.find(dataId)[0];
+
+    if (!payload?.textContent?.trim()) {
+        return {};
+    }
+
+    try {
+        return JSON.parse(extractPayload(payload.textContent.trim()));
+    } catch {
+        return {};
+    }
+}
+
+function getElementRegistry(viewer, type) {
+    if (type === "dmn") {
+        const activeView = viewer.getActiveView();
+        if (!activeView || activeView.type !== "drd") {
+            return null;
+        }
+
+        return viewer.getActiveViewer()?.get("elementRegistry") ?? null;
+    }
+
+    return viewer.get("elementRegistry");
+}
+
+function openDiagramLink(event, href) {
+    if (event.button !== undefined && event.button !== 0) {
+        return;
+    }
+
+    if (event.metaKey || event.ctrlKey) {
+        window.open(href, "_blank", "noopener");
+        return;
+    }
+
+    window.location.assign(href);
+}
+
+function setGraphicsTooltip(graphics, href) {
+    let tooltip = graphics.querySelector(":scope > title");
+    if (!tooltip) {
+        tooltip = document.createElementNS("http://www.w3.org/2000/svg", "title");
+        graphics.insertBefore(tooltip, graphics.firstChild);
+    }
+
+    tooltip.textContent = href;
+}
+
+function wireGraphicsLink(graphics, href, linkClass = "wikilink1") {
+    if (!graphics) {
+        return;
+    }
+
+    if (graphics.dataset.bpmnioLinked !== "true") {
+        graphics.addEventListener("click", (event) => openDiagramLink(event, href));
+        graphics.addEventListener("keydown", (event) => {
+            if (event.key !== "Enter" && event.key !== " ") {
+                return;
+            }
+
+            event.preventDefault();
+            openDiagramLink(event, href);
+        });
+    }
+
+    graphics.setAttribute("tabindex", "0");
+    graphics.setAttribute("role", "link");
+    graphics.setAttribute("aria-label", href);
+    setGraphicsTooltip(graphics, href);
+    graphics.dataset.bpmnioLinked = "true";
+    graphics.classList.add("bpmnio-linked", linkClass);
+}
+
+function applyDiagramLinks(viewer, type, links) {
+    const elementRegistry = getElementRegistry(viewer, type);
+    if (!elementRegistry) {
+        return;
+    }
+
+    for (const [elementId, link] of Object.entries(links)) {
+        if (!link?.href) {
+            continue;
+        }
+
+        const element = elementRegistry.get(elementId);
+        if (!element) {
+            continue;
+        }
+
+        wireGraphicsLink(elementRegistry.getGraphics(element), link.href);
+
+        const labelElement = elementRegistry.get(`${elementId}_label`);
+        if (labelElement) {
+            wireGraphicsLink(elementRegistry.getGraphics(labelElement), link.href);
+        }
+    }
+}
+
+function restoreWikiLinks(xml, links) {
+    if (!links || Object.keys(links).length === 0) {
+        return xml;
+    }
+
+    const parser = new DOMParser();
+    const document = parser.parseFromString(xml, "application/xml");
+
+    if (document.querySelector("parsererror")) {
+        return xml;
+    }
+
+    const elements = document.getElementsByTagName("*");
+    for (const element of elements) {
+        const elementId = element.getAttribute("id");
+        if (!elementId || !Object.hasOwn(links, elementId) || !element.hasAttribute("name")) {
+            continue;
+        }
+
+        const currentName = element.getAttribute("name").trim();
+        const target = links[elementId]?.target;
+        if (!target) {
+            continue;
+        }
+
+        const linkMarkup = currentName === "" || currentName === target
+            ? `[[${target}]]`
+            : `[[${target}|${currentName}]]`;
+
+        element.setAttribute("name", linkMarkup);
+    }
+
+    return new XMLSerializer().serializeToString(document);
+}
+
+async function renderDiagram(xml, container, viewer, computeSizeFn, linkMap = {}, type) {
     try {
         clearContainerError(container);
         await viewer.importXML(xml);
+
+        applyDiagramLinks(viewer, type, linkMap);
 
         if (!computeSizeFn) return;
 
@@ -156,7 +304,6 @@ function computeDmnDiagramSize(viewer, zoom) {
     }
 
     const activeEditor = viewer.getActiveViewer();
-
     const canvas = activeEditor?.get("canvas");
     const bboxViewport = getLayerBounds(canvas);
     if (!bboxViewport) {
@@ -189,8 +336,10 @@ async function renderBpmnDiagram(xml, container) {
     }
 
     const viewer = new BpmnViewer({ container });
+    const root = jQuery(container).closest(".plugin-bpmnio");
+    const linkMap = parseLinkMap(root, "bpmn");
 
-    return renderDiagram(xml, container, viewer, computeBpmnDiagramSize);
+    return renderDiagram(xml, container, viewer, computeBpmnDiagramSize, linkMap, "bpmn");
 }
 
 async function renderDmnDiagram(xml, container) {
@@ -200,11 +349,13 @@ async function renderDmnDiagram(xml, container) {
     }
 
     const viewer = new DmnViewer({ container });
+    const root = jQuery(container).closest(".plugin-bpmnio");
+    const linkMap = parseLinkMap(root, "dmn");
 
-    return renderDiagram(xml, container, viewer, computeDmnDiagramSize);
+    return renderDiagram(xml, container, viewer, computeDmnDiagramSize, linkMap, "dmn");
 }
 
-async function exportDataBase64(editor) {
+async function exportDataBase64(editor, linkMap = {}) {
     try {
         if (typeof editor?.saveXML !== "function") {
             return null;
@@ -214,8 +365,9 @@ async function exportDataBase64(editor) {
         const result = await editor.saveXML(options);
         const { xml } = result;
         if (typeof xml === "string" && xml.length > 0) {
+            const restoredXml = restoreWikiLinks(xml, linkMap);
             const encoder = new TextEncoder();
-            const data = encoder.encode(xml);
+            const data = encoder.encode(restoredXml);
             return btoa(String.fromCharCode(...data));
         }
     } catch {
@@ -225,7 +377,7 @@ async function exportDataBase64(editor) {
     return null;
 }
 
-function addFormSubmitListener(editor, container) {
+function addFormSubmitListener(editor, container, type) {
     const form = document.getElementById("dw__editform");
     if (!form) {
         showStatusMessage(container, "Editor form is unavailable.");
@@ -252,7 +404,9 @@ function addFormSubmitListener(editor, container) {
         }
 
         clearStatusMessage(container);
-        const data = await exportDataBase64(editor);
+        const root = jQuery(container).closest(".plugin-bpmnio");
+        const linkMap = parseLinkMap(root, type);
+        const data = await exportDataBase64(editor, linkMap);
         if (!data) {
             showStatusMessage(container, "Unable to save diagram changes.");
             return;
@@ -278,8 +432,8 @@ async function renderBpmnEditor(xml, container) {
     }
 
     const editor = new BpmnEditor({ container });
-    addFormSubmitListener(editor, container);
-    return renderDiagram(xml, container, editor, null);
+    addFormSubmitListener(editor, container, "bpmn");
+    return renderDiagram(xml, container, editor, null, {}, "bpmn");
 }
 
 async function renderDmnEditor(xml, container) {
@@ -289,8 +443,8 @@ async function renderDmnEditor(xml, container) {
     }
 
     const editor = new DmnEditor({ container });
-    addFormSubmitListener(editor, container);
-    return renderDiagram(xml, container, editor, null);
+    addFormSubmitListener(editor, container, "dmn");
+    return renderDiagram(xml, container, editor, null, {}, "dmn");
 }
 
 function startRender(fn, xml, container) {
@@ -312,7 +466,6 @@ function safeRender(tag, type, fn) {
             return;
         }
 
-        // avoid double rendering
         if (container.children?.length > 0) return;
 
         const dataId = "." + type + "_js_data";

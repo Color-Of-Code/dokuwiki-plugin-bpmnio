@@ -90,6 +90,30 @@ div.plugin-bpmnio .dmn_js_canvas {
     width: 100%;
 }
 
+.plugin-bpmnio .bpmnio-linked,
+.plugin-bpmnio .bpmnio-linked * {
+    cursor: pointer;
+}
+
+.plugin-bpmnio .bpmnio-linked.wikilink1 text {
+    fill: #080;
+    text-decoration: underline;
+}
+
+.plugin-bpmnio .bpmnio-linked.wikilink2 text {
+    fill: #d30;
+    text-decoration: underline;
+}
+
+.plugin-bpmnio .bpmnio-linked.wikilink1:hover text,
+.plugin-bpmnio .bpmnio-linked.wikilink1:focus text,
+.plugin-bpmnio .bpmnio-linked.wikilink1:active text,
+.plugin-bpmnio .bpmnio-linked.wikilink2:hover text,
+.plugin-bpmnio .bpmnio-linked.wikilink2:focus text,
+.plugin-bpmnio .bpmnio-linked.wikilink2:active text {
+    text-decoration: none;
+}
+
 .plugin-bpmnio .dmn-drd-container {
     height: 100%;
 

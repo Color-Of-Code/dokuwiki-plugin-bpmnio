@@ -20,4 +20,5 @@ This page tests the BPMN.io plugin functionality with a shared DokuWiki media fi
 
 1. The BPMN diagram above should render using the bpmn.io viewer
 2. You should be able to zoom and pan the diagram
-3. Click on elements to see properties
+3. The "Monitor" task should render without raw [[...]] markup in its label
+4. Clicking the "Monitor" task should open the test page [[test:bpmn-link-target]]

@@ -21,7 +21,7 @@
     </authorityRequirement>
   </knowledgeSource>
   <businessKnowledgeModel id="elMenu" name="El menu" />
-  <decision id="dish-decision" name="Dish Decision">
+  <decision id="dish-decision" name="[[test:dmn-link-target|Dish Decision]]">
     <informationRequirement id="InformationRequirement_1d56kg6">
       <requiredDecision href="#guestCount" />
     </informationRequirement>

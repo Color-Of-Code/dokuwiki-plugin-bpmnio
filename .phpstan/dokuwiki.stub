@@ -209,6 +209,11 @@ namespace {
         return '';
     }
 
+    function cleanID(string $id): string
+    {
+        return '';
+    }
+
     function msg(string $message, int $lvl = 0): void
     {
     }

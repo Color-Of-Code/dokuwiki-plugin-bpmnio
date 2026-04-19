@@ -20,4 +20,5 @@ This page tests the DMN.io plugin functionality with a shared DokuWiki media fil
 
 1. The DMN decision table above should render using the dmn.io viewer
 2. You should be able to see the decision logic clearly
-3. The table should show input/output columns with rules
+3. The DRD decision node should render without raw [[...]] markup in its label
+4. Clicking the "Dish Decision" node in the DRD view should open the test page [[test:dmn-link-target]]

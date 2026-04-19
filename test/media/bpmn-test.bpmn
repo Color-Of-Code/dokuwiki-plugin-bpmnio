@@ -20,7 +20,7 @@
       <outgoing>SequenceFlow_0snv4kp</outgoing>
       <outgoing>SequenceFlow_0nuwads</outgoing>
     </exclusiveGateway>
-    <task id="Task_17knw8l" name="Monitor">
+    <task id="Task_17knw8l" name="[[test:bpmn-link-target|Monitor]]">
       <outgoing>SequenceFlow_121ul2c</outgoing>
     </task>
     <endEvent id="EndEvent_0oj7l6x" name="End">
