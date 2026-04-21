@@ -4,6 +4,22 @@
  * @group plugin_bpmnio
  * @group plugins
  */
+class action_plugin_bpmnio_editor_test_form
+{
+    public array $hiddenFields = [];
+    public string $html = '';
+
+    public function setHiddenField($name, $value)
+    {
+        $this->hiddenFields[$name] = $value;
+    }
+
+    public function addHTML($html)
+    {
+        $this->html .= $html;
+    }
+}
+
 class action_plugin_bpmnio_editor_test extends DokuWikiTest
 {
     protected $pluginsEnabled = array('bpmnio');
@@ -79,5 +95,31 @@ class action_plugin_bpmnio_editor_test extends DokuWikiTest
         $plugin->handlePost($event);
 
         $this->assertEquals('original', $TEXT, '$TEXT should not change when plugin data is not posted');
+    }
+
+    public function test_handle_form_generates_balanced_editor_markup()
+    {
+        $plugin = plugin_load('action', 'bpmnio_editor');
+
+        global $TEXT;
+        global $RANGE;
+
+        $TEXT = '<xml />';
+        $RANGE = '1-2';
+
+        $form = new action_plugin_bpmnio_editor_test_form();
+        $data = [
+            'target' => 'plugin_bpmnio_bpmn',
+            'form' => $form,
+        ];
+        $event = new \dokuwiki\Extension\Event('EDIT_FORM_ADDTEXTAREA', $data);
+
+        $plugin->handleForm($event);
+
+        $this->assertArrayHasKey('plugin_bpmnio_data', $form->hiddenFields);
+        $this->assertStringContainsString('id="plugin_bpmnio__bpmn_editor"', $form->html);
+        $this->assertStringContainsString('<div class="bpmn_js_canvas">', $form->html);
+        $this->assertSame(4, substr_count($form->html, '<div'));
+        $this->assertSame(4, substr_count($form->html, '</div>'));
     }
 }

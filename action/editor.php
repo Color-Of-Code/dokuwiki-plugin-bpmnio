@@ -71,7 +71,6 @@ class action_plugin_bpmnio_editor extends ActionPlugin
                 <div class="{$type}_js_canvas">
                     <div class="{$type}_js_container"></div>
                 </div>
-                </div>
             </div>
             HTML);
 
