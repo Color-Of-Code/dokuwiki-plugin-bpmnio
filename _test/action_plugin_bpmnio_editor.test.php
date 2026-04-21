@@ -4,22 +4,6 @@
  * @group plugin_bpmnio
  * @group plugins
  */
-class action_plugin_bpmnio_editor_test_form
-{
-    public array $hiddenFields = [];
-    public string $html = '';
-
-    public function setHiddenField($name, $value)
-    {
-        $this->hiddenFields[$name] = $value;
-    }
-
-    public function addHTML($html)
-    {
-        $this->html .= $html;
-    }
-}
-
 class action_plugin_bpmnio_editor_test extends DokuWikiTest
 {
     protected $pluginsEnabled = array('bpmnio');
@@ -107,7 +91,20 @@ class action_plugin_bpmnio_editor_test extends DokuWikiTest
         $TEXT = '<xml />';
         $RANGE = '1-2';
 
-        $form = new action_plugin_bpmnio_editor_test_form();
+        $form = new class {
+            public array $hiddenFields = [];
+            public string $html = '';
+
+            public function setHiddenField($name, $value)
+            {
+                $this->hiddenFields[$name] = $value;
+            }
+
+            public function addHTML($html)
+            {
+                $this->html .= $html;
+            }
+        };
         $data = [
             'target' => 'plugin_bpmnio_bpmn',
             'form' => $form,

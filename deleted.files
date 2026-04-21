@@ -3,3 +3,13 @@ style.css
 style.less
 syntax.php
 action/viewer.php
+vendor/bpmn-js/url.txt
+vendor/bpmn-js/dist/assets/bpmn-font/font/bpmn.eot
+vendor/bpmn-js/dist/assets/bpmn-font/font/bpmn.svg
+vendor/bpmn-js/dist/assets/bpmn-font/font/bpmn.ttf
+vendor/bpmn-js/dist/bpmn-navigated-viewer.production.min.js
+vendor/dmn-js/url.txt
+vendor/dmn-js/dist/assets/dmn-font/font/dmn.eot
+vendor/dmn-js/dist/assets/dmn-font/font/dmn.svg
+vendor/dmn-js/dist/assets/dmn-font/font/dmn.ttf
+vendor/dmn-js/dist/dmn-navigated-viewer.production.min.js

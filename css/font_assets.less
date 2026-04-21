@@ -1,0 +1,49 @@
+@font-face {
+    font-family: bpmn;
+    src: url('../plugins/bpmnio/font/bpmn.woff2') format('woff2'),
+         url('../plugins/bpmnio/font/bpmn.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: dmn;
+    src: url('../plugins/bpmnio/font/dmn.woff2') format('woff2'),
+         url('../plugins/bpmnio/font/dmn.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
+[class^="bpmn-icon-"]::before,
+[class*=" bpmn-icon-"]::before {
+    font-family: bpmn, sans-serif;
+    font-style: normal;
+    font-weight: normal;
+    speak: never;
+    display: inline-block;
+    text-decoration: inherit;
+    width: 1em;
+    text-align: center;
+    font-variant: normal;
+    text-transform: none;
+    line-height: 1em;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+[class^="dmn-icon-"]::before,
+[class*=" dmn-icon-"]::before {
+    font-family: dmn, sans-serif;
+    font-style: normal;
+    font-weight: normal;
+    speak: never;
+    display: inline-block;
+    text-decoration: inherit;
+    width: 1em;
+    text-align: center;
+    font-variant: normal;
+    text-transform: none;
+    line-height: 1em;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}

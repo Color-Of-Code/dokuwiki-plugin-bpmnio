@@ -6,14 +6,19 @@
     "description": "Dev tooling for dokuwiki-plugin-bpmnio",
     "devDependencies": {
         "@eslint/js": "^9.0.0",
+        "bpmn-js": "18.14.0",
+        "dmn-js": "17.7.0",
+        "esbuild": "^0.25.11",
         "eslint": "^9.0.0",
         "globals": "^15.0.0",
         "stylelint": "^16.0.0",
         "stylelint-config-standard-less": "^3.0.0"
     },
     "scripts": {
+        "build:vendor": "node build/build-vendor.mjs",
         "lint:js": "eslint script.js script/",
         "lint:css": "stylelint 'css/**/*.less' '*.less'",
-        "lint": "npm run lint:js && npm run lint:css"
+        "lint": "npm run lint:js && npm run lint:css",
+        "prepare": "npm run build:vendor"
     }
 }
