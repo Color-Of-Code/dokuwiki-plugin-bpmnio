@@ -5,7 +5,7 @@ Renders using the bpmn.io js libraries within dokuwiki:
 * BPMN v2.0 diagrams
 * DMN v1.3 decision requirement diagrams, decision tables and literal expressions
 
-Refer to this page for details: https://www.dokuwiki.org/plugin:bpmnio
+Refer to this page for details: <https://www.dokuwiki.org/plugin:bpmnio>
 
 ## Development
 
@@ -21,7 +21,7 @@ Refer to this page for details: https://www.dokuwiki.org/plugin:bpmnio
 # Install PHP dev dependencies (phpcs, phpstan)
 composer install
 
-# Install JS/CSS dev dependencies (eslint, stylelint)
+# Install JS/CSS dev dependencies and vendor build packages
 npm install
 ```
 
@@ -56,11 +56,20 @@ php vendor/bin/phpunit --group plugin_bpmnio
 
 ### Updating vendor libraries
 
-The `vendor/` directory contains committed copies of bpmn-js and dmn-js.
-To update them to the versions specified in `vendor/*/url.txt`:
+The committed `vendor/` bundles are generated locally from the npm packages
+declared in [package.json](package.json). To update them:
 
 ```bash
+# Change the pinned bpmn-js / dmn-js versions in package.json when needed
+npm install
+
+# Rebuild the committed vendor bundles and copied assets
+npm run build:vendor
+
+# Or use the compatibility wrapper
 ./update-vendor.sh
 ```
 
-After updating, edit the `url.txt` files if you want to target a different version.
+The build step emits the production browser bundles into `vendor/`, copies the
+required LESS assets from `node_modules`, and refreshes the public `font/`
+directory used by DokuWiki.
