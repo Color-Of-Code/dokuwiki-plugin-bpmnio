@@ -12,6 +12,8 @@ for i in {1..30}; do
         echo "DokuWiki is ready: http://localhost:8080"
         echo "  BPMN: http://localhost:8080/doku.php?id=test:bpmn-test"
         echo "  DMN:  http://localhost:8080/doku.php?id=test:dmn-test"
+        echo "  Login (read-only): user / user"
+        echo "  Login (admin):     admin / admin"
         exit 0
     fi
     sleep 2
