@@ -6,3 +6,4 @@ parameters:
     scanFiles:
         - .phpstan/dokuwiki.stub
         - inc/link_processor.php
+        - inc/svg_cache.php
