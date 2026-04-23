@@ -68,6 +68,74 @@ function clearContainerError(container) {
     clearStatusMessage(container);
 }
 
+function getSvgCacheKey(container) {
+    return container?.dataset?.svgCacheKey ?? "";
+}
+
+async function saveSvgFallback(viewer, container, type) {
+    const cacheKey = getSvgCacheKey(container);
+    if (
+        !cacheKey
+        || container.dataset.svgCacheUploaded === "true"
+        || container.dataset.svgCacheUnsupported === "true"
+    ) {
+        return;
+    }
+
+    const saveSvg = viewer?.saveSVG;
+    if (typeof saveSvg !== "function") {
+        return;
+    }
+
+    if (type === "dmn") {
+        const activeView = viewer.getActiveView?.();
+        if (!activeView || activeView.type !== "drd") {
+            container.dataset.svgCacheUnsupported = "true";
+            return;
+        }
+    }
+
+    let svg = "";
+    try {
+        const result = await saveSvg.call(viewer);
+        svg = result?.svg ?? "";
+    } catch {
+        return;
+    }
+
+    if (!svg) {
+        return;
+    }
+
+    const base = window.DOKU_BASE ?? "/";
+    const body = new URLSearchParams({
+        call: "plugin_bpmnio_svg_cache",
+        key: cacheKey,
+        type,
+        svg,
+    });
+
+    try {
+        const response = await fetch(`${base}lib/exe/ajax.php`, {
+            method: "POST",
+            body,
+            credentials: "same-origin",
+            headers: {
+                Accept: "application/json",
+            },
+        });
+
+        if (response.ok) {
+            const payload = await response.json().catch(() => null);
+            if (payload?.ok === true) {
+                container.dataset.svgCacheUploaded = "true";
+            }
+        }
+    } catch {
+        // Keep the on-page render working even if the PDF fallback upload fails.
+    }
+}
+
 function getLayerBounds(canvas) {
     const layer = canvas?.getActiveLayer?.();
     if (!layer || typeof layer.getBBox !== "function") {
@@ -339,7 +407,8 @@ async function renderBpmnDiagram(xml, container) {
     const root = jQuery(container).closest(".plugin-bpmnio");
     const linkMap = parseLinkMap(root, "bpmn");
 
-    return renderDiagram(xml, container, viewer, computeBpmnDiagramSize, linkMap, "bpmn");
+    await renderDiagram(xml, container, viewer, computeBpmnDiagramSize, linkMap, "bpmn");
+    await saveSvgFallback(viewer, container, "bpmn");
 }
 
 async function renderDmnDiagram(xml, container) {
@@ -352,7 +421,8 @@ async function renderDmnDiagram(xml, container) {
     const root = jQuery(container).closest(".plugin-bpmnio");
     const linkMap = parseLinkMap(root, "dmn");
 
-    return renderDiagram(xml, container, viewer, computeDmnDiagramSize, linkMap, "dmn");
+    await renderDiagram(xml, container, viewer, computeDmnDiagramSize, linkMap, "dmn");
+    await saveSvgFallback(viewer, container, "dmn");
 }
 
 async function exportDataBase64(editor, linkMap = {}) {

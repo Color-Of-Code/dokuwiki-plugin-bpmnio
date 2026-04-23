@@ -28,6 +28,11 @@ class syntax_plugin_bpmnio_bpmnio extends SyntaxPlugin
         require_once __DIR__ . '/../inc/link_processor.php';
     }
 
+    private function loadSvgCache(): void
+    {
+        require_once __DIR__ . '/../inc/svg_cache.php';
+    }
+
     public function getPType(): string
     {
         return 'block';
@@ -140,14 +145,27 @@ class syntax_plugin_bpmnio_bpmnio extends SyntaxPlugin
         [$state, $type, $match, $posStart, $posEnd, $inline, $zoom] = array_pad($data, 7, '');
 
         if (is_a($renderer, 'renderer_plugin_dw2pdf')) {
-            if ($state == DOKU_LEXER_EXIT) {
-                $renderer->doc .= <<<HTML
-                    <div class="plugin-bpmnio">
-                        <a href="https://github.com/Color-Of-Code/dokuwiki-plugin-bpmnio/issues/4">
-                            DW2PDF support missing: Help wanted
-                        </a>
-                    </div>
-                    HTML;
+            if ($state == DOKU_LEXER_UNMATCHED) {
+                $xml = base64_decode($match, true);
+                if ($xml === false) {
+                    $xml = $match;
+                }
+
+                $this->loadSvgCache();
+                $cacheKey = plugin_bpmnio_svg_cache::buildKey($type, $xml);
+                $svg = plugin_bpmnio_svg_cache::load($cacheKey);
+
+                if ($svg !== null) {
+                    $renderer->doc .= <<<HTML
+                        <div class="plugin-bpmnio plugin-bpmnio-pdf">{$svg}</div>
+                        HTML;
+                } else {
+                    $renderer->doc .= <<<HTML
+                        <div class="plugin-bpmnio">
+                            Diagram unavailable for DW2PDF export until it has been rendered in a browser.
+                        </div>
+                        HTML;
+                }
             }
             return true;
         }
@@ -166,6 +184,9 @@ class syntax_plugin_bpmnio_bpmnio extends SyntaxPlugin
                     if ($xml === false) {
                         $xml = $match;
                     }
+
+                    $this->loadSvgCache();
+                    $cacheKey = plugin_bpmnio_svg_cache::buildKey($type, $xml);
 
                     $this->loadLinkProcessor();
                     $payload = plugin_bpmnio_link_processor::buildPayload($xml);
@@ -189,7 +210,7 @@ class syntax_plugin_bpmnio_bpmnio extends SyntaxPlugin
                     $zoomAttr = $zoom !== '' ? " data-zoom=\"{$zoom}\"" : '';
                     $renderer->doc .= <<<HTML
                         <div class="{$type}_js_canvas {$class}">
-                            <div class="{$type}_js_container"{$zoomAttr}></div>
+                            <div class="{$type}_js_container" data-svg-cache-key="{$cacheKey}"{$zoomAttr}></div>
                         </div>
                         HTML;
                     if ($inline) {

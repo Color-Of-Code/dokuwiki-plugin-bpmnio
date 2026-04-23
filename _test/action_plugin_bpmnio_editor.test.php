@@ -1,5 +1,7 @@
 <?php
 
+require_once __DIR__ . '/../inc/svg_cache.php';
+
 /**
  * @group plugin_bpmnio
  * @group plugins
@@ -14,8 +16,12 @@ class action_plugin_bpmnio_editor_test extends DokuWikiTest
 
         global $TEXT;
         global $RANGE;
+        global $INPUT;
         $TEXT = null;
         $RANGE = null;
+        $INPUT = new \dokuwiki\Input\Input();
+        unset($_POST['key'], $_POST['svg'], $_POST['type']);
+        unset($_SERVER['REQUEST_METHOD']);
     }
 
     /**
@@ -125,6 +131,7 @@ class action_plugin_bpmnio_editor_test extends DokuWikiTest
         $this->assertArrayHasKey('plugin_bpmnio_links', $form->hiddenFields);
         $this->assertEquals(base64_encode($TEXT), $form->hiddenFields['plugin_bpmnio_data']);
         $this->assertStringContainsString('id="plugin_bpmnio__bpmn_editor"', $form->html);
+        $this->assertStringContainsString('data-svg-cache-key="', $form->html);
         $this->assertStringContainsString('<div class="bpmn_js_canvas">', $form->html);
         $this->assertSame(5, substr_count($form->html, '<div'));
         $this->assertSame(5, substr_count($form->html, '</div>'));
@@ -141,5 +148,77 @@ class action_plugin_bpmnio_editor_test extends DokuWikiTest
         $links = json_decode($decodedLinks, true);
         $this->assertArrayHasKey('Task_1', $links);
         $this->assertEquals('docs:start', $links['Task_1']['target']);
+    }
+
+    public function test_handle_svg_cache_ajax_saves_svg()
+    {
+        $plugin = plugin_load('action', 'bpmnio_editor');
+        $key = plugin_bpmnio_svg_cache::buildKey('bpmn', '<definitions id="Defs_3" />');
+
+        $_SERVER['REQUEST_METHOD'] = 'POST';
+        $_POST['key'] = $key;
+        $_POST['type'] = 'bpmn';
+        $_POST['svg'] = '<svg xmlns="http://www.w3.org/2000/svg"><rect width="5" height="5" /></svg>';
+
+        global $INPUT;
+        $INPUT = new \dokuwiki\Input\Input();
+
+        $data = 'plugin_bpmnio_svg_cache';
+        $event = new \dokuwiki\Extension\Event('AJAX_CALL_UNKNOWN', $data);
+
+        ob_start();
+        $plugin->handleSvgCacheAjax($event);
+        $output = ob_get_clean();
+
+        $this->assertStringContainsString('"ok":true', $output);
+        $this->assertFileExists(plugin_bpmnio_svg_cache::getPath($key));
+
+        @unlink(plugin_bpmnio_svg_cache::getPath($key));
+    }
+
+    public function test_handle_svg_cache_ajax_rejects_invalid_payload()
+    {
+        $plugin = plugin_load('action', 'bpmnio_editor');
+
+        $_SERVER['REQUEST_METHOD'] = 'POST';
+        $_POST['key'] = 'invalid-key';
+        $_POST['type'] = 'dmn';
+        $_POST['svg'] = '<svg xmlns="http://www.w3.org/2000/svg"></svg>';
+
+        global $INPUT;
+        $INPUT = new \dokuwiki\Input\Input();
+
+        $data = 'plugin_bpmnio_svg_cache';
+        $event = new \dokuwiki\Extension\Event('AJAX_CALL_UNKNOWN', $data);
+
+        ob_start();
+        $plugin->handleSvgCacheAjax($event);
+        $output = ob_get_clean();
+
+        $this->assertStringContainsString('"ok":false', $output);
+        $this->assertStringContainsString('invalid-payload', $output);
+    }
+
+    public function test_handle_svg_cache_ajax_rejects_invalid_type()
+    {
+        $plugin = plugin_load('action', 'bpmnio_editor');
+
+        $_SERVER['REQUEST_METHOD'] = 'POST';
+        $_POST['key'] = plugin_bpmnio_svg_cache::buildKey('bpmn', '<definitions id="Defs_4" />');
+        $_POST['type'] = 'table';
+        $_POST['svg'] = '<svg xmlns="http://www.w3.org/2000/svg"></svg>';
+
+        global $INPUT;
+        $INPUT = new \dokuwiki\Input\Input();
+
+        $data = 'plugin_bpmnio_svg_cache';
+        $event = new \dokuwiki\Extension\Event('AJAX_CALL_UNKNOWN', $data);
+
+        ob_start();
+        $plugin->handleSvgCacheAjax($event);
+        $output = ob_get_clean();
+
+        $this->assertStringContainsString('"ok":false', $output);
+        $this->assertStringContainsString('invalid-type', $output);
     }
 }
