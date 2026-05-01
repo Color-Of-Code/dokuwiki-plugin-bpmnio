@@ -1,5 +1,7 @@
 <?php
 
+require_once __DIR__ . '/../inc/png_cache.php';
+
 /**
  * @group plugin_bpmnio
  * @group plugins
@@ -14,8 +16,12 @@ class action_plugin_bpmnio_editor_test extends DokuWikiTest
 
         global $TEXT;
         global $RANGE;
+        global $INPUT;
         $TEXT = null;
         $RANGE = null;
+        $INPUT = new \dokuwiki\Input\Input();
+        unset($_POST['key'], $_POST['png'], $_POST['type']);
+        unset($_SERVER['REQUEST_METHOD']);
     }
 
     /**
@@ -125,6 +131,7 @@ class action_plugin_bpmnio_editor_test extends DokuWikiTest
         $this->assertArrayHasKey('plugin_bpmnio_links', $form->hiddenFields);
         $this->assertEquals(base64_encode($TEXT), $form->hiddenFields['plugin_bpmnio_data']);
         $this->assertStringContainsString('id="plugin_bpmnio__bpmn_editor"', $form->html);
+        $this->assertStringContainsString('data-png-cache-key="', $form->html);
         $this->assertStringContainsString('<div class="bpmn_js_canvas">', $form->html);
         $this->assertSame(5, substr_count($form->html, '<div'));
         $this->assertSame(5, substr_count($form->html, '</div>'));
@@ -141,5 +148,104 @@ class action_plugin_bpmnio_editor_test extends DokuWikiTest
         $links = json_decode($decodedLinks, true);
         $this->assertArrayHasKey('Task_1', $links);
         $this->assertEquals('docs:start', $links['Task_1']['target']);
+    }
+
+    public function test_handle_png_cache_ajax_saves_png()
+    {
+        $plugin = plugin_load('action', 'bpmnio_editor');
+        $key = plugin_bpmnio_png_cache::buildKey('bpmn', '<definitions id="Defs_9" />');
+
+        $_SERVER['REQUEST_METHOD'] = 'POST';
+        $_POST['key'] = $key;
+        $_POST['type'] = 'bpmn';
+        $_POST['png'] = 'data:image/png;base64,' . base64_encode(base64_decode(
+            'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAFgwJ/lw0LJwAAAABJRU5ErkJggg==',
+            true
+        ));
+
+        global $INPUT;
+        $INPUT = new \dokuwiki\Input\Input();
+
+        $data = 'plugin_bpmnio_png_cache';
+        $event = new \dokuwiki\Extension\Event('AJAX_CALL_UNKNOWN', $data);
+
+        ob_start();
+        $plugin->handlePngCacheAjax($event);
+        $output = ob_get_clean();
+
+        $this->assertStringContainsString('"ok":true', $output);
+        $this->assertFileExists(plugin_bpmnio_png_cache::getPath($key));
+        $this->assertStringStartsWith('data:image/png;base64,', plugin_bpmnio_png_cache::loadDataUri($key));
+
+        @unlink(plugin_bpmnio_png_cache::getPath($key));
+    }
+
+    public function test_handle_png_cache_ajax_rejects_invalid_png()
+    {
+        $plugin = plugin_load('action', 'bpmnio_editor');
+
+        $_SERVER['REQUEST_METHOD'] = 'POST';
+        $_POST['key'] = plugin_bpmnio_png_cache::buildKey('bpmn', '<definitions id="Defs_8" />');
+        $_POST['type'] = 'bpmn';
+        $_POST['png'] = 'not-a-png';
+
+        global $INPUT;
+        $INPUT = new \dokuwiki\Input\Input();
+
+        $data = 'plugin_bpmnio_png_cache';
+        $event = new \dokuwiki\Extension\Event('AJAX_CALL_UNKNOWN', $data);
+
+        ob_start();
+        $plugin->handlePngCacheAjax($event);
+        $output = ob_get_clean();
+
+        $this->assertStringContainsString('"ok":false', $output);
+        $this->assertStringContainsString('invalid-cache-data', $output);
+    }
+
+    public function test_handle_png_cache_ajax_rejects_invalid_payload()
+    {
+        $plugin = plugin_load('action', 'bpmnio_editor');
+
+        $_SERVER['REQUEST_METHOD'] = 'POST';
+        $_POST['key'] = 'invalid-key';
+        $_POST['type'] = 'dmn';
+        $_POST['png'] = 'not-a-png';
+
+        global $INPUT;
+        $INPUT = new \dokuwiki\Input\Input();
+
+        $data = 'plugin_bpmnio_png_cache';
+        $event = new \dokuwiki\Extension\Event('AJAX_CALL_UNKNOWN', $data);
+
+        ob_start();
+        $plugin->handlePngCacheAjax($event);
+        $output = ob_get_clean();
+
+        $this->assertStringContainsString('"ok":false', $output);
+        $this->assertStringContainsString('invalid-payload', $output);
+    }
+
+    public function test_handle_png_cache_ajax_rejects_invalid_type()
+    {
+        $plugin = plugin_load('action', 'bpmnio_editor');
+
+        $_SERVER['REQUEST_METHOD'] = 'POST';
+        $_POST['key'] = plugin_bpmnio_png_cache::buildKey('bpmn', '<definitions id="Defs_4" />');
+        $_POST['type'] = 'table';
+        $_POST['png'] = 'not-a-png';
+
+        global $INPUT;
+        $INPUT = new \dokuwiki\Input\Input();
+
+        $data = 'plugin_bpmnio_png_cache';
+        $event = new \dokuwiki\Extension\Event('AJAX_CALL_UNKNOWN', $data);
+
+        ob_start();
+        $plugin->handlePngCacheAjax($event);
+        $output = ob_get_clean();
+
+        $this->assertStringContainsString('"ok":false', $output);
+        $this->assertStringContainsString('invalid-type', $output);
     }
 }
