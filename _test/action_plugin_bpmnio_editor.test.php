@@ -176,6 +176,37 @@ class action_plugin_bpmnio_editor_test extends DokuWikiTest
         @unlink(plugin_bpmnio_svg_cache::getPath($key));
     }
 
+    public function test_handle_svg_cache_ajax_accepts_bpmnio_svg_doctype()
+    {
+        $plugin = plugin_load('action', 'bpmnio_editor');
+        $key = plugin_bpmnio_svg_cache::buildKey('bpmn', '<definitions id="Defs_5" />');
+
+        $_SERVER['REQUEST_METHOD'] = 'POST';
+        $_POST['key'] = $key;
+        $_POST['type'] = 'bpmn';
+        $_POST['svg'] = '<?xml version="1.0" encoding="utf-8"?>' . "\n" .
+            '<!-- created with bpmn-js / http://bpmn.io -->' . "\n" .
+            '<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" ' .
+            '"http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">' . "\n" .
+            '<svg xmlns="http://www.w3.org/2000/svg"><rect width="5" height="5" /></svg>';
+
+        global $INPUT;
+        $INPUT = new \dokuwiki\Input\Input();
+
+        $data = 'plugin_bpmnio_svg_cache';
+        $event = new \dokuwiki\Extension\Event('AJAX_CALL_UNKNOWN', $data);
+
+        ob_start();
+        $plugin->handleSvgCacheAjax($event);
+        $output = ob_get_clean();
+
+        $this->assertStringContainsString('"ok":true', $output);
+        $this->assertFileExists(plugin_bpmnio_svg_cache::getPath($key));
+        $this->assertStringNotContainsString('<!DOCTYPE', plugin_bpmnio_svg_cache::load($key));
+
+        @unlink(plugin_bpmnio_svg_cache::getPath($key));
+    }
+
     public function test_handle_svg_cache_ajax_rejects_invalid_payload()
     {
         $plugin = plugin_load('action', 'bpmnio_editor');
@@ -197,6 +228,30 @@ class action_plugin_bpmnio_editor_test extends DokuWikiTest
 
         $this->assertStringContainsString('"ok":false', $output);
         $this->assertStringContainsString('invalid-payload', $output);
+    }
+
+    public function test_handle_svg_cache_ajax_rejects_unexpected_doctype()
+    {
+        $plugin = plugin_load('action', 'bpmnio_editor');
+
+        $_SERVER['REQUEST_METHOD'] = 'POST';
+        $_POST['key'] = plugin_bpmnio_svg_cache::buildKey('bpmn', '<definitions id="Defs_6" />');
+        $_POST['type'] = 'bpmn';
+        $_POST['svg'] = '<!DOCTYPE svg [<!ENTITY test SYSTEM "file:///etc/passwd">]>' .
+            '<svg xmlns="http://www.w3.org/2000/svg">&test;</svg>';
+
+        global $INPUT;
+        $INPUT = new \dokuwiki\Input\Input();
+
+        $data = 'plugin_bpmnio_svg_cache';
+        $event = new \dokuwiki\Extension\Event('AJAX_CALL_UNKNOWN', $data);
+
+        ob_start();
+        $plugin->handleSvgCacheAjax($event);
+        $output = ob_get_clean();
+
+        $this->assertStringContainsString('"ok":false', $output);
+        $this->assertStringContainsString('invalid-svg', $output);
     }
 
     public function test_handle_svg_cache_ajax_rejects_invalid_type()

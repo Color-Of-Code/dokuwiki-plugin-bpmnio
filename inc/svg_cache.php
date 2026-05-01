@@ -63,7 +63,8 @@ class plugin_bpmnio_svg_cache
             return null;
         }
 
-        if (stripos($svg, '<!DOCTYPE') !== false) {
+        $svg = self::stripAllowedSvgDoctype($svg);
+        if ($svg === null) {
             return null;
         }
 
@@ -82,5 +83,21 @@ class plugin_bpmnio_svg_cache
 
         $normalized = $document->saveXML($document->documentElement);
         return is_string($normalized) && $normalized !== '' ? $normalized : null;
+    }
+
+    private static function stripAllowedSvgDoctype(string $svg): ?string
+    {
+        if (stripos($svg, '<!DOCTYPE') === false) {
+            return $svg;
+        }
+
+        $allowedDoctype = '~<!DOCTYPE\s+svg\s+PUBLIC\s+["\']-//W3C//DTD SVG 1\.1//EN["\']\s+["\']http://www\.w3\.org/Graphics/SVG/1\.1/DTD/svg11\.dtd["\']\s*>~i';
+        $stripped = preg_replace($allowedDoctype, '', $svg, 1, $count);
+
+        if ($stripped === null || $count !== 1 || stripos($stripped, '<!DOCTYPE') !== false) {
+            return null;
+        }
+
+        return $stripped;
     }
 }

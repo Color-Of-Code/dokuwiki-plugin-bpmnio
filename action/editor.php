@@ -124,6 +124,8 @@ class action_plugin_bpmnio_editor extends ActionPlugin
         $event->stopPropagation();
         $event->preventDefault();
 
+        $this->loadSvgCache();
+
         if (strtoupper((string) ($_SERVER['REQUEST_METHOD'] ?? 'GET')) !== 'POST') {
             $this->sendJsonResponse(405, ['ok' => false, 'error' => 'method-not-allowed']);
             return;
@@ -143,7 +145,6 @@ class action_plugin_bpmnio_editor extends ActionPlugin
             return;
         }
 
-        $this->loadSvgCache();
         $ok = plugin_bpmnio_svg_cache::save($key, $svg);
 
         $this->sendJsonResponse($ok ? 200 : 400, [

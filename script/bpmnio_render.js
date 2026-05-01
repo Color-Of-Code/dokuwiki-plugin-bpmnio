@@ -82,10 +82,7 @@ async function saveSvgFallback(viewer, container, type) {
         return;
     }
 
-    const saveSvg = viewer?.saveSVG;
-    if (typeof saveSvg !== "function") {
-        return;
-    }
+    let svgViewer = viewer;
 
     if (type === "dmn") {
         const activeView = viewer.getActiveView?.();
@@ -93,11 +90,17 @@ async function saveSvgFallback(viewer, container, type) {
             container.dataset.svgCacheUnsupported = "true";
             return;
         }
+        svgViewer = viewer.getActiveViewer?.() ?? viewer;
+    }
+
+    const saveSvg = svgViewer?.saveSVG;
+    if (typeof saveSvg !== "function") {
+        return;
     }
 
     let svg = "";
     try {
-        const result = await saveSvg.call(viewer);
+        const result = await saveSvg.call(svgViewer);
         svg = result?.svg ?? "";
     } catch {
         return;
