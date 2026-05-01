@@ -68,54 +68,168 @@ function clearContainerError(container) {
     clearStatusMessage(container);
 }
 
-function getSvgCacheKey(container) {
-    return container?.dataset?.svgCacheKey ?? "";
+function getPngCacheKey(container) {
+    return container?.dataset?.pngCacheKey ?? "";
 }
 
-async function saveSvgFallback(viewer, container, type) {
-    const cacheKey = getSvgCacheKey(container);
+function getSvgDimensions(svg) {
+    const bounds = svg.getBoundingClientRect();
+    if (bounds.width > 0 && bounds.height > 0) {
+        return { width: bounds.width, height: bounds.height };
+    }
+
+    const viewBox = svg.getAttribute("viewBox")?.trim() ?? "";
+    const parts = viewBox.split(/[\s,]+/).map(Number);
+    if (parts.length === 4 && parts.every(Number.isFinite) && parts[2] > 0 && parts[3] > 0) {
+        return { width: parts[2], height: parts[3] };
+    }
+
+    const width = Number.parseFloat(svg.getAttribute("width") ?? "");
+    const height = Number.parseFloat(svg.getAttribute("height") ?? "");
+    if (Number.isFinite(width) && Number.isFinite(height) && width > 0 && height > 0) {
+        return { width, height };
+    }
+
+    return null;
+}
+
+function inlineComputedSvgStyles(source, clone) {
+    if (!(source instanceof Element) || !(clone instanceof Element)) {
+        return;
+    }
+
+    const computed = window.getComputedStyle(source);
+    const properties = [
+        "color",
+        "display",
+        "fill",
+        "fill-opacity",
+        "font-family",
+        "font-size",
+        "font-style",
+        "font-weight",
+        "opacity",
+        "stroke",
+        "stroke-dasharray",
+        "stroke-linecap",
+        "stroke-linejoin",
+        "stroke-opacity",
+        "stroke-width",
+        "text-anchor",
+        "text-decoration",
+        "visibility",
+    ];
+
+    for (const property of properties) {
+        const value = computed.getPropertyValue(property);
+        if (value) {
+            clone.style.setProperty(property, value);
+        }
+    }
+
+    const sourceChildren = Array.from(source.children);
+    const cloneChildren = Array.from(clone.children);
+    for (let index = 0; index < sourceChildren.length; index += 1) {
+        inlineComputedSvgStyles(sourceChildren[index], cloneChildren[index]);
+    }
+}
+
+async function createPngFallback(container) {
+    const svg = Array.from(container.querySelectorAll("svg"))
+        .map((candidate) => ({
+            candidate,
+            dimensions: getSvgDimensions(candidate),
+        }))
+        .filter(({ dimensions }) => dimensions)
+        .sort((a, b) =>
+            (b.dimensions.width * b.dimensions.height)
+            - (a.dimensions.width * a.dimensions.height)
+        )[0]?.candidate;
+
+    if (!(svg instanceof SVGElement)) {
+        return "";
+    }
+
+    const dimensions = getSvgDimensions(svg);
+    if (!dimensions) {
+        return "";
+    }
+
+    const clone = svg.cloneNode(true);
+    inlineComputedSvgStyles(svg, clone);
+    clone.setAttribute("width", String(dimensions.width));
+    clone.setAttribute("height", String(dimensions.height));
+
+    const xml = new XMLSerializer().serializeToString(clone);
+    const blob = new Blob([xml], { type: "image/svg+xml;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const image = new Image();
+    image.decoding = "async";
+
+    try {
+        await new Promise((resolve, reject) => {
+            image.onload = resolve;
+            image.onerror = reject;
+            image.src = url;
+        });
+
+        const scale = Math.min(window.devicePixelRatio || 1, 2);
+        const canvas = document.createElement("canvas");
+        canvas.width = Math.max(1, Math.ceil(dimensions.width * scale));
+        canvas.height = Math.max(1, Math.ceil(dimensions.height * scale));
+
+        const context = canvas.getContext("2d");
+        if (!context) {
+            return "";
+        }
+
+        context.setTransform(scale, 0, 0, scale, 0, 0);
+        context.fillStyle = "#fff";
+        context.fillRect(0, 0, dimensions.width, dimensions.height);
+        context.drawImage(image, 0, 0, dimensions.width, dimensions.height);
+        return canvas.toDataURL("image/png");
+    } catch {
+        return "";
+    } finally {
+        URL.revokeObjectURL(url);
+    }
+}
+
+async function savePngFallback(viewer, container, type) {
+    const cacheKey = getPngCacheKey(container);
     if (
         !cacheKey
-        || container.dataset.svgCacheUploaded === "true"
-        || container.dataset.svgCacheUnsupported === "true"
+        || container.dataset.pngCacheUploaded === "true"
+        || container.dataset.pngCacheUnsupported === "true"
     ) {
         return;
     }
 
-    let svgViewer = viewer;
-
     if (type === "dmn") {
         const activeView = viewer.getActiveView?.();
         if (!activeView || activeView.type !== "drd") {
-            container.dataset.svgCacheUnsupported = "true";
+            container.dataset.pngCacheUnsupported = "true";
             return;
         }
-        svgViewer = viewer.getActiveViewer?.() ?? viewer;
     }
 
-    const saveSvg = svgViewer?.saveSVG;
-    if (typeof saveSvg !== "function") {
-        return;
-    }
-
-    let svg = "";
+    let png = "";
     try {
-        const result = await saveSvg.call(svgViewer);
-        svg = result?.svg ?? "";
+        png = await createPngFallback(container);
     } catch {
         return;
     }
 
-    if (!svg) {
+    if (!png) {
         return;
     }
 
     const base = window.DOKU_BASE ?? "/";
     const body = new URLSearchParams({
-        call: "plugin_bpmnio_svg_cache",
+        call: "plugin_bpmnio_png_cache",
         key: cacheKey,
         type,
-        svg,
+        png,
     });
 
     try {
@@ -131,7 +245,7 @@ async function saveSvgFallback(viewer, container, type) {
         if (response.ok) {
             const payload = await response.json().catch(() => null);
             if (payload?.ok === true) {
-                container.dataset.svgCacheUploaded = "true";
+                container.dataset.pngCacheUploaded = "true";
             }
         }
     } catch {
@@ -411,7 +525,7 @@ async function renderBpmnDiagram(xml, container) {
     const linkMap = parseLinkMap(root, "bpmn");
 
     await renderDiagram(xml, container, viewer, computeBpmnDiagramSize, linkMap, "bpmn");
-    await saveSvgFallback(viewer, container, "bpmn");
+    await savePngFallback(viewer, container, "bpmn");
 }
 
 async function renderDmnDiagram(xml, container) {
@@ -425,7 +539,7 @@ async function renderDmnDiagram(xml, container) {
     const linkMap = parseLinkMap(root, "dmn");
 
     await renderDiagram(xml, container, viewer, computeDmnDiagramSize, linkMap, "dmn");
-    await saveSvgFallback(viewer, container, "dmn");
+    await savePngFallback(viewer, container, "dmn");
 }
 
 async function exportDataBase64(editor, linkMap = {}) {

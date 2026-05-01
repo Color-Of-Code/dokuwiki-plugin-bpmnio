@@ -1,6 +1,6 @@
 <?php
 
-require_once __DIR__ . '/../inc/svg_cache.php';
+require_once __DIR__ . '/../inc/png_cache.php';
 
 /**
  * @group plugin_bpmnio
@@ -27,7 +27,7 @@ class syntax_plugin_bpmnio_test extends DokuWikiTest
     public function test_syntax_bpmn()
     {
         $info = array();
-        $cacheKey = plugin_bpmnio_svg_cache::buildKey('bpmn', "\nXML...\n");
+        $cacheKey = plugin_bpmnio_png_cache::buildKey('bpmn', "\nXML...\n");
         $expected = <<<OUT
         <div class="plugin-bpmnio" id="__bpmn_js_1"><div class="bpmn_js_data">
             ClhNTC4uLgo=
@@ -35,7 +35,7 @@ class syntax_plugin_bpmnio_test extends DokuWikiTest
         <div class="bpmn_js_links">
             W10=
         </div><div class="bpmn_js_canvas sectionedit1">
-            <div class="bpmn_js_container" data-svg-cache-key="{$cacheKey}"></div>
+            <div class="bpmn_js_container" data-png-cache-key="{$cacheKey}"></div>
         </div><!-- EDIT{&quot;target&quot;:&quot;plugin_bpmnio_bpmn&quot;,&quot;secid&quot;:1,&quot;range&quot;:&quot;21-29&quot;} --></div>
         OUT;
 
@@ -54,7 +54,7 @@ class syntax_plugin_bpmnio_test extends DokuWikiTest
     public function test_syntax_dmn()
     {
         $info = array();
-        $cacheKey = plugin_bpmnio_svg_cache::buildKey('dmn', "\nXML...\n");
+        $cacheKey = plugin_bpmnio_png_cache::buildKey('dmn', "\nXML...\n");
         $expected = <<<OUT
         <div class="plugin-bpmnio" id="__dmn_js_1"><div class="dmn_js_data">
             ClhNTC4uLgo=
@@ -62,7 +62,7 @@ class syntax_plugin_bpmnio_test extends DokuWikiTest
         <div class="dmn_js_links">
             W10=
         </div><div class="dmn_js_canvas sectionedit1">
-            <div class="dmn_js_container" data-svg-cache-key="{$cacheKey}"></div>
+            <div class="dmn_js_container" data-png-cache-key="{$cacheKey}"></div>
         </div><!-- EDIT{&quot;target&quot;:&quot;plugin_bpmnio_dmn&quot;,&quot;secid&quot;:1,&quot;range&quot;:&quot;20-28&quot;} --></div>
         OUT;
 
@@ -344,21 +344,26 @@ class syntax_plugin_bpmnio_test extends DokuWikiTest
         $this->assertEquals(0, $plugin->getSort());
     }
 
-    public function test_dw2pdf_renders_cached_svg_when_available()
+    public function test_dw2pdf_renders_cached_png_when_available()
     {
         $plugin = plugin_load('syntax', 'bpmnio_bpmnio');
         $renderer = $this->createDw2PdfRenderer();
-        $xml = '<definitions id="Defs_1" />';
-        $cacheKey = plugin_bpmnio_svg_cache::buildKey('bpmn', $xml);
+        $xml = '<definitions id="Defs_png" />';
+        $cacheKey = plugin_bpmnio_png_cache::buildKey('bpmn', $xml, '0.5');
+        $png = base64_decode(
+            'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAFgwJ/lw0LJwAAAABJRU5ErkJggg==',
+            true
+        );
 
-        plugin_bpmnio_svg_cache::save($cacheKey, '<svg xmlns="http://www.w3.org/2000/svg"><rect width="10" height="10" /></svg>');
+        plugin_bpmnio_png_cache::save($cacheKey, $png);
 
-        $plugin->render('xhtml', $renderer, [DOKU_LEXER_UNMATCHED, 'bpmn', base64_encode($xml), 0, 0, false, '']);
+        $plugin->render('xhtml', $renderer, [DOKU_LEXER_UNMATCHED, 'bpmn', base64_encode($xml), 0, 0, false, '0.5']);
 
-        $this->assertStringContainsString('<svg', $renderer->doc);
-        $this->assertStringNotContainsString('Diagram unavailable for DW2PDF export', $renderer->doc);
+        $this->assertStringContainsString('<img src="data:image/png;base64,', $renderer->doc);
+        $this->assertStringContainsString('style="width: 1px; height: 1px;"', $renderer->doc);
+        $this->assertStringNotContainsString('<svg', $renderer->doc);
 
-        @unlink(plugin_bpmnio_svg_cache::getPath($cacheKey));
+        @unlink(plugin_bpmnio_png_cache::getPath($cacheKey));
     }
 
     public function test_dw2pdf_renders_fallback_message_when_cache_is_missing()
