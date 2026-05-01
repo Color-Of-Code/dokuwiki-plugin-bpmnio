@@ -9,12 +9,12 @@ Refer to this page for details: <https://www.dokuwiki.org/plugin:bpmnio>
 
 ## DW2PDF Support
 
-DW2PDF export now has a pragmatic fallback for diagrams that have already been rendered in a browser. After a BPMN diagram or DMN DRD diagram is displayed on a page, the plugin caches an SVG copy and reuses that cached SVG during `dw2pdf` rendering.
+DW2PDF export now has a pragmatic fallback for diagrams that have already been rendered in a browser. After a BPMN diagram or DMN DRD diagram is displayed on a page, the plugin caches a browser-rendered PNG copy and reuses that cached PNG during `dw2pdf` rendering.
 
 Current limitations:
 
 * The page must have been opened in a browser at least once before `dw2pdf` can include the diagram.
-* Only BPMN and DMN DRD diagrams participate in the SVG fallback.
+* Only BPMN and DMN DRD diagrams participate in the PNG fallback.
 * DMN decision tables and literal expressions still do not have PDF fallback rendering.
 
 ## Development

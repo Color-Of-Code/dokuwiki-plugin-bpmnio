@@ -28,9 +28,9 @@ class syntax_plugin_bpmnio_bpmnio extends SyntaxPlugin
         require_once __DIR__ . '/../inc/link_processor.php';
     }
 
-    private function loadSvgCache(): void
+    private function loadPngCache(): void
     {
-        require_once __DIR__ . '/../inc/svg_cache.php';
+        require_once __DIR__ . '/../inc/png_cache.php';
     }
 
     public function getPType(): string
@@ -123,6 +123,20 @@ class syntax_plugin_bpmnio_bpmnio extends SyntaxPlugin
         return rtrim(rtrim(number_format($zoom, 4, '.', ''), '0'), '.');
     }
 
+    private function getPdfImageStyle(?array $dimensions, $zoom): string
+    {
+        if (!$dimensions || empty($dimensions['width']) || empty($dimensions['height'])) {
+            return '';
+        }
+
+        $scale = $this->normalizeZoom($zoom);
+        $scale = $scale === null ? 1.0 : (float) $scale;
+        $width = max(1, (int) round($dimensions['width'] * $scale));
+        $height = max(1, (int) round($dimensions['height'] * $scale));
+
+        return ' style="width: ' . $width . 'px; height: ' . $height . 'px;"';
+    }
+
     private function getMedia($src)
     {
         global $ID;
@@ -151,13 +165,15 @@ class syntax_plugin_bpmnio_bpmnio extends SyntaxPlugin
                     $xml = $match;
                 }
 
-                $this->loadSvgCache();
-                $cacheKey = plugin_bpmnio_svg_cache::buildKey($type, $xml);
-                $svg = plugin_bpmnio_svg_cache::load($cacheKey);
+                $this->loadPngCache();
+                $cacheKey = plugin_bpmnio_png_cache::buildKey($type, $xml, (string) $zoom);
+                $png = plugin_bpmnio_png_cache::loadDataUri($cacheKey);
 
-                if ($svg !== null) {
+                if ($png !== null) {
+                    $dimensions = plugin_bpmnio_png_cache::getDimensions($cacheKey);
+                    $style = $this->getPdfImageStyle($dimensions, $zoom);
                     $renderer->doc .= <<<HTML
-                        <div class="plugin-bpmnio plugin-bpmnio-pdf">{$svg}</div>
+                        <div class="plugin-bpmnio plugin-bpmnio-pdf"><img src="{$png}"{$style} /></div>
                         HTML;
                 } else {
                     $renderer->doc .= <<<HTML
@@ -185,8 +201,8 @@ class syntax_plugin_bpmnio_bpmnio extends SyntaxPlugin
                         $xml = $match;
                     }
 
-                    $this->loadSvgCache();
-                    $cacheKey = plugin_bpmnio_svg_cache::buildKey($type, $xml);
+                    $this->loadPngCache();
+                    $cacheKey = plugin_bpmnio_png_cache::buildKey($type, $xml, (string) $zoom);
 
                     $this->loadLinkProcessor();
                     $payload = plugin_bpmnio_link_processor::buildPayload($xml);
@@ -210,7 +226,7 @@ class syntax_plugin_bpmnio_bpmnio extends SyntaxPlugin
                     $zoomAttr = $zoom !== '' ? " data-zoom=\"{$zoom}\"" : '';
                     $renderer->doc .= <<<HTML
                         <div class="{$type}_js_canvas {$class}">
-                            <div class="{$type}_js_container" data-svg-cache-key="{$cacheKey}"{$zoomAttr}></div>
+                            <div class="{$type}_js_container" data-png-cache-key="{$cacheKey}"{$zoomAttr}></div>
                         </div>
                         HTML;
                     if ($inline) {

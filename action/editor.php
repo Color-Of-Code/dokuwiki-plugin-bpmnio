@@ -15,16 +15,16 @@ use dokuwiki\Utf8;
 
 class action_plugin_bpmnio_editor extends ActionPlugin
 {
-    private const SVG_CACHE_AJAX_CALL = 'plugin_bpmnio_svg_cache';
+    private const PNG_CACHE_AJAX_CALL = 'plugin_bpmnio_png_cache';
 
     private function loadLinkProcessor(): void
     {
         require_once __DIR__ . '/../inc/link_processor.php';
     }
 
-    private function loadSvgCache(): void
+    private function loadPngCache(): void
     {
-        require_once __DIR__ . '/../inc/svg_cache.php';
+        require_once __DIR__ . '/../inc/png_cache.php';
     }
 
     public function register(EventHandler $controller): void
@@ -33,7 +33,7 @@ class action_plugin_bpmnio_editor extends ActionPlugin
         $controller->register_hook('EDIT_FORM_ADDTEXTAREA', 'BEFORE', $this, 'handleForm');
         $controller->register_hook('ACTION_ACT_PREPROCESS', 'BEFORE', $this, 'handlePost');
         $controller->register_hook('FORM_EDIT_OUTPUT', 'BEFORE', $this, 'handleFormEditOutput');
-        $controller->register_hook('AJAX_CALL_UNKNOWN', 'BEFORE', $this, 'handleSvgCacheAjax');
+        $controller->register_hook('AJAX_CALL_UNKNOWN', 'BEFORE', $this, 'handlePngCacheAjax');
     }
 
     public function handleFormEditOutput(Event $event)
@@ -81,8 +81,8 @@ class action_plugin_bpmnio_editor extends ActionPlugin
             $type = 'dmn';
         }
 
-        $this->loadSvgCache();
-        $cacheKey = plugin_bpmnio_svg_cache::buildKey($type, $TEXT);
+        $this->loadPngCache();
+        $cacheKey = plugin_bpmnio_png_cache::buildKey($type, $TEXT);
 
         $form->setHiddenField('plugin_bpmnio_data', $data);
         $form->setHiddenField('plugin_bpmnio_links', $linkData);
@@ -91,7 +91,7 @@ class action_plugin_bpmnio_editor extends ActionPlugin
                 <div class="{$type}_js_data">{$renderData}</div>
                 <div class="{$type}_js_links">{$linkData}</div>
                 <div class="{$type}_js_canvas">
-                    <div class="{$type}_js_container" data-svg-cache-key="{$cacheKey}"></div>
+                    <div class="{$type}_js_container" data-png-cache-key="{$cacheKey}"></div>
                 </div>
             </div>
             HTML);
@@ -113,9 +113,9 @@ class action_plugin_bpmnio_editor extends ActionPlugin
         $TEXT = base64_decode($INPUT->post->str('plugin_bpmnio_data'));
     }
 
-    public function handleSvgCacheAjax(Event $event): void
+    public function handlePngCacheAjax(Event $event): void
     {
-        if ($event->data !== self::SVG_CACHE_AJAX_CALL) {
+        if ($event->data !== self::PNG_CACHE_AJAX_CALL) {
             return;
         }
 
@@ -124,7 +124,7 @@ class action_plugin_bpmnio_editor extends ActionPlugin
         $event->stopPropagation();
         $event->preventDefault();
 
-        $this->loadSvgCache();
+        $this->loadPngCache();
 
         if (strtoupper((string) ($_SERVER['REQUEST_METHOD'] ?? 'GET')) !== 'POST') {
             $this->sendJsonResponse(405, ['ok' => false, 'error' => 'method-not-allowed']);
@@ -133,23 +133,23 @@ class action_plugin_bpmnio_editor extends ActionPlugin
 
         $key = $INPUT->post->str('key');
         $type = $INPUT->post->str('type');
-        $svg = $_POST['svg'] ?? '';
+        $png = $_POST['png'] ?? '';
 
         if ($type !== 'bpmn' && $type !== 'dmn') {
             $this->sendJsonResponse(400, ['ok' => false, 'error' => 'invalid-type']);
             return;
         }
 
-        if (!is_string($svg) || !plugin_bpmnio_svg_cache::isValidKey($key)) {
+        if (!is_string($png) || !plugin_bpmnio_png_cache::isValidKey($key)) {
             $this->sendJsonResponse(400, ['ok' => false, 'error' => 'invalid-payload']);
             return;
         }
 
-        $ok = plugin_bpmnio_svg_cache::save($key, $svg);
+        $ok = plugin_bpmnio_png_cache::save($key, $png);
 
         $this->sendJsonResponse($ok ? 200 : 400, [
             'ok' => $ok,
-            'error' => $ok ? null : 'invalid-svg',
+            'error' => $ok ? null : 'invalid-cache-data',
         ]);
     }
 
