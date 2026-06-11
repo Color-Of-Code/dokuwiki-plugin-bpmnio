@@ -2,11 +2,21 @@ import { build } from 'esbuild';
 import { cp, mkdir, readdir, readFile, rm, stat, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import packConfigModule from 'bpmnlint-pack-config';
+
+const { packConfig } = packConfigModule;
 
 const rootDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const nodeModulesDir = path.join(rootDir, 'node_modules');
 const vendorDir = path.join(rootDir, 'vendor');
 const fontDir = path.join(rootDir, 'font');
+const generatedDir = path.join(rootDir, 'build', 'generated');
+
+// .bpmnlintrc is resolved into a self-contained { config, resolver } module at
+// build time. bpmnlint cannot resolve rule references in the browser, so the
+// packed module is what the bpmn-viewer / bpmn-modeler entry points import.
+const bpmnlintConfigPath = path.join(rootDir, '.bpmnlintrc');
+const packedLintConfigPath = path.join(generatedDir, 'bpmnlintrc.packed.js');
 
 const packages = [
   {
@@ -153,7 +163,55 @@ async function buildBundle({ entryPoint, outFile, metadata, packageName }) {
   console.log(`Built ${packageName} bundle: ${path.relative(rootDir, outFile)}`);
 }
 
+async function packLintConfig() {
+  if (!(await pathExists(bpmnlintConfigPath))) {
+    throw new Error(
+      `Missing .bpmnlintrc at repo root. It is required to build the linter bundle.`
+    );
+  }
+
+  await mkdir(generatedDir, { recursive: true });
+
+  // Produces an ES module exporting { config, resolver, ... } with every rule
+  // implementation inlined, so it can run in the browser without a resolver.
+  const output = await packConfig(bpmnlintConfigPath, 'es');
+  const banner = '/*! generated from .bpmnlintrc for dokuwiki-plugin-bpmnio — do not edit by hand */\n';
+
+  await writeFile(packedLintConfigPath, `${banner}${output.code}`);
+
+  console.log(`Packed lint config: ${path.relative(rootDir, packedLintConfigPath)}`);
+}
+
+async function copyLintAssets() {
+  const packageName = 'bpmn-js-bpmnlint';
+  const sourceDir = path.join(nodeModulesDir, packageName);
+
+  await ensureInstalled(packageName);
+  await cleanPackageOutput(packageName);
+  await copyMetadata(packageName);
+
+  // Only the stylesheet is needed as a committed asset; the JS is bundled into
+  // the viewer/modeler entry points. The .css is renamed to .less so DokuWiki's
+  // LESS pipeline (all.less) can @import it like the other vendor stylesheets.
+  const cssSource = path.join(sourceDir, 'dist', 'assets', 'css', 'bpmn-js-bpmnlint.css');
+  const cssTarget = path.join(
+    vendorDir,
+    packageName,
+    'dist',
+    'assets',
+    'css',
+    'bpmn-js-bpmnlint.less'
+  );
+
+  await copyFileEnsuringDir(cssSource, cssTarget);
+
+  console.log(`Copied ${packageName} stylesheet: ${path.relative(rootDir, cssTarget)}`);
+}
+
 async function main() {
+  await packLintConfig();
+  await copyLintAssets();
+
   for (const pkg of packages) {
     const metadata = await readPackageMetadata(pkg.name);
     const sourceDir = path.join(nodeModulesDir, pkg.name);
@@ -176,12 +234,15 @@ async function main() {
     }
   }
 
+  const lintPackages = ['bpmn-js-bpmnlint', 'bpmnlint', 'bpmnlint-pack-config'];
+
   const generatedMetadata = {
     generatedAt: new Date().toISOString(),
     packages: Object.fromEntries(
-      await Promise.all(
-        packages.map(async (pkg) => [pkg.name, (await readPackageMetadata(pkg.name)).version])
-      )
+      await Promise.all([
+        ...packages.map(async (pkg) => [pkg.name, (await readPackageMetadata(pkg.name)).version]),
+        ...lintPackages.map(async (name) => [name, (await readPackageMetadata(name)).version]),
+      ])
     ),
   };
 

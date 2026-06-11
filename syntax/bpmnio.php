@@ -22,6 +22,7 @@ class syntax_plugin_bpmnio_bpmnio extends SyntaxPlugin
     protected string $type = ''; // 'bpmn' or 'dmn'
     protected string $src = ''; // media file
     protected string $zoom = ''; // optional scaling factor
+    protected string $lint = ''; // optional bpmnlint mode: on|off|inactive
 
     private function loadLinkProcessor(): void
     {
@@ -68,8 +69,9 @@ class syntax_plugin_bpmnio_bpmnio extends SyntaxPlugin
                 $this->type = $attrs['type'] ?? 'bpmn';
                 $this->src = $attrs['src'] ?? '';
                 $this->zoom = $this->normalizeZoom($attrs['zoom'] ?? null) ?? '';
+                $this->lint = $this->normalizeLint($attrs['lint'] ?? null);
 
-                return [$state, $this->type, '', $pos, '', false, $this->zoom];
+                return [$state, $this->type, '', $pos, '', false, $this->zoom, $this->lint];
 
             case DOKU_LEXER_UNMATCHED:
                 $posStart = $pos;
@@ -79,13 +81,17 @@ class syntax_plugin_bpmnio_bpmnio extends SyntaxPlugin
                 if (!$inline) {
                     $match = $this->getMedia($this->src);
                 }
-                return [$state, $this->type, base64_encode($match), $posStart, $posEnd, $inline, $this->zoom];
+                return [
+                    $state, $this->type, base64_encode($match),
+                    $posStart, $posEnd, $inline, $this->zoom, $this->lint,
+                ];
 
             case DOKU_LEXER_EXIT:
                 $this->type = '';
                 $this->src = '';
                 $this->zoom = '';
-                return [$state, '', '', '', '', '', false, ''];
+                $this->lint = '';
+                return [$state, '', '', '', '', '', '', ''];
         }
         return [];
     }
@@ -118,6 +124,17 @@ class syntax_plugin_bpmnio_bpmnio extends SyntaxPlugin
         return rtrim(rtrim(number_format($zoom, 4, '.', ''), '0'), '.');
     }
 
+    private function normalizeLint($lint): string
+    {
+        if (!is_string($lint)) {
+            return '';
+        }
+
+        $lint = strtolower(trim($lint));
+
+        return in_array($lint, ['on', 'off', 'inactive'], true) ? $lint : '';
+    }
+
     private function getMedia($src)
     {
         global $ID;
@@ -137,7 +154,7 @@ class syntax_plugin_bpmnio_bpmnio extends SyntaxPlugin
 
     public function render($mode, Doku_Renderer $renderer, $data): bool
     {
-        [$state, $type, $match, $posStart, $posEnd, $inline, $zoom] = array_pad($data, 7, '');
+        [$state, $type, $match, $posStart, $posEnd, $inline, $zoom, $lint] = array_pad($data, 8, '');
 
         if (is_a($renderer, 'renderer_plugin_dw2pdf')) {
             if ($state == DOKU_LEXER_EXIT) {
@@ -187,9 +204,10 @@ class syntax_plugin_bpmnio_bpmnio extends SyntaxPlugin
                         $class = '';
                     }
                     $zoomAttr = $zoom !== '' ? " data-zoom=\"{$zoom}\"" : '';
+                    $lintAttr = $lint !== '' ? " data-lint=\"{$lint}\"" : '';
                     $renderer->doc .= <<<HTML
                         <div class="{$type}_js_canvas {$class}">
-                            <div class="{$type}_js_container"{$zoomAttr}></div>
+                            <div class="{$type}_js_container"{$zoomAttr}{$lintAttr}></div>
                         </div>
                         HTML;
                     if ($inline) {

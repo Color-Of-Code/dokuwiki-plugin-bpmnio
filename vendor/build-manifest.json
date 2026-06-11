@@ -1,7 +1,10 @@
 {
-  "generatedAt": "2026-04-21T16:11:12.043Z",
+  "generatedAt": "2026-06-11T12:50:11.992Z",
   "packages": {
     "bpmn-js": "18.14.0",
-    "dmn-js": "17.7.0"
+    "dmn-js": "17.7.0",
+    "bpmn-js-bpmnlint": "0.24.0",
+    "bpmnlint": "11.12.1",
+    "bpmnlint-pack-config": "0.9.0"
   }
 }

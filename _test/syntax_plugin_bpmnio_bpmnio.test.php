@@ -223,6 +223,71 @@ class syntax_plugin_bpmnio_test extends DokuWikiTest
         $this->assertStringNotContainsString('data-zoom=', $xhtml);
     }
 
+    public function test_syntax_lint_attribute()
+    {
+        $info = array();
+
+        $input = <<<IN
+        <bpmnio type="bpmn" lint="on">
+        XML...
+        </bpmnio>
+        IN;
+
+        $instructions = p_get_instructions($input);
+        $xhtml = p_render('xhtml', $instructions, $info);
+
+        $this->assertStringContainsString('data-lint="on"', $xhtml);
+    }
+
+    public function test_syntax_lint_off_attribute()
+    {
+        $info = array();
+
+        $input = <<<IN
+        <bpmnio type="bpmn" lint="off">
+        XML...
+        </bpmnio>
+        IN;
+
+        $instructions = p_get_instructions($input);
+        $xhtml = p_render('xhtml', $instructions, $info);
+
+        $this->assertStringContainsString('data-lint="off"', $xhtml);
+    }
+
+    public function test_syntax_ignores_invalid_lint_attribute()
+    {
+        $info = array();
+
+        $input = <<<IN
+        <bpmnio type="bpmn" lint="bogus">
+        XML...
+        </bpmnio>
+        IN;
+
+        $instructions = p_get_instructions($input);
+        $xhtml = p_render('xhtml', $instructions, $info);
+
+        $this->assertStringNotContainsString('data-lint=', $xhtml);
+    }
+
+    public function test_syntax_lint_and_zoom_coexist()
+    {
+        $info = array();
+
+        $input = <<<IN
+        <bpmnio type="bpmn" zoom="1.5" lint="inactive">
+        XML...
+        </bpmnio>
+        IN;
+
+        $instructions = p_get_instructions($input);
+        $xhtml = p_render('xhtml', $instructions, $info);
+
+        $this->assertStringContainsString('data-zoom="1.5"', $xhtml);
+        $this->assertStringContainsString('data-lint="inactive"', $xhtml);
+    }
+
         public function test_syntax_builds_link_payload_for_named_elements()
         {
                 $info = array();
