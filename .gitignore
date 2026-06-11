@@ -4,3 +4,7 @@ composer.lock
 
 # npm
 node_modules/
+
+# generated lint config bundle (rebuilt by build:vendor)
+/build/generated/
+

@@ -1,0 +1,80 @@
+{
+  "name": "bpmn-js-bpmnlint",
+  "version": "0.24.0",
+  "description": "bpmn-js integration for bpmnlint",
+  "main": "dist/index.js",
+  "module": "dist/index.esm.js",
+  "source": "lib/index.js",
+  "umd:main": "dist/bpmn-js-bpmnlint.umd.js",
+  "scripts": {
+    "all": "run-s lint test distro",
+    "lint": "eslint .",
+    "start": "cross-env SINGLE_START=true npm run dev",
+    "test": "karma start --no-auto-test --single-run",
+    "dev": "karma start",
+    "distro": "run-s build test:build copy-assets",
+    "build": "NODE_ENV=production rollup -c --bundleConfigAsCjs",
+    "build:watch": "npm run build -- -w",
+    "test:build": "karma start test/distro/karma.conf.js",
+    "copy-assets": "cpx assets/css/* dist/assets/css/ -v",
+    "prepublishOnly": "run-s distro"
+  },
+  "exports": {
+    ".": {
+      "require": "./dist/index.js",
+      "import": "./dist/index.esm.js"
+    },
+    "./package.json": "./package.json",
+    "./dist/*": "./dist/*"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bpmn-io/bpmn-js-bpmnlint.git"
+  },
+  "author": "Philipp Fromme <https://github.com/philippfromme>",
+  "contributors": [
+    {
+      "name": "Nico Rehwaldt",
+      "url": "https://github.com/nikku"
+    }
+  ],
+  "license": "MIT",
+  "devDependencies": {
+    "bpmn-js": "^18.11.0",
+    "bpmnlint": "^11.8.0",
+    "bpmnlint-loader": "^0.1.6",
+    "chai": "^6.0.0",
+    "cpx2": "^8.0.0",
+    "cross-env": "^10.1.0",
+    "diagram-js": "^15.7.0",
+    "eslint": "^9.39.2",
+    "eslint-plugin-bpmn-io": "^2.2.0",
+    "karma": "^6.4.4",
+    "karma-chrome-launcher-2": "^3.3.0",
+    "karma-debug-launcher": "^0.0.5",
+    "karma-env-preprocessor": "^0.1.1",
+    "karma-mocha": "^2.0.1",
+    "karma-webpack": "^5.0.1",
+    "mocha": "^11.0.0",
+    "mocha-test-container-support": "^0.2.0",
+    "npm-run-all2": "^8.0.4",
+    "puppeteer": "^24.34.0",
+    "rollup": "^4.54.0",
+    "rollup-plugin-string": "^3.0.0",
+    "sinon": "^21.0.0",
+    "sinon-chai": "^4.0.0",
+    "webpack": "^5.104.1"
+  },
+  "dependencies": {
+    "min-dash": "^5.0.0",
+    "min-dom": "^5.2.0"
+  },
+  "peerDependencies": {
+    "bpmn-js": "*",
+    "bpmnlint": ">= 3.2",
+    "diagram-js": "*"
+  },
+  "files": [
+    "dist"
+  ]
+}
