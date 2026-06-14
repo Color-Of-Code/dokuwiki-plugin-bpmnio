@@ -357,12 +357,15 @@ function resolveBpmnLint() {
 //   "off"          -> linter not loaded (no toggle button, no overlays)
 //   "on"           -> linter loaded, overlays active immediately
 //   "inactive"     -> linter loaded, toggle button present, overlays hidden
-//   absent / other -> falls back to defaultActive
-// When the linter cannot be resolved the diagram renders exactly as before.
-function buildBpmnLintOptions(container, defaultActive) {
+//   absent / other -> linter not loaded (treated as "off")
+// The PHP renderer always emits data-lint for BPMN diagrams (resolved from the
+// per-diagram attribute or the global plugin config), so no client-side default
+// is needed. When the linter module cannot be resolved the diagram renders
+// exactly as before.
+function buildBpmnLintOptions(container) {
     const mode = (container?.dataset?.lint ?? "").trim().toLowerCase();
 
-    if (mode === "off") {
+    if (mode !== "on" && mode !== "inactive") {
         return { additionalModules: [], linting: undefined };
     }
 
@@ -371,16 +374,9 @@ function buildBpmnLintOptions(container, defaultActive) {
         return { additionalModules: [], linting: undefined };
     }
 
-    let active = defaultActive;
-    if (mode === "on") {
-        active = true;
-    } else if (mode === "inactive") {
-        active = false;
-    }
-
     return {
         additionalModules: [resolved.lintModule],
-        linting: { bpmnlint: resolved.lintConfig, active },
+        linting: { bpmnlint: resolved.lintConfig, active: mode === "on" },
     };
 }
 
@@ -390,7 +386,7 @@ async function renderBpmnDiagram(xml, container) {
         throw new Error("BPMN viewer library is unavailable.");
     }
 
-    const { additionalModules, linting } = buildBpmnLintOptions(container, false);
+    const { additionalModules, linting } = buildBpmnLintOptions(container);
     const viewer = new BpmnViewer({ container, additionalModules, linting });
     const root = jQuery(container).closest(".plugin-bpmnio");
     const linkMap = parseLinkMap(root, "bpmn");
@@ -487,7 +483,7 @@ async function renderBpmnEditor(xml, container) {
         throw new Error("BPMN editor library is unavailable.");
     }
 
-    const { additionalModules, linting } = buildBpmnLintOptions(container, true);
+    const { additionalModules, linting } = buildBpmnLintOptions(container);
     const editor = new BpmnEditor({ container, additionalModules, linting });
     addFormSubmitListener(editor, container, "bpmn");
     return renderDiagram(xml, container, editor, null, {}, "bpmn");

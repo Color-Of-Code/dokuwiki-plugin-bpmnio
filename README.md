@@ -2,8 +2,8 @@
 
 Renders using the bpmn.io js libraries within dokuwiki:
 
-* BPMN v2.0 diagrams
-* DMN v1.3 decision requirement diagrams, decision tables and literal expressions
+- BPMN v2.0 diagrams
+- DMN v1.3 decision requirement diagrams, decision tables and literal expressions
 
 Refer to this page for details: <https://www.dokuwiki.org/plugin:bpmnio>
 
@@ -22,12 +22,12 @@ Embed a diagram by wrapping inline XML (or referencing a media file) in a
 
 ### Attributes
 
-| Attribute | Values | Description |
-| --------- | ------ | ----------- |
-| `type` | `bpmn` (default), `dmn` | Diagram kind. |
-| `src` | media id | Render a stored media file instead of inline XML. |
-| `zoom` | positive number | Scale factor applied to the rendered diagram. |
-| `lint` | `on`, `off`, `inactive` | Per-diagram [bpmnlint](https://github.com/bpmn-io/bpmnlint) behaviour (BPMN only). |
+| Attribute | Values                  | Description                                                                        |
+| --------- | ----------------------- | ---------------------------------------------------------------------------------- |
+| `type`    | `bpmn` (default), `dmn` | Diagram kind.                                                                      |
+| `src`     | media id                | Render a stored media file instead of inline XML.                                  |
+| `zoom`    | positive number         | Scale factor applied to the rendered diagram.                                      |
+| `lint`    | `on`, `off`, `inactive` | Per-diagram [bpmnlint](https://github.com/bpmn-io/bpmnlint) behaviour (BPMN only). |
 
 ### Linting BPMN diagrams
 
@@ -40,19 +40,21 @@ as well as in the editor.
 
 The `lint` attribute controls the default state per diagram:
 
-* `lint="on"` — overlays are shown immediately.
-* `lint="inactive"` — the toggle button is present but overlays start hidden.
-* `lint="off"` — the linter is not loaded for that diagram (no button).
-* omitted — viewer diagrams default to the button being present but inactive;
-  the editor defaults to active so authors get immediate feedback.
+- `lint="on"` — overlays are shown immediately.
+- `lint="inactive"` — the toggle button is present but overlays start hidden.
+- `lint="off"` — the linter is not loaded for that diagram (no button).
+- omitted — falls back to the global plugin setting `lint` (configurable in the
+  DokuWiki admin under _Configuration Settings → Plugins → bpmnio_). The
+  shipped default is `off`, which applies to both rendered pages and the
+  editor.
 
 ## Development
 
 ### Prerequisites
 
-* PHP 8.1+
-* [Composer](https://getcomposer.org/)
-* Node.js 20+ and npm
+- PHP
+- [Composer](https://getcomposer.org/)
+- Node.js and npm
 
 ### Setup
 

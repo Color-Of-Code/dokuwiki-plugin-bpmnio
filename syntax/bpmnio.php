@@ -69,7 +69,7 @@ class syntax_plugin_bpmnio_bpmnio extends SyntaxPlugin
                 $this->type = $attrs['type'] ?? 'bpmn';
                 $this->src = $attrs['src'] ?? '';
                 $this->zoom = $this->normalizeZoom($attrs['zoom'] ?? null) ?? '';
-                $this->lint = $this->normalizeLint($attrs['lint'] ?? null);
+                $this->lint = $this->resolveLint($attrs['lint'] ?? null, $this->type);
 
                 return [$state, $this->type, '', $pos, '', false, $this->zoom, $this->lint];
 
@@ -91,7 +91,7 @@ class syntax_plugin_bpmnio_bpmnio extends SyntaxPlugin
                 $this->src = '';
                 $this->zoom = '';
                 $this->lint = '';
-                return [$state, '', '', '', '', '', '', ''];
+                return [$state, '', '', '', '', false, '', ''];
         }
         return [];
     }
@@ -124,15 +124,33 @@ class syntax_plugin_bpmnio_bpmnio extends SyntaxPlugin
         return rtrim(rtrim(number_format($zoom, 4, '.', ''), '0'), '.');
     }
 
-    private function normalizeLint($lint): string
+    /**
+     * Resolve the effective bpmnlint mode for the diagram.
+     *
+     * Per-diagram `lint` attribute wins when valid; otherwise the global plugin
+     * setting is used. Linting only applies to BPMN diagrams; for any other
+     * type the result is an empty string and no data-lint attribute is emitted.
+     *
+     * @param mixed  $lint Raw attribute value (string|null|other)
+     * @param string $type Diagram type (`bpmn` or `dmn`)
+     */
+    private function resolveLint($lint, string $type): string
     {
-        if (!is_string($lint)) {
+        if ($type !== 'bpmn') {
             return '';
         }
 
-        $lint = strtolower(trim($lint));
+        $allowed = ['on', 'off', 'inactive'];
 
-        return in_array($lint, ['on', 'off', 'inactive'], true) ? $lint : '';
+        if (is_string($lint)) {
+            $normalized = strtolower(trim($lint));
+            if (in_array($normalized, $allowed, true)) {
+                return $normalized;
+            }
+        }
+
+        $default = strtolower((string) $this->getConf('lint'));
+        return in_array($default, $allowed, true) ? $default : 'off';
     }
 
     private function getMedia($src)

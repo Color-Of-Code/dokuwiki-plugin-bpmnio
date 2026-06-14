@@ -75,12 +75,29 @@ class action_plugin_bpmnio_editor extends ActionPlugin
 
         $form->setHiddenField('plugin_bpmnio_data', $data);
         $form->setHiddenField('plugin_bpmnio_links', $linkData);
+
+        $lintAttr = '';
+        if ($type === 'bpmn') {
+            $allowed = ['on', 'off', 'inactive'];
+            $lint = strtolower((string) $this->getConf('lint'));
+            if (!in_array($lint, $allowed, true)) {
+                $lint = 'inactive';
+            }
+            // In the editor the linter toggle must always be available so authors
+            // can inspect issues. "off" is promoted to "inactive" (button present
+            // but overlays start hidden); "inactive" and "on" pass through as-is.
+            if ($lint === 'off') {
+                $lint = 'inactive';
+            }
+            $lintAttr = " data-lint=\"{$lint}\"";
+        }
+
         $form->addHTML(<<<HTML
             <div class="plugin-bpmnio" id="plugin_bpmnio__{$type}_editor">
                 <div class="{$type}_js_data">{$renderData}</div>
                 <div class="{$type}_js_links">{$linkData}</div>
                 <div class="{$type}_js_canvas">
-                    <div class="{$type}_js_container"></div>
+                    <div class="{$type}_js_container"{$lintAttr}></div>
                 </div>
             </div>
             HTML);

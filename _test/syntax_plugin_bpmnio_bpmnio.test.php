@@ -8,6 +8,13 @@ class syntax_plugin_bpmnio_test extends DokuWikiTest
 {
     protected $pluginsEnabled = array('bpmnio');
 
+    public function setUp(): void
+    {
+        parent::setUp();
+        global $conf;
+        $conf['plugin']['bpmnio']['lint'] = 'inactive';
+    }
+
     public function test_syntax_bpmn()
     {
         $info = array();
@@ -18,7 +25,7 @@ class syntax_plugin_bpmnio_test extends DokuWikiTest
         <div class="bpmn_js_links">
             W10=
         </div><div class="bpmn_js_canvas sectionedit1">
-            <div class="bpmn_js_container"></div>
+            <div class="bpmn_js_container" data-lint="inactive"></div>
         </div><!-- EDIT{&quot;target&quot;:&quot;plugin_bpmnio_bpmn&quot;,&quot;secid&quot;:1,&quot;range&quot;:&quot;21-29&quot;} --></div>
         OUT;
 
@@ -255,12 +262,51 @@ class syntax_plugin_bpmnio_test extends DokuWikiTest
         $this->assertStringContainsString('data-lint="off"', $xhtml);
     }
 
-    public function test_syntax_ignores_invalid_lint_attribute()
+    public function test_syntax_invalid_lint_attribute_falls_back_to_default()
     {
+        global $conf;
+        $conf['plugin']['bpmnio']['lint'] = 'inactive';
+
         $info = array();
 
         $input = <<<IN
         <bpmnio type="bpmn" lint="bogus">
+        XML...
+        </bpmnio>
+        IN;
+
+        $instructions = p_get_instructions($input);
+        $xhtml = p_render('xhtml', $instructions, $info);
+
+        // Invalid attribute -> fall back to the global plugin default.
+        $this->assertStringContainsString('data-lint="inactive"', $xhtml);
+    }
+
+    public function test_syntax_missing_lint_attribute_uses_plugin_default()
+    {
+        global $conf;
+        $conf['plugin']['bpmnio']['lint'] = 'inactive';
+
+        $info = array();
+
+        $input = <<<IN
+        <bpmnio type="bpmn">
+        XML...
+        </bpmnio>
+        IN;
+
+        $instructions = p_get_instructions($input);
+        $xhtml = p_render('xhtml', $instructions, $info);
+
+        $this->assertStringContainsString('data-lint="inactive"', $xhtml);
+    }
+
+    public function test_syntax_lint_attribute_is_ignored_for_dmn()
+    {
+        $info = array();
+
+        $input = <<<IN
+        <bpmnio type="dmn" lint="on">
         XML...
         </bpmnio>
         IN;
