@@ -27,7 +27,7 @@ class syntax_plugin_bpmnio_test extends DokuWikiTest
     public function test_syntax_bpmn()
     {
         $info = array();
-        $cacheKey = plugin_bpmnio_png_cache::buildKey('bpmn', "\nXML...\n");
+        $cacheKey = plugin_bpmnio_png_cache::buildKey('bpmn', 'XML...');
         $expected = <<<OUT
         <div class="plugin-bpmnio" id="__bpmn_js_1"><div class="bpmn_js_data">
             WE1MLi4u
@@ -54,7 +54,7 @@ class syntax_plugin_bpmnio_test extends DokuWikiTest
     public function test_syntax_dmn()
     {
         $info = array();
-        $cacheKey = plugin_bpmnio_png_cache::buildKey('dmn', "\nXML...\n");
+        $cacheKey = plugin_bpmnio_png_cache::buildKey('dmn', 'XML...');
         $expected = <<<OUT
         <div class="plugin-bpmnio" id="__dmn_js_1"><div class="dmn_js_data">
             WE1MLi4u
