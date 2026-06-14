@@ -79,7 +79,7 @@ class syntax_plugin_bpmnio_bpmnio extends SyntaxPlugin
                 if (!$inline) {
                     $match = $this->getMedia($this->src);
                 }
-                return [$state, $this->type, base64_encode($match), $posStart, $posEnd, $inline, $this->zoom];
+                return [$state, $this->type, base64_encode(trim($match)), $posStart, $posEnd, $inline, $this->zoom];
 
             case DOKU_LEXER_EXIT:
                 $this->type = '';

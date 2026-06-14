@@ -7,7 +7,8 @@ class plugin_bpmnio_link_processor
      */
     public static function buildPayload(string $xml): array
     {
-        if (trim($xml) === '') {
+        $xml = trim($xml);
+        if ($xml === '') {
             return ['xml' => $xml, 'links' => []];
         }
 
