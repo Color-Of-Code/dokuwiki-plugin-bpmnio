@@ -1,5 +1,6 @@
 <?php
 
+use dokuwiki\Parsing\Handler;
 use dokuwiki\Extension\SyntaxPlugin;
 use dokuwiki\File\MediaResolver;
 
@@ -54,7 +55,7 @@ class syntax_plugin_bpmnio_bpmnio extends SyntaxPlugin
         $this->Lexer->addExitPattern('</bpmnio>', 'plugin_bpmnio_bpmnio');
     }
 
-    public function handle($match, $state, $pos, Doku_Handler $handler): array
+    public function handle($match, $state, $pos, Handler $handler): array
     {
         switch ($state) {
             case DOKU_LEXER_ENTER:
