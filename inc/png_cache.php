@@ -61,7 +61,21 @@ class plugin_bpmnio_png_cache
             return false;
         }
 
-        return file_put_contents(self::getPath($key, $pageId), $png) !== false;
+        // Write to a temp file in the same directory, then rename atomically.
+        // This prevents concurrent requests from interleaving partial writes
+        // and leaving a corrupt PNG on disk.
+        $target = self::getPath($key, $pageId);
+        $tmp = $target . '.tmp.' . bin2hex(random_bytes(6));
+        if (file_put_contents($tmp, $png, LOCK_EX) === false) {
+            return false;
+        }
+
+        if (!rename($tmp, $target)) {
+            @unlink($tmp);
+            return false;
+        }
+
+        return true;
     }
 
     public static function getPath(string $key, string $pageId = ''): string
