@@ -29,6 +29,11 @@ class syntax_plugin_bpmnio_bpmnio extends SyntaxPlugin
         require_once __DIR__ . '/../inc/link_processor.php';
     }
 
+    private function loadPngCache(): void
+    {
+        require_once __DIR__ . '/../inc/png_cache.php';
+    }
+
     public function getPType(): string
     {
         return 'block';
@@ -153,6 +158,31 @@ class syntax_plugin_bpmnio_bpmnio extends SyntaxPlugin
         return in_array($default, $allowed, true) ? $default : 'off';
     }
 
+    /**
+     * Build the inline `style` attribute fragment for the DW2PDF <img> tag.
+     *
+     * Returns an empty string when no dimensions are available so the renderer
+     * falls back to the image's intrinsic size. The browser already rendered
+     * the PNG at the diagram's effective zoom level (zoom is part of the cache
+     * key), so the pixel dimensions are used directly without further scaling.
+     *
+     * @param array{width:int,height:int}|null $dimensions
+     */
+    private function getPdfImageStyle(?array $dimensions): string
+    {
+        if ($dimensions === null) {
+            return '';
+        }
+
+        $width = $dimensions['width'];
+        $height = $dimensions['height'];
+        if ($width <= 0 || $height <= 0) {
+            return '';
+        }
+
+        return " style=\"width: {$width}px; height: {$height}px;\"";
+    }
+
     private function getMedia($src)
     {
         global $ID;
@@ -175,14 +205,30 @@ class syntax_plugin_bpmnio_bpmnio extends SyntaxPlugin
         [$state, $type, $match, $posStart, $posEnd, $inline, $zoom, $lint] = array_pad($data, 8, '');
 
         if (is_a($renderer, 'renderer_plugin_dw2pdf')) {
-            if ($state == DOKU_LEXER_EXIT) {
-                $renderer->doc .= <<<HTML
-                    <div class="plugin-bpmnio">
-                        <a href="https://github.com/Color-Of-Code/dokuwiki-plugin-bpmnio/issues/4">
-                            DW2PDF support missing: Help wanted
-                        </a>
-                    </div>
-                    HTML;
+            if ($state == DOKU_LEXER_UNMATCHED) {
+                global $ID;
+                $xml = base64_decode($match, true);
+                if ($xml === false) {
+                    $xml = $match;
+                }
+
+                $this->loadPngCache();
+                $cacheKey = plugin_bpmnio_png_cache::buildKey($type, $xml, (string) $zoom, (string) $ID);
+                $png = plugin_bpmnio_png_cache::loadDataUri($cacheKey, (string) $ID);
+
+                if ($png !== null) {
+                    $dimensions = plugin_bpmnio_png_cache::getDimensions($cacheKey, (string) $ID);
+                    $style = $this->getPdfImageStyle($dimensions);
+                    $renderer->doc .= <<<HTML
+                        <div class="plugin-bpmnio plugin-bpmnio-pdf"><img src="{$png}"{$style} /></div>
+                        HTML;
+                } else {
+                    $renderer->doc .= <<<HTML
+                        <div class="plugin-bpmnio">
+                            Diagram unavailable for DW2PDF export until it has been rendered in a browser.
+                        </div>
+                        HTML;
+                }
             }
             return true;
         }
@@ -197,10 +243,14 @@ class syntax_plugin_bpmnio_bpmnio extends SyntaxPlugin
                     break;
 
                 case DOKU_LEXER_UNMATCHED:
+                    global $ID;
                     $xml = base64_decode($match, true);
                     if ($xml === false) {
                         $xml = $match;
                     }
+
+                    $this->loadPngCache();
+                    $cacheKey = plugin_bpmnio_png_cache::buildKey($type, $xml, (string) $zoom, (string) $ID);
 
                     $this->loadLinkProcessor();
                     $payload = plugin_bpmnio_link_processor::buildPayload($xml);
@@ -221,11 +271,18 @@ class syntax_plugin_bpmnio_bpmnio extends SyntaxPlugin
                     } else {
                         $class = '';
                     }
-                    $zoomAttr = $zoom !== '' ? " data-zoom=\"{$zoom}\"" : '';
-                    $lintAttr = $lint !== '' ? " data-lint=\"{$lint}\"" : '';
+                    $containerAttrs = [];
+                    if ($lint !== '') {
+                        $containerAttrs[] = "data-lint=\"{$lint}\"";
+                    }
+                    $containerAttrs[] = "data-png-cache-key=\"{$cacheKey}\"";
+                    if ($zoom !== '') {
+                        $containerAttrs[] = "data-zoom=\"{$zoom}\"";
+                    }
+                    $containerAttrs = implode(' ', $containerAttrs);
                     $renderer->doc .= <<<HTML
                         <div class="{$type}_js_canvas {$class}">
-                            <div class="{$type}_js_container"{$zoomAttr}{$lintAttr}></div>
+                            <div class="{$type}_js_container" {$containerAttrs}></div>
                         </div>
                         HTML;
                     if ($inline) {

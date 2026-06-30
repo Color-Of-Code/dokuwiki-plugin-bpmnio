@@ -48,6 +48,37 @@ The `lint` attribute controls the default state per diagram:
   shipped default is `off`, which applies to both rendered pages and the
   editor.
 
+## DW2PDF Support
+
+DW2PDF export now has a pragmatic fallback for diagrams that have already been rendered in a browser. After a BPMN diagram or DMN DRD diagram is displayed on a page, the plugin caches a browser-rendered PNG copy and reuses that cached PNG during `dw2pdf` rendering.
+
+Current limitations:
+
+- The page must have been opened in a browser at least once before `dw2pdf` can include the diagram.
+- Only BPMN and DMN DRD diagrams participate in the PNG fallback.
+- DMN decision tables and literal expressions still do not have PDF fallback rendering.
+
+Protections:
+
+- **CSRF** — the PNG upload AJAX call requires a valid DokuWiki security token
+  (`sectok`), delegated to `checkSecurityToken()`. Unauthenticated or
+  cross-origin requests are rejected with HTTP 403.
+- **ACL** — the caller must hold at least `AUTH_EDIT` on the page id supplied in
+  the request. Read-only visitors cannot seed the cache.
+- **Cross-page cache poisoning** — the cache key is derived from the page id in
+  addition to the diagram type, zoom variant, and XML content. A key from page A
+  is cryptographically invalid for page B, so an editor of one page cannot
+  overwrite another page's cached diagram.
+- **Filesystem isolation** — cached PNGs are stored under a per-page subdirectory
+  (`data/cache/bpmnio/<md5(pageId)>/`). Even a key collision across pages cannot
+  cause a file to land in the wrong page's storage bucket.
+- **PNG validation** — uploaded data must be a valid PNG: the magic-byte header
+  is checked, `getimagesizefromstring()` must confirm `image/png` with non-zero
+  dimensions, and the payload is rejected if it exceeds 5 MB.
+- **Key format validation** — cache keys are validated as 40-character lowercase
+  hex strings (SHA1) before any filesystem path is constructed, preventing path
+  traversal.
+
 ## Development
 
 ### Prerequisites
