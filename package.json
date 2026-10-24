@@ -4,6 +4,7 @@
     "private": true,
     "type": "module",
     "description": "Dev tooling for dokuwiki-plugin-bpmnio",
+    "packageManager": "pnpm@10.33.2",
     "devDependencies": {
         "@eslint/js": "^9.0.0",
         "bpmn-js": "^18.18.0",
@@ -21,7 +22,7 @@
         "build:vendor": "node build/build-vendor.mjs",
         "lint:js": "eslint script.js script/",
         "lint:css": "stylelint 'css/**/*.less' '*.less'",
-        "lint": "npm run lint:js && npm run lint:css",
-        "prepare": "npm run build:vendor"
+        "lint": "pnpm run lint:js && pnpm run lint:css",
+        "prepare": "pnpm run build:vendor"
     }
 }

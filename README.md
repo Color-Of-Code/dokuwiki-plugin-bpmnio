@@ -89,7 +89,7 @@ Protections:
 
 - PHP
 - [Composer](https://getcomposer.org/)
-- Node.js and npm
+- Node.js and pnpm
 
 ### Setup
 
@@ -98,7 +98,7 @@ Protections:
 composer install
 
 # Install JS/CSS dev dependencies and vendor build packages
-npm install
+pnpm install
 ```
 
 ### Linting
@@ -111,13 +111,13 @@ composer cs
 composer stan
 
 # JavaScript lint
-npm run lint:js
+pnpm run lint:js
 
 # LESS/CSS lint
-npm run lint:css
+pnpm run lint:css
 
 # All JS + CSS lints
-npm run lint
+pnpm run lint
 ```
 
 ### Testing
@@ -139,7 +139,7 @@ cannot resolve rules in the browser). The default config extends
 After editing `.bpmnlintrc`, rebuild the bundles:
 
 ```bash
-npm run build:vendor   # or ./update-vendor.sh
+pnpm run build:vendor   # or ./update-vendor.sh
 ```
 
 To add project-specific rules, create a local
@@ -151,15 +151,15 @@ inlines the resolved rules so no resolver is needed at runtime.
 
 ### Updating vendor libraries
 
-The committed `vendor/` bundles are generated locally from the npm packages
+The committed `vendor/` bundles are generated locally from the pnpm packages
 declared in [package.json](package.json). To update them:
 
 ```bash
 # Change the pinned bpmn-js / dmn-js versions in package.json when needed
-npm install
+pnpm install
 
 # Rebuild the committed vendor bundles and copied assets
-npm run build:vendor
+pnpm run build:vendor
 
 # Or use the compatibility wrapper
 ./update-vendor.sh

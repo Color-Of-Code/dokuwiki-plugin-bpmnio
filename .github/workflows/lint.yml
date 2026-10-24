@@ -41,16 +41,20 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '24'
+          cache: pnpm
 
-      - name: Install npm dependencies
-        run: npm ci
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
 
       - name: Run ESLint
-        run: npx eslint script.js script/
+        run: pnpm exec eslint script.js script/
 
   css-lint:
     name: LESS/CSS Lint
@@ -58,13 +62,17 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '24'
+          cache: pnpm
 
-      - name: Install npm dependencies
-        run: npm ci
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
 
       - name: Run Stylelint
-        run: npx stylelint "css/**/*.less" "*.less"
+        run: pnpm exec stylelint "css/**/*.less" "*.less"
