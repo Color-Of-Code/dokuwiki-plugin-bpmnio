@@ -6,17 +6,17 @@
     "description": "Dev tooling for dokuwiki-plugin-bpmnio",
     "packageManager": "pnpm@10.33.2",
     "devDependencies": {
-        "@eslint/js": "^9.39.5",
+        "@eslint/js": "^10.0.1",
         "bpmn-js": "^18.31.0",
         "bpmn-js-bpmnlint": "^0.24.0",
         "bpmnlint": "^11.14.0",
         "bpmnlint-pack-config": "^0.9.0",
         "dmn-js": "^17.12.3",
         "esbuild": "^0.28.2",
-        "eslint": "^9.39.5",
-        "globals": "^15.0.0",
-        "stylelint": "^16.0.0",
-        "stylelint-config-standard-less": "^3.0.0"
+        "eslint": "^10.12.0",
+        "globals": "^17.13.0",
+        "stylelint": "^17.16.0",
+        "stylelint-config-standard-less": "^4.1.0"
     },
     "scripts": {
         "build:vendor": "node build/build-vendor.mjs",
