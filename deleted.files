@@ -3,6 +3,7 @@ style.css
 style.less
 syntax.php
 action/viewer.php
+package-lock.json
 vendor/bpmn-js/url.txt
 vendor/bpmn-js/dist/assets/bpmn-font/font/bpmn.eot
 vendor/bpmn-js/dist/assets/bpmn-font/font/bpmn.svg

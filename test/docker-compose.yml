@@ -7,7 +7,9 @@ services:
       - PGID=1000
       - TZ=Europe/Amsterdam
     volumes:
-      - ../:/config/dokuwiki/lib/plugins/bpmnio:ro
+      - dokuwiki-config:/config
+      - ./container-init:/custom-cont-init.d:ro
+      - ../:/workspace-plugins/bpmnio:ro
       - ./data:/config/dokuwiki/data/pages/test:rw
       - ./media:/config/dokuwiki/data/media/test:rw
     ports:
@@ -18,3 +20,6 @@ services:
       timeout: 5s
       retries: 5
       start_period: 30s
+
+volumes:
+  dokuwiki-config:

@@ -48,13 +48,48 @@ The `lint` attribute controls the default state per diagram:
   shipped default is `off`, which applies to both rendered pages and the
   editor.
 
+## DW2PDF Support
+
+DW2PDF export now has a pragmatic fallback for diagrams that have already been rendered
+in a browser. After a BPMN diagram or DMN DRD diagram is displayed on a page, the plugin
+caches a browser-rendered PNG copy and reuses that cached PNG during `dw2pdf` rendering.
+
+Current limitations:
+
+- The page must have been opened in a browser at least once before `dw2pdf` can include the diagram.
+- Only BPMN and DMN DRD diagrams participate in the PNG fallback.
+- DMN decision tables and literal expressions still do not have PDF fallback rendering.
+
+Protections:
+
+- **CSRF** — the PNG upload AJAX call requires a valid DokuWiki security token
+  (`sectok`), delegated to `checkSecurityToken()`. Unauthenticated or
+  cross-origin requests are rejected with HTTP 403.
+- **ACL** — the caller must hold at least `AUTH_EDIT` on the page id supplied in
+  the request. Read-only visitors cannot seed the cache.
+- **Cross-page cache poisoning** — the cache key is derived from the page id in
+  addition to the diagram type, zoom variant, and XML content. A key from page A
+  is cryptographically invalid for page B, so an editor of one page cannot
+  overwrite another page's cached diagram.
+- **Filesystem isolation** — cached PNGs are stored under a per-page subdirectory
+  (`data/cache/bpmnio/<md5(pageId)>/`). Even a key collision across pages cannot
+  cause a file to land in the wrong page's storage bucket.
+- **PNG validation** — uploaded data must be a valid PNG: the magic-byte header
+  is checked, `getimagesizefromstring()` must confirm `image/png` with non-zero
+  dimensions, neither dimension may exceed 10,000 pixels, the total image size
+  may not exceed 20 million pixels, and the payload is rejected if it exceeds
+  5 MB.
+- **Key format validation** — cache keys are validated as 40-character lowercase
+  hex strings (SHA1) before any filesystem path is constructed, preventing path
+  traversal.
+
 ## Development
 
 ### Prerequisites
 
 - PHP
 - [Composer](https://getcomposer.org/)
-- Node.js and npm
+- Node.js and pnpm
 
 ### Setup
 
@@ -63,7 +98,7 @@ The `lint` attribute controls the default state per diagram:
 composer install
 
 # Install JS/CSS dev dependencies and vendor build packages
-npm install
+pnpm install
 ```
 
 ### Linting
@@ -76,13 +111,13 @@ composer cs
 composer stan
 
 # JavaScript lint
-npm run lint:js
+pnpm run lint:js
 
 # LESS/CSS lint
-npm run lint:css
+pnpm run lint:css
 
 # All JS + CSS lints
-npm run lint
+pnpm run lint
 ```
 
 ### Testing
@@ -104,7 +139,7 @@ cannot resolve rules in the browser). The default config extends
 After editing `.bpmnlintrc`, rebuild the bundles:
 
 ```bash
-npm run build:vendor   # or ./update-vendor.sh
+pnpm run build:vendor   # or ./update-vendor.sh
 ```
 
 To add project-specific rules, create a local
@@ -116,15 +151,15 @@ inlines the resolved rules so no resolver is needed at runtime.
 
 ### Updating vendor libraries
 
-The committed `vendor/` bundles are generated locally from the npm packages
+The committed `vendor/` bundles are generated locally from the pnpm packages
 declared in [package.json](package.json). To update them:
 
 ```bash
 # Change the pinned bpmn-js / dmn-js versions in package.json when needed
-npm install
+pnpm install
 
 # Rebuild the committed vendor bundles and copied assets
-npm run build:vendor
+pnpm run build:vendor
 
 # Or use the compatibility wrapper
 ./update-vendor.sh

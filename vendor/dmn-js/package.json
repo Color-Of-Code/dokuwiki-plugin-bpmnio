@@ -1,13 +1,14 @@
 {
   "name": "dmn-js",
   "description": "A dmn toolkit and web modeler",
-  "version": "17.8.1",
+  "version": "17.12.3",
   "files": [
     "dist",
     "lib",
     "test/helper"
   ],
   "scripts": {
+    "all": "run-s build test",
     "start": "cross-env SINGLE_START=modeler npm run dev",
     "start:viewer": "cross-env SINGLE_START=viewer npm run dev",
     "start:navigated-viewer": "cross-env SINGLE_START=navigated-viewer npm run dev",
@@ -45,28 +46,28 @@
     "decision modeling"
   ],
   "devDependencies": {
-    "@rollup/plugin-babel": "^7.0.0",
-    "@rollup/plugin-commonjs": "^29.0.2",
+    "@rollup/plugin-babel": "^7.1.0",
+    "@rollup/plugin-commonjs": "^29.0.3",
     "@rollup/plugin-json": "^6.1.0",
     "@rollup/plugin-node-resolve": "^16.0.3",
     "@rollup/plugin-replace": "^6.0.3",
     "@rollup/plugin-terser": "^1.0.0",
-    "axe-core": "^4.11.3",
-    "cpy": "^13.2.1",
+    "axe-core": "^4.12.1",
+    "cpy": "^13.2.2",
     "del": "^8.0.0",
     "del-cli": "^7.0.0",
-    "diagram-js": "^15.13.0",
+    "diagram-js": "^15.21.0",
     "dmn-font": "^0.6.2",
     "execa": "^9.6.1",
     "min-dom": "^5.3.0",
-    "rollup": "^4.60.2",
+    "rollup": "^4.62.2",
     "rollup-plugin-license": "^3.7.1"
   },
   "dependencies": {
-    "dmn-js-boxed-expression": "^17.8.1",
-    "dmn-js-decision-table": "^17.8.1",
-    "dmn-js-drd": "^17.8.1",
-    "dmn-js-literal-expression": "^17.8.1",
-    "dmn-js-shared": "^17.8.1"
+    "dmn-js-boxed-expression": "^17.12.3",
+    "dmn-js-decision-table": "^17.12.3",
+    "dmn-js-drd": "^17.12.3",
+    "dmn-js-literal-expression": "^17.12.3",
+    "dmn-js-shared": "^17.12.3"
   }
 }

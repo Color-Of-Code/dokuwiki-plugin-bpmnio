@@ -1,104 +1,144 @@
 /**
+ * Semantic tokens, copied from `@bpmn-io/theme` to style the components
+ * according to this theme.
+ *
+ * Names and values of the tokens should stay intact with the `@bpmn-io/theme`
+ * source of truth, to ensure matching styles and allow overrides with an
+ * alternative theme.
+ */
+.bio-theme-parent {
+  --bio-surface: hsl(0, 0%, 100%);
+  --bio-surface-overlay: hsl(0, 0%, 100%);
+  --bio-surface-subtle: hsl(225, 10%, 97%);
+  --bio-surface-medium: hsl(225, 10%, 95%);
+  --bio-surface-inverted: hsl(0, 0%, 22%);
+  --bio-surface-inverted-subtle: hsl(225, 10%, 35%);
+  --bio-text: hsl(225, 10%, 15%);
+  --bio-text-subtle: hsl(225, 10%, 35%);
+  --bio-text-subtlest: hsl(225, 10%, 55%);
+  --bio-text-on-inverted: hsl(0, 0%, 100%);
+  --bio-border: hsl(225, 10%, 75%);
+  --bio-border-disabled: hsl(225, 10%, 90%);
+  --bio-primary: hsl(205, 100%, 40%);
+  --bio-primary-surface: hsl(205, 100%, 95%);
+  --bio-danger: hsl(360, 100%, 45%);
+  --bio-danger-surface-subtle: hsl(360, 100%, 97%);
+  --bio-selected-surface: var(--bio-surface-medium);
+  --bio-selected-text: var(--bio-text);
+  --bio-focus: hsl(205, 100%, 40%);
+  --bio-focus-surface: hsl(205, 100%, 95%);
+  --bio-canvas-accent: hsl(205, 100%, 40%);
+  --bio-canvas-accent-subtle: hsl(205, 100%, 75%);
+  --bio-shadow: hsla(0, 0%, 0%, 30%);
+  --bio-shadow-subtle: hsla(0, 0%, 0%, 10%);
+  --bio-radius-sm: 2px;
+  --bio-radius-md: 3px;
+  --bio-radius-lg: 4px;
+}
+
+/**
  * color definitions
+ *
+ * Colours resolve through the semantic tokens in `@bpmn-io/theme`; a handful of
+ * values with no matching token stay literal.
  */
 .djs-parent {
-  --color-grey-225-10-15: hsl(225, 10%, 15%);
-  --color-grey-225-10-35: hsl(225, 10%, 35%);
-  --color-grey-225-10-55: hsl(225, 10%, 55%);
-  --color-grey-225-10-75: hsl(225, 10%, 75%);
-  --color-grey-225-10-80: hsl(225, 10%, 80%);
-  --color-grey-225-10-85: hsl(225, 10%, 85%);
-  --color-grey-225-10-90: hsl(225, 10%, 90%);
-  --color-grey-225-10-95: hsl(225, 10%, 95%);
-  --color-grey-225-10-97: hsl(225, 10%, 97%);
 
-  --color-blue-205-100-45: hsl(205, 100%, 45%);
-  --color-blue-205-100-45-opacity-30: hsla(205, 100%, 45%, 30%);
-  --color-blue-205-100-50: hsl(205, 100%, 50%);
-  --color-blue-205-100-50-opacity-15: hsla(205, 100%, 50%, 15%);
-  --color-blue-205-100-70: hsl(205, 100%, 75%);
-  --color-blue-205-100-95: hsl(205, 100%, 95%);
+  --button-border-radius: var(--bio-radius-md);
+  --input-border-radius: var(--bio-radius-sm);
+  --surface-border-radius: var(--bio-radius-lg);
 
-  --color-green-150-86-44: hsl(150, 86%, 44%);
+  --canvas-fill-color: var(--bio-surface);
 
-  --color-red-360-100-40: hsl(360, 100%, 40%);
-  --color-red-360-100-45: hsl(360, 100%, 45%);
-  --color-red-360-100-92: hsl(360, 100%, 92%);
-  --color-red-360-100-97: hsl(360, 100%, 97%);
+  --accent-color: var(--bio-canvas-accent);
 
-  --color-white: hsl(0, 0%, 100%);
-  --color-black: hsl(0, 0%, 0%);
-  --color-black-opacity-10: hsla(0, 0%, 0%, 10%);
-  --color-black-opacity-30: hsla(0, 0%, 0%, 30%);
-
-  --canvas-fill-color: var(--color-white);
-
-  --bendpoint-fill-color: var(--color-blue-205-100-45);
+  --bendpoint-fill-color: var(--bio-canvas-accent);
   --bendpoint-stroke-color: var(--canvas-fill-color);
 
-  --context-pad-entry-background-color: var(--color-white);
-  --context-pad-entry-hover-background-color: var(--color-grey-225-10-95);
+  --context-pad-entry-background-color: var(--bio-surface);
+  --context-pad-entry-hover-background-color: var(--bio-surface-medium);
 
-  --element-dragger-color: var(--color-blue-205-100-50);
-  --element-hover-outline-fill-color: var(--color-blue-205-100-45);
-  --element-selected-outline-stroke-color: var(--color-blue-205-100-50);
-  --element-selected-outline-secondary-stroke-color: var(--color-blue-205-100-70);
+  --element-dragger-color: var(--accent-color);
+  --element-selected-outline-stroke-color: var(--accent-color);
+  --element-selected-outline-secondary-stroke-color: var(--bio-canvas-accent-subtle);
 
-  --lasso-fill-color: var(--color-blue-205-100-50-opacity-15);
+  --lasso-fill-color: color-mix(in srgb, var(--bio-canvas-accent) 15%, transparent);
   --lasso-stroke-color: var(--element-selected-outline-stroke-color);
 
-  --palette-entry-color: var(--color-grey-225-10-15);
-  --palette-entry-hover-color: var(--color-blue-205-100-45);
-  --palette-entry-selected-color: var(--color-blue-205-100-50);
-  --palette-separator-color: var(--color-grey-225-10-75);
-  --palette-toggle-hover-background-color: var(--color-grey-225-10-55);
-  --palette-background-color: var(--color-grey-225-10-97);
-  --palette-border-color: var(--color-grey-225-10-75);
+  --palette-entry-color: var(--bio-text);
+  --palette-entry-hover-color: var(--bio-primary);
+  --palette-entry-selected-color: var(--bio-primary);
+  --palette-separator-color: var(--bio-border);
+  --palette-toggle-hover-background-color: var(--bio-surface-medium);
+  --palette-background-color: var(--bio-surface-subtle);
+  --palette-border-color: var(--bio-border);
 
   --popup-font-family: "IBM Plex Sans", sans-serif;
   --popup-font-size: 14px;
-  --popup-header-entry-selected-color: var(--color-blue-205-100-50);
+  --popup-secondary-font-size: .9em;
+  --popup-header-entry-selected-color: var(--bio-primary);
   --popup-header-font-weight: bolder;
-  --popup-header-group-divider-color: var(--color-grey-225-10-75);
-  --popup-background-color: var(--color-white);
+  --popup-header-group-divider-color: var(--bio-border);
+  --popup-background-color: var(--bio-surface-overlay);
   --popup-border-color: transparent;
-  --popup-shadow-color: var(--color-black-opacity-30);
-  --popup-disabled-color: var(--color-grey-225-10-35);
-  --popup-description-color: var(--color-grey-225-10-35);
-  --popup-no-results-color: var(--color-grey-225-10-55);
-  --popup-entry-title-color: var(--color-grey-225-10-55);
-  --popup-entry-hover-color:  var(--color-grey-225-10-95);
-  --popup-search-border-color: var(--color-grey-225-10-75);
-  --popup-search-focus-border-color: var(--color-blue-205-100-50);
-  --popup-search-focus-background-color: var(--color-blue-205-100-95);
+  --popup-shadow-color: var(--bio-shadow);
+  /* translucent, so the thumb darkens whatever it scrolls over */
+  --popup-scrollbar-thumb-color: rgba(0, 0, 0, 0.2);
+  --popup-button-background-color: var(--bio-surface-overlay);
+  --popup-button-hover-background-color: var(--bio-surface-medium);
+  --popup-disabled-color: var(--bio-text-subtle);
+  --popup-description-color: var(--bio-text-subtle);
+  --popup-no-results-color: var(--bio-text-subtlest);
+  --popup-entry-title-color: var(--bio-text-subtlest);
 
-  --resizer-fill-color: var(--color-blue-205-100-45);
+  --popup-entry-selected-background-color: var(--bio-selected-surface);
+  --popup-entry-selected-color: var(--bio-selected-text);
+  --popup-search-border-color: var(--bio-border);
+  --popup-search-focus-border-color: var(--bio-focus);
+  --popup-search-focus-background-color: var(--bio-focus-surface);
+  --popup-tab-color: var(--bio-text-subtlest);
+  --popup-tab-hover-color: var(--bio-text);
+  --popup-tab-active-color: var(--bio-text);
+  --popup-tab-active-border-color: var(--bio-primary);
+  --popup-tab-strip-border-color: var(--bio-border-disabled);
+  --popup-tab-focus-border-color: var(--bio-focus);
+
+  --resizer-fill-color: var(--bio-canvas-accent);
   --resizer-stroke-color: var(--canvas-fill-color);
 
   --search-font-family: "IBM Plex Sans", sans-serif;
   --search-font-size: 14px;
-  --search-container-background-color: var(--color-white);
-  --search-shadow-color: var(--color-black-opacity-30);
-  --search-input-border-color: var(--color-grey-225-10-75);
-  --search-input-focus-border-color: var(--color-blue-205-100-50);
-  --search-input-focus-background-color: var(--color-blue-205-100-95);
-  --search-result-hover-background-color: var(--color-grey-225-10-95);
-  --search-result-secondary-color: var(--color-grey-225-10-55);
-  --search-preselected-background-color: var(--color-blue-205-100-50-opacity-15);
+  --search-container-background-color: var(--bio-surface-overlay);
+  --search-shadow-color: var(--bio-shadow);
+  --search-input-border-color: var(--bio-border);
+  --search-input-focus-border-color: var(--bio-focus);
+  --search-input-focus-background-color: var(--bio-primary-surface);
+  --search-result-hover-background-color: var(--bio-surface-medium);
+  --search-result-secondary-color: var(--bio-text-subtlest);
+  --search-preselected-background-color: color-mix(in srgb, var(--bio-canvas-accent) 15%, transparent);
 
-  --shape-attach-allowed-stroke-color: var(--color-blue-205-100-50);
-  --shape-connect-allowed-fill-color: var(--color-grey-225-10-97);
-  --shape-drop-allowed-fill-color: var(--color-grey-225-10-97);
-  --shape-drop-not-allowed-fill-color: var(--color-red-360-100-97);
-  --shape-resize-preview-stroke-color: var(--color-blue-205-100-50);
+  --shape-attach-allowed-stroke-color: var(--accent-color);
+  --shape-connect-allowed-fill-color: var(--bio-surface-subtle);
+  --shape-drop-allowed-fill-color: var(--bio-surface-subtle);
+  --shape-drop-not-allowed-fill-color: var(--bio-danger-surface-subtle);
+  --shape-resize-preview-stroke-color: var(--accent-color);
 
-  --snap-line-stroke-color: var(--color-blue-205-100-45-opacity-30);
+  --snap-line-stroke-color: color-mix(in srgb, var(--bio-canvas-accent) 30%, transparent);
 
-  --space-tool-crosshair-stroke-color: var(--color-black);
+  --space-tool-crosshair-stroke-color: var(--bio-text);
 
-  --tooltip-error-background-color: var(--color-red-360-100-97);
-  --tooltip-error-border-color: var(--color-red-360-100-45);
-  --tooltip-error-color: var(--color-red-360-100-45);
+  --tooltip-error-background-color: var(--bio-danger-surface-subtle);
+  --tooltip-error-border-color: var(--bio-danger);
+  --tooltip-error-color: var(--bio-danger);
+
+  --hover-tooltip-font-family: "IBM Plex Sans", sans-serif;
+  --hover-tooltip-font-size: 12px;
+  --hover-tooltip-secondary-font-size: 11px;
+  --hover-tooltip-background-color: var(--bio-surface-inverted);
+  --hover-tooltip-color: var(--bio-text-on-inverted);
+  --hover-tooltip-shadow-color: var(--bio-shadow-subtle);
+
+  --palette-tooltip-shortcut-background-color: var(--bio-surface-inverted-subtle);
 }
 
 /**
@@ -150,6 +190,10 @@
 .djs-dragging-active-lasso .djs-element.selected .djs-outline {
   stroke: var(--element-selected-outline-secondary-stroke-color);
   display: block;
+}
+
+.djs-outline-hidden .djs-outline {
+  display: none !important;
 }
 
 .djs-shape.connect-ok .djs-visual > :nth-child(1) {
@@ -483,6 +527,49 @@
   display: none;
 }
 
+.djs-hover-tooltip {
+  position: fixed;
+  z-index: 1000;
+
+  display: flex;
+  align-items: center;
+  gap: 6px;
+
+  padding: 6px 10px;
+  border-radius: var(--surface-border-radius);
+
+  background-color: var(--hover-tooltip-background-color);
+  color: var(--hover-tooltip-color);
+
+  font-family: var(--hover-tooltip-font-family);
+  font-size: var(--hover-tooltip-font-size);
+  line-height: 1.2;
+  white-space: nowrap;
+
+  pointer-events: none;
+  box-shadow: 0 1px 4px var(--hover-tooltip-shadow-color);
+}
+
+.djs-hover-tooltip--right {
+  transform: translateY(-50%);
+}
+
+.djs-hover-tooltip--top {
+  transform: translate(-50%, -100%);
+}
+
+.djs-palette-tooltip-shortcut {
+  padding: 1px 5px;
+
+  border-radius: var(--button-border-radius);
+
+  background-color: var(--palette-tooltip-shortcut-background-color);
+
+  font-family: monospace;
+  font-size: var(--hover-tooltip-secondary-font-size);
+  line-height: 1.2;
+}
+
 /**
  * context-pad
  */
@@ -527,7 +614,6 @@
 .djs-popup {
   line-height: 1;
   box-sizing: border-box;
-  width: min-content;
   background: var(--popup-background-color);
   overflow: hidden;
   position: fixed;
@@ -535,6 +621,7 @@
   box-shadow: 0px 2px 6px var(--popup-shadow-color);
   border: solid 1px var(--popup-border-color);
   min-width: 120px;
+  max-width: 300px;
   outline: none;
   font-size: var(--popup-font-size);
   font-family: var(--popup-font-family);
@@ -545,7 +632,7 @@
   box-sizing: border-box;
   font-size: var(--popup-font-size);
   padding: 3px 6px 3px 28px;
-  border-radius: 2px;
+  border-radius: var(--input-border-radius);
   border: solid 1px var(--popup-search-border-color);
   line-height: 21px;
 }
@@ -610,6 +697,97 @@
   margin: 10px 12px;
 }
 
+.djs-popup-tabs-container {
+  position: relative;
+  border-bottom: solid 1px var(--popup-tab-strip-border-color);
+}
+
+/**
+ * The scroll control doubles as the edge fade: tabs scrolled past it fade out
+ * rather than being cut off behind an opaque block.
+ */
+.djs-popup-tabs-scroll {
+  appearance: none;
+  position: absolute;
+  top: 0;
+  bottom: 1px;
+  width: 28px;
+  display: flex;
+  align-items: center;
+  padding: 0;
+  border: none;
+  border-radius: 0;
+  color: var(--popup-tab-color);
+  cursor: pointer;
+}
+
+.djs-popup-tabs-scroll:hover {
+  color: var(--popup-tab-hover-color);
+}
+
+.djs-popup-tabs-scroll-start {
+  left: 0;
+  justify-content: flex-start;
+  background: linear-gradient(to left, transparent, var(--popup-background-color) 60%);
+}
+
+.djs-popup-tabs-scroll-end {
+  right: 0;
+  justify-content: flex-end;
+  background: linear-gradient(to right, transparent, var(--popup-background-color) 60%);
+}
+
+.djs-popup-tabs-scroll-start svg {
+  transform: rotate(180deg);
+}
+
+.djs-popup-tabs {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 2px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 0 12px;
+
+  /* keep scrolled-to tabs clear of the scroll controls */
+  scroll-padding: 0 28px;
+  scrollbar-width: none;
+}
+
+.djs-popup-tabs::-webkit-scrollbar {
+  display: none;
+}
+
+.djs-popup-tab {
+  appearance: none;
+  background: transparent;
+  border: none;
+  border-bottom: solid 2px transparent;
+  border-radius: 0;
+  flex: 0 0 auto;
+  padding: 6px 10px;
+  font: inherit;
+  font-size: var(--popup-font-size);
+  color: var(--popup-tab-color);
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.djs-popup-tab:hover {
+  color: var(--popup-tab-hover-color);
+}
+
+.djs-popup-tab:focus-visible {
+  outline: solid 1px var(--popup-tab-focus-border-color);
+  outline-offset: -2px;
+}
+
+.djs-popup-tab[aria-selected="true"] {
+  color: var(--popup-tab-active-color);
+  border-bottom-color: var(--popup-tab-active-border-color);
+  font-weight: var(--popup-header-font-weight);
+}
+
 .djs-popup-title {
   font-size: var(--popup-font-size);
   font-weight: var(--popup-header-font-weight);
@@ -668,7 +846,7 @@
 }
 
 .djs-popup-breadcrumbs-item--back:hover {
-  background: #f2f3f5;
+  background: var(--popup-button-hover-background-color);
 }
 
 .djs-popup-breadcrumbs-item--current {
@@ -681,10 +859,17 @@
   text-decoration: none;
 }
 
+.djs-popup-entry-actions {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  gap: 6px;
+  margin-left: 6px;
+}
+
 .djs-popup-entry-chevron {
   display: flex;
   align-items: center;
-  margin-left: 6px;
   color: var(--popup-description-color);
 }
 
@@ -696,7 +881,7 @@
 
 .djs-popup-search-count {
   margin: 0 12px;
-  font-size: 11px;
+  font-size: var(--popup-secondary-font-size);
   color: var(--popup-description-color);
 }
 
@@ -706,6 +891,16 @@
   max-height: 280px;
   overflow: auto;
   padding-right: 9px;
+}
+
+/**
+ * The results list is focusable (as a listbox holding
+ * `aria-activedescendant`) when there is no search field.
+ * The active entry is indicated via `.entry.selected`, so we hide
+ * the outline on the list container itself.
+ */
+.djs-popup-results:focus {
+  outline: none;
 }
 
 .djs-popup-group {
@@ -754,7 +949,8 @@
 }
 
 .djs-popup .entry.selected {
-  background-color: var(--popup-entry-hover-color);
+  color: var(--popup-entry-selected-color);
+  background-color: var(--popup-entry-selected-background-color);
 }
 
 .djs-popup .entry.disabled {
@@ -773,7 +969,7 @@
 }
 
 .djs-popup-entry-description {
-  font-size: .9em;
+  font-size: var(--popup-secondary-font-size);
   margin-top: .25em;
 
   color: var(--popup-description-color);
@@ -800,7 +996,7 @@
 
 .djs-popup *::-webkit-scrollbar-thumb {
   border-radius: 3px;
-  background-color: rgba(0, 0, 0, 0.2);
+  background-color: var(--popup-scrollbar-thumb-color);
 }
 
 .djs-popup *::-webkit-scrollbar-track {
@@ -815,19 +1011,62 @@
   color: var(--popup-no-results-color);
 }
 
-.djs-popup-entry-docs {
-  display: none;
-  margin-left: 3px;
-  color: var(--popup-description-color);
+.djs-popup-footer {
+  display: flex;
+  padding: 5px 12px 7px 12px;
+  border-top: solid 1px var(--popup-border-color);
 }
 
-.djs-popup-body .entry:focus-within .djs-popup-entry-docs,
-.djs-popup-body .entry:focus .djs-popup-entry-docs,
-.djs-popup-body .entry:hover .djs-popup-entry-docs {
-  display: inline;
+/**
+ * The footer holds the keyboard/assistive-technology reachable documentation
+ * link. Pointer interaction switches the popup to the per-entry
+ * `.djs-popup-entry-docs` affordance instead.
+ */
+.djs-popup--pointer .djs-popup-footer {
+  display: none;
+}
+
+.djs-popup-entry-docs {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  visibility: hidden;
+  padding: 2px 3px;
+  color: var(--popup-description-color);
+  background: var(--popup-button-background-color);
+  border: 1px solid var(--popup-search-border-color);
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color .12s ease, border-color .12s ease, color .12s ease;
+}
+
+.djs-popup--pointer .djs-popup-body .entry:hover .djs-popup-entry-docs {
+  visibility: visible;
+}
+
+.djs-popup-body .entry .djs-popup-entry-docs:hover {
+  background: var(--popup-button-hover-background-color);
 }
 
 .djs-popup-entry-docs svg {
+  vertical-align: middle;
+}
+
+.djs-popup-footer-docs {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-size: var(--popup-secondary-font-size);
+  color: var(--popup-description-color);
+  text-decoration: none;
+}
+
+.djs-popup-footer-docs:hover {
+  text-decoration: underline;
+}
+
+.djs-popup-footer-docs svg {
   vertical-align: middle;
   margin: 2px;
 }
@@ -838,7 +1077,7 @@
 .djs-palette {
   background: var(--palette-background-color);
   border: solid 1px var(--palette-border-color);
-  border-radius: 2px;
+  border-radius: var(--surface-border-radius);
 }
 
 /**
@@ -882,6 +1121,10 @@
 }
 
 .djs-bendpoints:not(.hover) .floating {
+  display: none;
+}
+
+.djs-bendpoint.floating:not(.positioned) {
   display: none;
 }
 
@@ -949,7 +1192,7 @@
 
   background: var(--tooltip-error-background-color);
   border: solid 1px var(--tooltip-error-border-color);
-  border-radius: 2px;
+  border-radius: var(--surface-border-radius);
   color: var(--tooltip-error-color);
   font-size: 12px;
   line-height: 16px;
@@ -988,7 +1231,7 @@
 
   font-family: var(--search-font-family);
   font-size: var(--search-font-size);
-  border-radius: 2px;
+  border-radius: var(--surface-border-radius);
   box-shadow: 0px 2px 6px var(--search-shadow-color);
 }
 
@@ -1011,7 +1254,7 @@
   width: 100%;
   padding: 3px 6px 3px 28px;
   border: 1px solid var(--search-input-border-color);
-  border-radius: 2px;
+  border-radius: var(--input-border-radius);
   box-sizing: border-box;
   line-height: 21px;
 }

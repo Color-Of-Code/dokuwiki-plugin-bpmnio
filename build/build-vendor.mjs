@@ -69,7 +69,7 @@ async function ensureInstalled(packageName) {
 
   if (!(await pathExists(packagePath))) {
     throw new Error(
-      `Missing npm dependency ${packageName}. Run npm install before building vendor bundles.`
+      `Missing dependency ${packageName}. Run pnpm install before building vendor bundles.`
     );
   }
 

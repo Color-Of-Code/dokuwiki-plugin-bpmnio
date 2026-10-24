@@ -15,9 +15,16 @@ use dokuwiki\Utf8;
 
 class action_plugin_bpmnio_editor extends ActionPlugin
 {
+    private const PNG_CACHE_AJAX_CALL = 'plugin_bpmnio_png_cache';
+
     private function loadLinkProcessor(): void
     {
         require_once __DIR__ . '/../inc/link_processor.php';
+    }
+
+    private function loadPngCache(): void
+    {
+        require_once __DIR__ . '/../inc/png_cache.php';
     }
 
     public function register(EventHandler $controller): void
@@ -26,6 +33,7 @@ class action_plugin_bpmnio_editor extends ActionPlugin
         $controller->register_hook('EDIT_FORM_ADDTEXTAREA', 'BEFORE', $this, 'handleForm');
         $controller->register_hook('ACTION_ACT_PREPROCESS', 'BEFORE', $this, 'handlePost');
         $controller->register_hook('FORM_EDIT_OUTPUT', 'BEFORE', $this, 'handleFormEditOutput');
+        $controller->register_hook('AJAX_CALL_UNKNOWN', 'BEFORE', $this, 'handlePngCacheAjax');
     }
 
     public function handleFormEditOutput(Event $event)
@@ -50,6 +58,7 @@ class action_plugin_bpmnio_editor extends ActionPlugin
         global $TEXT;
         global $RANGE;
         global $INPUT;
+        global $ID;
 
         if (!$RANGE) {
             // section editing failed, use default editor instead
@@ -72,6 +81,9 @@ class action_plugin_bpmnio_editor extends ActionPlugin
         if ($event->data['target'] === 'plugin_bpmnio_dmn') {
             $type = 'dmn';
         }
+
+        $this->loadPngCache();
+        $cacheKey = plugin_bpmnio_png_cache::buildKey($type, trim((string) $TEXT), '', (string) $ID);
 
         $form->setHiddenField('plugin_bpmnio_data', $data);
         $form->setHiddenField('plugin_bpmnio_links', $linkData);
@@ -97,7 +109,7 @@ class action_plugin_bpmnio_editor extends ActionPlugin
                 <div class="{$type}_js_data">{$renderData}</div>
                 <div class="{$type}_js_links">{$linkData}</div>
                 <div class="{$type}_js_canvas">
-                    <div class="{$type}_js_container"{$lintAttr}></div>
+                    <div class="{$type}_js_container" data-png-cache-key="{$cacheKey}" {$lintAttr}></div>
                 </div>
             </div>
             HTML);
@@ -117,6 +129,67 @@ class action_plugin_bpmnio_editor extends ActionPlugin
         }
 
         $TEXT = base64_decode($INPUT->post->str('plugin_bpmnio_data'));
+    }
+
+    public function handlePngCacheAjax(Event $event): void
+    {
+        if ($event->data !== self::PNG_CACHE_AJAX_CALL) {
+            return;
+        }
+
+        global $INPUT;
+
+        $event->stopPropagation();
+        $event->preventDefault();
+
+        $this->loadPngCache();
+
+        if (strtoupper((string) ($_SERVER['REQUEST_METHOD'] ?? 'GET')) !== 'POST') {
+            $this->sendJsonResponse(405, ['ok' => false, 'error' => 'method-not-allowed']);
+            return;
+        }
+
+        // CSRF: require a valid DokuWiki security token.
+        if (!checkSecurityToken($INPUT->post->str('sectok'))) {
+            $this->sendJsonResponse(403, ['ok' => false, 'error' => 'invalid-token']);
+            return;
+        }
+
+        // ACL: only users who could edit the page may seed its PNG cache,
+        // since the cached image is a derivative of the page's authored XML.
+        $id = cleanID($INPUT->post->str('id'));
+        if ($id === '' || auth_quickaclcheck($id) < AUTH_EDIT) {
+            $this->sendJsonResponse(403, ['ok' => false, 'error' => 'forbidden']);
+            return;
+        }
+
+        $key = $INPUT->post->str('key');
+        $type = $INPUT->post->str('type');
+        $png = $_POST['png'] ?? '';
+
+        if ($type !== 'bpmn' && $type !== 'dmn') {
+            $this->sendJsonResponse(400, ['ok' => false, 'error' => 'invalid-type']);
+            return;
+        }
+
+        if (!is_string($png) || !plugin_bpmnio_png_cache::isValidKey($key)) {
+            $this->sendJsonResponse(400, ['ok' => false, 'error' => 'invalid-payload']);
+            return;
+        }
+
+        $ok = plugin_bpmnio_png_cache::save($key, $png, $id);
+
+        $this->sendJsonResponse($ok ? 200 : 400, [
+            'ok' => $ok,
+            'error' => $ok ? null : 'invalid-cache-data',
+        ]);
+    }
+
+    private function sendJsonResponse(int $statusCode, array $payload): void
+    {
+        http_response_code($statusCode);
+        header('Content-Type: application/json');
+        echo json_encode($payload);
     }
 
     private function shallIgnore(Event $event)

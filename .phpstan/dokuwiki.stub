@@ -179,6 +179,7 @@ namespace {
     define('DOKU_LEXER_EXIT', 4);
     define('DOKU_LEXER_SPECIAL', 5);
     define('AUTH_READ', 1);
+    define('AUTH_EDIT', 4);
     define('DOKU_BASE', '/');
 
     /**
@@ -224,5 +225,10 @@ namespace {
 
     function msg(string $message, int $lvl = 0): void
     {
+    }
+
+    function checkSecurityToken(?string $token = null): bool
+    {
+        return true;
     }
 }

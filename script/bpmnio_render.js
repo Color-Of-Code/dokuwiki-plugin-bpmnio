@@ -68,6 +68,207 @@ function clearContainerError(container) {
     clearStatusMessage(container);
 }
 
+function getPngCacheKey(container) {
+    return container?.dataset?.pngCacheKey ?? "";
+}
+
+function getSvgDimensions(svg) {
+    const bounds = svg.getBoundingClientRect();
+    if (bounds.width > 0 && bounds.height > 0) {
+        return { width: bounds.width, height: bounds.height };
+    }
+
+    const viewBox = svg.getAttribute("viewBox")?.trim() ?? "";
+    const parts = viewBox.split(/[\s,]+/).map(Number);
+    if (parts.length === 4 && parts.every(Number.isFinite) && parts[2] > 0 && parts[3] > 0) {
+        return { width: parts[2], height: parts[3] };
+    }
+
+    const width = Number.parseFloat(svg.getAttribute("width") ?? "");
+    const height = Number.parseFloat(svg.getAttribute("height") ?? "");
+    if (Number.isFinite(width) && Number.isFinite(height) && width > 0 && height > 0) {
+        return { width, height };
+    }
+
+    return null;
+}
+
+function inlineComputedSvgStyles(source, clone) {
+    if (!(source instanceof Element) || !(clone instanceof Element)) {
+        return;
+    }
+
+    const computed = window.getComputedStyle(source);
+    const properties = [
+        "color",
+        "display",
+        "fill",
+        "fill-opacity",
+        "font-family",
+        "font-size",
+        "font-style",
+        "font-weight",
+        "opacity",
+        "stroke",
+        "stroke-dasharray",
+        "stroke-linecap",
+        "stroke-linejoin",
+        "stroke-opacity",
+        "stroke-width",
+        "text-anchor",
+        "text-decoration",
+        "visibility",
+    ];
+
+    for (const property of properties) {
+        const value = computed.getPropertyValue(property);
+        if (value) {
+            clone.style.setProperty(property, value);
+        }
+    }
+
+    const sourceChildren = Array.from(source.children);
+    const cloneChildren = Array.from(clone.children);
+    for (let index = 0; index < sourceChildren.length; index += 1) {
+        inlineComputedSvgStyles(sourceChildren[index], cloneChildren[index]);
+    }
+}
+
+async function createPngFallback(container) {
+    const svg = Array.from(container.querySelectorAll("svg"))
+        .map((candidate) => ({
+            candidate,
+            dimensions: getSvgDimensions(candidate),
+        }))
+        .filter(({ dimensions }) => dimensions)
+        .sort((a, b) =>
+            (b.dimensions.width * b.dimensions.height)
+            - (a.dimensions.width * a.dimensions.height)
+        )[0]?.candidate;
+
+    if (!(svg instanceof SVGElement)) {
+        return "";
+    }
+
+    const dimensions = getSvgDimensions(svg);
+    if (!dimensions) {
+        return "";
+    }
+
+    const clone = svg.cloneNode(true);
+    inlineComputedSvgStyles(svg, clone);
+    clone.setAttribute("width", String(dimensions.width));
+    clone.setAttribute("height", String(dimensions.height));
+
+    const xml = new XMLSerializer().serializeToString(clone);
+    const blob = new Blob([xml], { type: "image/svg+xml;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const image = new Image();
+    image.decoding = "async";
+
+    try {
+        await new Promise((resolve, reject) => {
+            image.onload = resolve;
+            image.onerror = reject;
+            image.src = url;
+        });
+
+        // Render at CSS-pixel size (scale 1) so PNG pixel dimensions match
+        // the CSS px values used by the server when sizing the PDF image.
+        // Using devicePixelRatio would produce a larger PNG whose pixel count
+        // the server would then interpret as a larger CSS size, and different
+        // devices would store different pixel counts under the same cache key.
+        const canvasWidth = Math.max(1, Math.ceil(dimensions.width));
+        const canvasHeight = Math.max(1, Math.ceil(dimensions.height));
+        const canvas = document.createElement("canvas");
+        canvas.width = canvasWidth;
+        canvas.height = canvasHeight;
+
+        const context = canvas.getContext("2d");
+        if (!context) {
+            return "";
+        }
+
+        context.fillStyle = "#fff";
+        context.fillRect(0, 0, canvasWidth, canvasHeight);
+        context.drawImage(image, 0, 0, canvasWidth, canvasHeight);
+        return canvas.toDataURL("image/png");
+    } catch {
+        return "";
+    } finally {
+        URL.revokeObjectURL(url);
+    }
+}
+
+async function savePngFallback(viewer, container, type) {
+    const cacheKey = getPngCacheKey(container);
+    if (
+        !cacheKey
+        || container.dataset.pngCacheUploaded === "true"
+        || container.dataset.pngCacheUnsupported === "true"
+    ) {
+        return;
+    }
+
+    if (type === "dmn") {
+        const activeView = viewer.getActiveView?.();
+        if (!activeView || activeView.type !== "drd") {
+            container.dataset.pngCacheUnsupported = "true";
+            return;
+        }
+    }
+
+    let png = "";
+    try {
+        png = await createPngFallback(container);
+    } catch {
+        return;
+    }
+
+    if (!png) {
+        return;
+    }
+
+    const base = window.DOKU_BASE ?? "/";
+    const jsinfo = window.JSINFO ?? {};
+    const sectok =
+        jsinfo.sectok
+        ?? document.querySelector('input[name="sectok"]')?.value
+        ?? "";
+    const pageId = jsinfo.id ?? "";
+    if (!sectok || !pageId) {
+        return;
+    }
+    const body = new URLSearchParams({
+        call: "plugin_bpmnio_png_cache",
+        key: cacheKey,
+        type,
+        png,
+        sectok,
+        id: pageId,
+    });
+
+    try {
+        const response = await fetch(`${base}lib/exe/ajax.php`, {
+            method: "POST",
+            body,
+            credentials: "same-origin",
+            headers: {
+                Accept: "application/json",
+            },
+        });
+
+        if (response.ok) {
+            const payload = await response.json().catch(() => null);
+            if (payload?.ok === true) {
+                container.dataset.pngCacheUploaded = "true";
+            }
+        }
+    } catch {
+        // Keep the on-page render working even if the PDF fallback upload fails.
+    }
+}
+
 function getLayerBounds(canvas) {
     const layer = canvas?.getActiveLayer?.();
     if (!layer || typeof layer.getBBox !== "function") {
@@ -391,7 +592,8 @@ async function renderBpmnDiagram(xml, container) {
     const root = jQuery(container).closest(".plugin-bpmnio");
     const linkMap = parseLinkMap(root, "bpmn");
 
-    return renderDiagram(xml, container, viewer, computeBpmnDiagramSize, linkMap, "bpmn");
+    await renderDiagram(xml, container, viewer, computeBpmnDiagramSize, linkMap, "bpmn");
+    await savePngFallback(viewer, container, "bpmn");
 }
 
 async function renderDmnDiagram(xml, container) {
@@ -404,7 +606,8 @@ async function renderDmnDiagram(xml, container) {
     const root = jQuery(container).closest(".plugin-bpmnio");
     const linkMap = parseLinkMap(root, "dmn");
 
-    return renderDiagram(xml, container, viewer, computeDmnDiagramSize, linkMap, "dmn");
+    await renderDiagram(xml, container, viewer, computeDmnDiagramSize, linkMap, "dmn");
+    await savePngFallback(viewer, container, "dmn");
 }
 
 async function exportDataBase64(editor, linkMap = {}) {
