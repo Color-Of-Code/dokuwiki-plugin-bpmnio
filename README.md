@@ -50,7 +50,9 @@ The `lint` attribute controls the default state per diagram:
 
 ## DW2PDF Support
 
-DW2PDF export now has a pragmatic fallback for diagrams that have already been rendered in a browser. After a BPMN diagram or DMN DRD diagram is displayed on a page, the plugin caches a browser-rendered PNG copy and reuses that cached PNG during `dw2pdf` rendering.
+DW2PDF export now has a pragmatic fallback for diagrams that have already been rendered
+in a browser. After a BPMN diagram or DMN DRD diagram is displayed on a page, the plugin
+caches a browser-rendered PNG copy and reuses that cached PNG during `dw2pdf` rendering.
 
 Current limitations:
 
@@ -74,7 +76,9 @@ Protections:
   cause a file to land in the wrong page's storage bucket.
 - **PNG validation** — uploaded data must be a valid PNG: the magic-byte header
   is checked, `getimagesizefromstring()` must confirm `image/png` with non-zero
-  dimensions, and the payload is rejected if it exceeds 5 MB.
+  dimensions, neither dimension may exceed 10,000 pixels, the total image size
+  may not exceed 20 million pixels, and the payload is rejected if it exceeds
+  5 MB.
 - **Key format validation** — cache keys are validated as 40-character lowercase
   hex strings (SHA1) before any filesystem path is constructed, preventing path
   traversal.

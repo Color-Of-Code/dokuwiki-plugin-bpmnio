@@ -2,6 +2,9 @@
 
 class plugin_bpmnio_png_cache
 {
+    private const MAX_PNG_DIMENSION = 10000;
+    private const MAX_PNG_PIXELS = 20000000;
+
     public static function buildKey(string $type, string $xml, string $variant = '', string $pageId = ''): string
     {
         return sha1($type . "\0" . $variant . "\0" . $pageId . "\0" . $xml);
@@ -116,9 +119,21 @@ class plugin_bpmnio_png_cache
         }
 
         $size = @getimagesizefromstring($png);
-        return $size !== false
-            && ($size['mime'] ?? '') === 'image/png'
-            && (int) $size[0] > 0
-            && (int) $size[1] > 0;
+        if ($size === false || ($size['mime'] ?? '') !== 'image/png') {
+            return false;
+        }
+
+        $width = (int) $size[0];
+        $height = (int) $size[1];
+        if (
+            $width <= 0
+            || $height <= 0
+            || $width > self::MAX_PNG_DIMENSION
+            || $height > self::MAX_PNG_DIMENSION
+        ) {
+            return false;
+        }
+
+        return $width <= intdiv(self::MAX_PNG_PIXELS, $height);
     }
 }

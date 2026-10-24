@@ -10,6 +10,22 @@ class action_plugin_bpmnio_editor_test extends DokuWikiTest
 {
     protected $pluginsEnabled = array('bpmnio');
 
+    private function createPng(int $width, int $height): string
+    {
+        $chunk = static function (string $type, string $data): string {
+            return pack('N', strlen($data)) . $type . $data . pack('N', crc32($type . $data));
+        };
+
+        $header = pack('N2C5', $width, $height, 8, 6, 0, 0, 0);
+        $row = "\0" . str_repeat("\0", $width * 4);
+        $imageData = gzcompress(str_repeat($row, $height));
+
+        return "\x89PNG\r\n\x1a\n"
+            . $chunk('IHDR', $header)
+            . $chunk('IDAT', $imageData)
+            . $chunk('IEND', '');
+    }
+
     public function tearDown(): void
     {
         parent::tearDown();
@@ -221,6 +237,14 @@ class action_plugin_bpmnio_editor_test extends DokuWikiTest
 
         $this->assertStringContainsString('"ok":false', $output);
         $this->assertStringContainsString('invalid-cache-data', $output);
+    }
+
+    public function test_png_cache_rejects_excessive_dimensions()
+    {
+        $key = plugin_bpmnio_png_cache::buildKey('bpmn', '<definitions id="Defs_large" />');
+        $png = $this->createPng(10001, 1);
+
+        $this->assertFalse(plugin_bpmnio_png_cache::save($key, $png));
     }
 
     public function test_handle_png_cache_ajax_rejects_invalid_payload()
